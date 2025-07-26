@@ -565,6 +565,16 @@ CREATE INDEX CONCURRENTLY idx_credentials_search ON credentials USING GIN(to_tsv
 
 ### 📋 **Migration Process**
 
+#### **Initial Setup (First Time)**
+
+```bash
+# For new development environment
+npx prisma migrate dev --name init
+
+# For production deployment
+npx prisma migrate deploy
+```
+
 #### **Development Migrations**
 
 ```bash

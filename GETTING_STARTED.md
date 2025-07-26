@@ -39,23 +39,26 @@ The Docker setup provides all services pre-configured and is the fastest way to 
 # Start all services (PostgreSQL, Redis, Backend, Frontend, MailHog)
 npm run docker:dev
 
+# Wait for all services to start (30-60 seconds), then initialize the database
+# Run database migrations (REQUIRED for first time setup)
+docker-compose exec backend npx prisma migrate dev --name init
+
 # View logs to ensure everything is running
 npm run docker:dev:logs
-
-# Run database migrations (first time only)
-docker-compose exec backend npx prisma migrate dev
 
 # Seed the database with sample data (optional)
 docker-compose exec backend npx prisma db seed
 ```
 
 **Services will be available at:**
-- 🌐 **Frontend**: http://localhost:5173
-- 🔧 **Backend API**: http://localhost:3000
-- 📧 **Email Testing (MailHog)**: http://localhost:8025
+
+- 🌐 **Frontend**: <http://localhost:5173>
+- 🔧 **Backend API**: <http://localhost:3000>
+- 📧 **Email Testing (MailHog)**: <http://localhost:8025>
 - 🗄️ **Database**: postgresql://localhost:5432
 
 **Docker Commands:**
+
 ```bash
 npm run docker:dev        # Start development environment
 npm run docker:dev:build  # Rebuild and start
@@ -83,6 +86,7 @@ npm run setup
 ### 3. Database Setup
 
 1. **Create a PostgreSQL database:**
+
    ```sql
    CREATE DATABASE team_vault_dev;
    CREATE USER team_vault_user WITH PASSWORD 'your_password';
@@ -90,11 +94,13 @@ npm run setup
    ```
 
 2. **Copy environment file:**
+
    ```bash
    cp .env.example .env
    ```
 
 3. **Update the `.env` file** with your database credentials:
+
    ```env
    DATABASE_URL="postgresql://team_vault_user:your_password@localhost:5432/team_vault_dev"
    JWT_SECRET="your-super-secure-jwt-secret-must-be-32-chars-minimum"
@@ -123,6 +129,7 @@ npm run dev
 ```
 
 This will start:
+
 - **Backend API** at `http://localhost:3000`
 - **Frontend** at `http://localhost:5173`
 
@@ -141,12 +148,14 @@ After seeding the database, you can log in with:
 ## 🛠️ Available Scripts
 
 ### Root Scripts
+
 - `npm run dev` - Start both frontend and backend in development mode
 - `npm run build` - Build both applications for production
 - `npm run test` - Run tests for both applications
 - `npm run setup` - Install dependencies for both applications
 
 ### Backend Scripts
+
 - `npm run dev:backend` - Start backend development server
 - `npm run build:backend` - Build backend for production
 - `npm run test:backend` - Run backend tests
@@ -156,6 +165,7 @@ After seeding the database, you can log in with:
 - `npm run db:seed` - Seed database with sample data
 
 ### Frontend Scripts
+
 - `npm run dev:frontend` - Start frontend development server
 - `npm run build:frontend` - Build frontend for production
 - `npm run test:frontend` - Run frontend tests
@@ -261,6 +271,7 @@ cat backend/prisma/schema.prisma
    - Frontend (5173): Kill process or change port in `frontend/vite.config.ts`
 
 3. **Dependencies Issues:**
+
    ```bash
    # Clean install
    rm -rf node_modules backend/node_modules frontend/node_modules
@@ -269,6 +280,7 @@ cat backend/prisma/schema.prisma
    ```
 
 4. **TypeScript Errors:**
+
    ```bash
    # Regenerate Prisma client
    npm run db:generate
@@ -283,6 +295,7 @@ cat backend/prisma/schema.prisma
 ### Common Docker Issues
 
 1. **Containers won't start:**
+
    ```bash
    # Check if ports are in use
    npm run docker:dev:down
@@ -294,6 +307,7 @@ cat backend/prisma/schema.prisma
    ```
 
 2. **Database connection issues:**
+
    ```bash
    # Check database logs
    docker-compose logs postgres
@@ -304,6 +318,7 @@ cat backend/prisma/schema.prisma
    ```
 
 3. **Frontend not loading:**
+
    ```bash
    # Check frontend logs
    docker-compose logs frontend
@@ -313,12 +328,14 @@ cat backend/prisma/schema.prisma
    ```
 
 4. **Permission issues (Linux/Mac):**
+
    ```bash
    # Fix ownership
    sudo chown -R $USER:$USER .
    ```
 
 5. **Docker build fails with npm ci error:**
+
    ```bash
    # This usually means package-lock.json is missing
    # Generate lockfiles if needed:
@@ -330,6 +347,7 @@ cat backend/prisma/schema.prisma
    ```
 
 6. **Out of disk space or old containers:**
+
    ```bash
    # Clean up Docker system
    docker system prune -f

@@ -5,6 +5,7 @@ This document explains how to use Docker for local development and production de
 ## Quick Start (Development)
 
 ### Prerequisites
+
 - Docker Desktop installed and running
 - Docker Compose v2+ installed
 
@@ -26,6 +27,7 @@ docker-compose down
 ```
 
 This will start:
+
 - PostgreSQL database on port 5432
 - Redis cache on port 6379
 - Backend API on port 3000
@@ -35,8 +37,9 @@ This will start:
 ### First Time Setup
 
 ```bash
-# Run database migrations
-docker-compose exec backend npx prisma migrate dev
+# Wait for all services to start (30-60 seconds), then initialize the database
+# Run database migrations (REQUIRED for first time setup)
+docker-compose exec backend npx prisma migrate dev --name init
 
 # Seed the database (optional)
 docker-compose exec backend npx prisma db seed
@@ -51,11 +54,11 @@ open http://localhost:5173
 
 | Service  | Port | URL | Description |
 |----------|------|-----|-------------|
-| Frontend | 5173 | http://localhost:5173 | React + Vite development server |
-| Backend  | 3000 | http://localhost:3000 | Node.js API server |
+| Frontend | 5173 | <http://localhost:5173> | React + Vite development server |
+| Backend  | 3000 | <http://localhost:3000> | Node.js API server |
 | Database | 5432 | postgresql://localhost:5432 | PostgreSQL database |
 | Redis    | 6379 | redis://localhost:6379 | Redis cache |
-| MailHog  | 8025 | http://localhost:8025 | Email testing interface |
+| MailHog  | 8025 | <http://localhost:8025> | Email testing interface |
 
 ### Useful Commands
 
@@ -86,11 +89,13 @@ docker-compose exec postgres psql -U teamvault team_vault_dev
 ## Development Workflow
 
 ### Code Changes
+
 - Frontend and backend code is mounted as volumes
 - Changes are automatically reflected (hot reload)
 - No need to rebuild containers for code changes
 
 ### Database Changes
+
 ```bash
 # Create and apply migration
 docker-compose exec backend npx prisma migrate dev --name your_migration_name
@@ -103,6 +108,7 @@ docker-compose exec backend npx prisma studio
 ```
 
 ### Environment Variables
+
 - Development variables are in `docker-compose.yml`
 - Override with `.env.docker` file if needed
 - Never commit sensitive production values
@@ -110,6 +116,7 @@ docker-compose exec backend npx prisma studio
 ## Production Deployment
 
 ### Environment Setup
+
 ```bash
 # Copy and customize production environment
 cp .env.prod.template .env.prod
@@ -119,6 +126,7 @@ cp .env.prod.template .env.prod
 ```
 
 ### Deploy with Production Compose
+
 ```bash
 # Build and start production services
 docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d
@@ -128,6 +136,7 @@ docker-compose -f docker-compose.prod.yml exec backend npx prisma migrate deploy
 ```
 
 ### Production Services
+
 - Services are not exposed to host (except nginx)
 - All traffic goes through nginx reverse proxy
 - SSL termination at nginx level
@@ -139,6 +148,7 @@ docker-compose -f docker-compose.prod.yml exec backend npx prisma migrate deploy
 ### Common Issues
 
 **Containers won't start:**
+
 ```bash
 # Check if ports are already in use
 docker-compose down
@@ -150,6 +160,7 @@ docker-compose up -d
 ```
 
 **Database connection issues:**
+
 ```bash
 # Check database logs
 docker-compose logs postgres
@@ -160,6 +171,7 @@ docker-compose up -d postgres
 ```
 
 **Frontend not loading:**
+
 ```bash
 # Check frontend logs
 docker-compose logs frontend
@@ -169,12 +181,14 @@ docker-compose up -d --build frontend
 ```
 
 **Permission issues (Linux/Mac):**
+
 ```bash
 # Fix ownership issues
 sudo chown -R $USER:$USER .
 ```
 
 ### Viewing Logs
+
 ```bash
 # All services
 docker-compose logs -f
@@ -189,11 +203,13 @@ docker-compose logs --tail=100 frontend
 ### Performance Optimization
 
 **Development:**
+
 - Use `.dockerignore` files to exclude unnecessary files
 - Mount specific directories instead of entire project
 - Use multi-stage builds for faster rebuilds
 
 **Production:**
+
 - Enable nginx caching and compression
 - Use health checks for zero-downtime deployments
 - Monitor container resource usage
@@ -223,11 +239,13 @@ team-vault/
 ## Security Considerations
 
 ### Development
+
 - Default passwords are used (safe for local development)
 - All ports exposed to localhost
 - Debug logging enabled
 
 ### Production
+
 - Change all default passwords and secrets
 - Use environment variables for sensitive data
 - Enable SSL/TLS
@@ -238,6 +256,7 @@ team-vault/
 ## Monitoring and Maintenance
 
 ### Health Checks
+
 ```bash
 # Check container health
 docker-compose ps
@@ -248,6 +267,7 @@ curl http://localhost:5173/health
 ```
 
 ### Backups
+
 ```bash
 # Database backup
 docker-compose exec postgres pg_dump -U teamvault team_vault_dev > backup.sql
@@ -257,6 +277,7 @@ docker-compose exec -T postgres psql -U teamvault team_vault_dev < backup.sql
 ```
 
 ### Updates
+
 ```bash
 # Update dependencies
 docker-compose exec backend npm update

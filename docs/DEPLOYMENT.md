@@ -394,6 +394,7 @@ docker-compose -f docker-compose.prod.yml exec backend npx prisma migrate deploy
 ### 🔄 **Container Orchestration Options**
 
 #### **Docker Swarm**
+
 ```bash
 # Initialize swarm
 docker swarm init
@@ -403,6 +404,7 @@ docker stack deploy -c docker-compose.prod.yml team-vault
 ```
 
 #### **Kubernetes**
+
 ```yaml
 # Example kubernetes deployment
 apiVersion: apps/v1

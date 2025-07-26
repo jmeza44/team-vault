@@ -7,13 +7,13 @@
 - [Overview](#-overview)
 - [Key Features](#-key-features)
 - [Security Features](#-security-features)
-- [Tech Stack](#-tech-stack)
-- [Core Entities](#-core-entities)
+- [Tech Stack](#️-tech-stack)
+- [Core Entities](#️-core-entities)
 - [User Roles & Permissions](#-user-roles--permissions)
 - [Getting Started](#-getting-started)
 - [Project Structure](#-project-structure)
-- [Development Roadmap](#-development-roadmap)
-- [Contributing](#contributing)
+- [Development Roadmap](#-🗺️-development-roadmap)
+- [Contributing](#-contributing)
 
 ## 🎯 Overview
 
@@ -78,7 +78,7 @@ Team Vault eliminates the security risk of sharing sensitive credentials through
 | **Audit Logging** | Complete access and modification history | 🔄 Planned |
 | **Secure Headers** | HTTPS enforcement, CSP, HSTS | 🔄 Planned |
 
-## 🛠️ **Tech Stack**
+## 🛠️ Tech Stack
 
 ### 🧑‍💻 Frontend
 
@@ -178,7 +178,7 @@ interface Credential {
   createdAt: Date;
   updatedAt: Date;
 }
-```
+ ```bash
 
 ### User
 
@@ -282,11 +282,12 @@ interface SharedCredential {
    # Start all services (PostgreSQL, Redis, Backend, Frontend, MailHog)
    docker-compose up -d
    
+   # Wait for all services to start (30-60 seconds), then initialize the database
+   # Run database migrations (REQUIRED for first time setup)
+   docker-compose exec backend npx prisma migrate dev --name init
+   
    # View logs
    docker-compose logs -f
-   
-   # Run database migrations
-   docker-compose exec backend npx prisma migrate dev
    
    # Access the application
    # Frontend: http://localhost:5173
@@ -295,6 +296,7 @@ interface SharedCredential {
    ```
 
    **Docker Commands:**
+
    ```bash
    npm run docker:dev        # Start development environment
    npm run docker:dev:build  # Rebuild and start
@@ -304,6 +306,7 @@ interface SharedCredential {
    ```
 
    See [docs/DOCKER.md](./docs/DOCKER.md) for complete Docker documentation.
+
    ```
 
 ### Environment Variables
