@@ -1,157 +1,140 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '@/middleware/authMiddleware';
+import { ResponseUtil } from '@/utils/responseUtils';
+import { TeamService } from '@/services/teamService';
+import { CreateTeamData, UpdateTeamData, AddTeamMemberData, UpdateTeamMemberRoleData, TeamFilters } from '@/models/TeamModels';
 
 export class TeamController {
-  async getTeams(_req: AuthenticatedRequest, res: Response) {
+  async getTeams(req: AuthenticatedRequest, res: Response) {
     try {
-      // Implementation would get user's teams
-      res.json({
-        success: true,
-        data: {
-          teams: [],
-        },
+      const userId = req.user!.id;
+      const { search, role, limit, offset } = req.query;
+
+      const filters: TeamFilters = {};
+      if (search) filters.search = search as string;
+      if (role) filters.role = role as any;
+      if (limit) filters.limit = parseInt(limit as string);
+      if (offset) filters.offset = parseInt(offset as string);
+
+      const teams = await TeamService.getUserTeams(userId, filters);
+
+      ResponseUtil.success(res, {
+        teams,
+        count: teams.length,
       });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Failed to get teams',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Get teams');
     }
   }
 
-  async getTeamById(_req: AuthenticatedRequest, res: Response) {
+  async getTeamById(req: AuthenticatedRequest, res: Response) {
     try {
-      // Implementation would get specific team
-      res.json({
-        success: true,
-        data: {
-          team: null,
-        },
-      });
+      const userId = req.user!.id;
+      const { id: teamId } = req.params;
+
+      const team = await TeamService.getTeamById(teamId, userId);
+
+      if (!team) {
+        return ResponseUtil.notFound(res, 'Team not found');
+      }
+
+      ResponseUtil.success(res, { team });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Failed to get team',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Get team');
     }
   }
 
-  async createTeam(_req: AuthenticatedRequest, res: Response) {
+  async createTeam(req: AuthenticatedRequest, res: Response) {
     try {
-      // Implementation would create team
-      res.status(201).json({
-        success: true,
-        data: {
-          team: null,
-          message: 'Team created successfully',
-        },
-      });
+      const userId = req.user!.id;
+      const teamData: CreateTeamData = req.body;
+
+      const team = await TeamService.createTeam(userId, teamData);
+
+      ResponseUtil.success(res, {
+        team,
+        message: 'Team created successfully',
+      }, 201);
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Failed to create team',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Create team');
     }
   }
 
-  async updateTeam(_req: AuthenticatedRequest, res: Response) {
+  async updateTeam(req: AuthenticatedRequest, res: Response) {
     try {
-      // Implementation would update team
-      res.json({
-        success: true,
-        data: {
-          message: 'Team updated successfully',
-        },
+      const userId = req.user!.id;
+      const { id: teamId } = req.params;
+      const updateData: UpdateTeamData = req.body;
+
+      await TeamService.updateTeam(teamId, userId, updateData);
+
+      ResponseUtil.success(res, {
+        message: 'Team updated successfully',
       });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Failed to update team',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Update team');
     }
   }
 
-  async deleteTeam(_req: AuthenticatedRequest, res: Response) {
+  async deleteTeam(req: AuthenticatedRequest, res: Response) {
     try {
-      // Implementation would delete team
-      res.json({
-        success: true,
-        data: {
-          message: 'Team deleted successfully',
-        },
+      const userId = req.user!.id;
+      const { id: teamId } = req.params;
+
+      await TeamService.deleteTeam(teamId, userId);
+
+      ResponseUtil.success(res, {
+        message: 'Team deleted successfully',
       });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Failed to delete team',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Delete team');
     }
   }
 
-  async addTeamMember(_req: AuthenticatedRequest, res: Response) {
+  async addTeamMember(req: AuthenticatedRequest, res: Response) {
     try {
-      // Implementation would add team member
-      res.json({
-        success: true,
-        data: {
-          message: 'Team member added successfully',
-        },
+      const userId = req.user!.id;
+      const { id: teamId } = req.params;
+      const memberData: AddTeamMemberData = req.body;
+
+      await TeamService.addTeamMember(teamId, userId, memberData);
+
+      ResponseUtil.success(res, {
+        message: 'Team member added successfully',
       });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Failed to add team member',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Add team member');
     }
   }
 
-  async removeTeamMember(_req: AuthenticatedRequest, res: Response) {
+  async removeTeamMember(req: AuthenticatedRequest, res: Response) {
     try {
-      // Implementation would remove team member
-      res.json({
-        success: true,
-        data: {
-          message: 'Team member removed successfully',
-        },
+      const userId = req.user!.id;
+      const { id: teamId, userId: memberUserId } = req.params;
+
+      await TeamService.removeTeamMember(teamId, userId, memberUserId);
+
+      ResponseUtil.success(res, {
+        message: 'Team member removed successfully',
       });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Failed to remove team member',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Remove team member');
     }
   }
 
-  async updateTeamMemberRole(_req: AuthenticatedRequest, res: Response) {
+  async updateTeamMemberRole(req: AuthenticatedRequest, res: Response) {
     try {
-      // Implementation would update team member role
-      res.json({
-        success: true,
-        data: {
-          message: 'Team member role updated successfully',
-        },
+      const userId = req.user!.id;
+      const { id: teamId, userId: memberUserId } = req.params;
+      const roleData: UpdateTeamMemberRoleData = req.body;
+
+      await TeamService.updateTeamMemberRole(teamId, userId, memberUserId, roleData);
+
+      ResponseUtil.success(res, {
+        message: 'Team member role updated successfully',
       });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Failed to update team member role',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Update team member role');
     }
   }
 }
