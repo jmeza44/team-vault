@@ -274,10 +274,36 @@ interface SharedCredential {
    npm run dev
    ```
 
-4. **Docker Setup** (Alternative)
+4. **Docker Setup** (Recommended for easy development)
+
+   Using Docker provides a consistent development environment with all services pre-configured:
 
    ```bash
+   # Start all services (PostgreSQL, Redis, Backend, Frontend, MailHog)
    docker-compose up -d
+   
+   # View logs
+   docker-compose logs -f
+   
+   # Run database migrations
+   docker-compose exec backend npx prisma migrate dev
+   
+   # Access the application
+   # Frontend: http://localhost:5173
+   # Backend API: http://localhost:3000
+   # Email testing: http://localhost:8025
+   ```
+
+   **Docker Commands:**
+   ```bash
+   npm run docker:dev        # Start development environment
+   npm run docker:dev:build  # Rebuild and start
+   npm run docker:dev:logs   # View logs
+   npm run docker:dev:down   # Stop all services
+   npm run docker:dev:clean  # Remove volumes and clean state
+   ```
+
+   See [docs/DOCKER.md](./docs/DOCKER.md) for complete Docker documentation.
    ```
 
 ### Environment Variables

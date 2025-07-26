@@ -5,6 +5,7 @@
 - [Deployment Overview](#-deployment-overview)
 - [Environment Setup](#️-environment-setup)
 - [Production Deployment](#-production-deployment)
+- [Docker Deployment](#-docker-deployment)
 - [Database Migration](#️-database-migration)
 - [Monitoring Setup](#-monitoring-setup)
 - [Backup Strategy](#-backup-strategy)
@@ -44,10 +45,11 @@ graph TB
 
 | Component | Service | Purpose | Scaling |
 |-----------|---------|---------|---------|
-| **Frontend** | Vercel | Static site hosting | Global CDN |
-| **Backend** | Railway | API server hosting | Auto-scaling |
-| **Database** | Supabase | PostgreSQL hosting | Managed scaling |
+| **Frontend** | Vercel / Docker | Static site hosting / Containerized | Global CDN / Horizontal |
+| **Backend** | Railway / Docker | API server hosting / Containerized | Auto-scaling / Horizontal |
+| **Database** | Supabase / PostgreSQL | PostgreSQL hosting | Managed scaling |
 | **Email** | SendGrid | Email delivery | External service |
+| **Container Orchestration** | Docker Compose / Kubernetes | Container management | Horizontal scaling |
 | **Monitoring** | Uptime Robot | Health monitoring | External service |
 | **CI/CD** | GitHub Actions | Automated deployment | GitHub-hosted |
 
@@ -299,6 +301,172 @@ Create `railway.json` in the backend directory:
   }
 }
 ```
+
+---
+
+## 🐳 **Docker Deployment**
+
+### 🚀 **Production Docker Setup**
+
+Team Vault includes production-ready Docker configurations for scalable deployment:
+
+```bash
+# Copy and customize production environment
+cp .env.prod.template .env.prod
+
+# Edit .env.prod with your production values
+# IMPORTANT: Change all secrets and passwords!
+
+# Build and deploy with production compose
+docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d
+
+# Run initial database setup
+docker-compose -f docker-compose.prod.yml exec backend npx prisma migrate deploy
+```
+
+### 🏗️ **Container Architecture**
+
+```mermaid
+graph TB
+    LB[Load Balancer/Nginx]
+    FE[Frontend Container<br/>Nginx + React]
+    BE[Backend Container<br/>Node.js + Express]
+    DB[PostgreSQL Container]
+    REDIS[Redis Container]
+    
+    LB --> FE
+    LB --> BE
+    BE --> DB
+    BE --> REDIS
+    
+    style LB fill:#e3f2fd
+    style FE fill:#f3e5f5
+    style BE fill:#e8f5e8
+    style DB fill:#fff3e0
+    style REDIS fill:#fce4ec
+```
+
+### 📦 **Container Services**
+
+| Service | Image | Purpose | Ports |
+|---------|-------|---------|-------|
+| **nginx** | nginx:alpine | Reverse proxy & SSL | 80, 443 |
+| **frontend** | team-vault/frontend | React SPA | Internal |
+| **backend** | team-vault/backend | API server | Internal |
+| **postgres** | postgres:15-alpine | Database | Internal |
+| **redis** | redis:7-alpine | Cache/sessions | Internal |
+
+### 🔧 **Production Environment Variables**
+
+Create `.env.prod` with production values:
+
+```bash
+# Database
+POSTGRES_USER=teamvault_prod
+POSTGRES_PASSWORD=your-strong-production-password
+DATABASE_URL=postgresql://teamvault_prod:password@postgres:5432/team_vault_prod
+
+# Security (CHANGE THESE!)
+JWT_SECRET=your-super-secure-jwt-secret-must-be-32-chars-minimum-prod
+JWT_REFRESH_SECRET=your-super-secure-refresh-secret-different-from-above-prod
+ENCRYPTION_KEY=your-32-byte-encryption-master-key-for-aes-256-encryption-prod
+
+# Application
+NODE_ENV=production
+CORS_ORIGIN=https://your-domain.com
+VITE_API_BASE_URL=https://your-domain.com/api
+```
+
+### 🚀 **Deployment Commands**
+
+```bash
+# Production deployment
+npm run docker:prod         # Start production environment
+npm run docker:prod:build   # Rebuild and start
+npm run docker:prod:down    # Stop production environment
+
+# Manual commands
+docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d
+docker-compose -f docker-compose.prod.yml logs -f
+docker-compose -f docker-compose.prod.yml exec backend npx prisma migrate deploy
+```
+
+### 🔄 **Container Orchestration Options**
+
+#### **Docker Swarm**
+```bash
+# Initialize swarm
+docker swarm init
+
+# Deploy stack
+docker stack deploy -c docker-compose.prod.yml team-vault
+```
+
+#### **Kubernetes**
+```yaml
+# Example kubernetes deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: team-vault-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: team-vault-backend
+  template:
+    metadata:
+      labels:
+        app: team-vault-backend
+    spec:
+      containers:
+      - name: backend
+        image: team-vault/backend:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: team-vault-secrets
+              key: database-url
+```
+
+### 📊 **Monitoring & Health Checks**
+
+```bash
+# Check container health
+docker-compose -f docker-compose.prod.yml ps
+
+# View logs
+docker-compose -f docker-compose.prod.yml logs -f backend
+docker-compose -f docker-compose.prod.yml logs -f frontend
+
+# Health endpoints
+curl https://your-domain.com/health         # Frontend
+curl https://your-domain.com/api/health     # Backend
+```
+
+### 🔐 **Security Considerations**
+
+- **Network Security**: Containers communicate on isolated bridge network
+- **Secrets Management**: Use Docker secrets or external secret managers
+- **SSL/TLS**: Terminated at nginx reverse proxy
+- **Image Security**: Regularly update base images and scan for vulnerabilities
+- **Non-root Users**: All containers run as non-root users
+
+### 📈 **Scaling**
+
+```bash
+# Scale backend horizontally
+docker-compose -f docker-compose.prod.yml up -d --scale backend=3
+
+# Load balancer automatically distributes traffic
+```
+
+For complete Docker documentation, see [DOCKER.md](./DOCKER.md).
+
+---
 
 ### 🌐 **Vercel Frontend Configuration**
 

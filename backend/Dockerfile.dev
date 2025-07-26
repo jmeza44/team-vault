@@ -1,0 +1,35 @@
+# Development Dockerfile for Backend
+FROM node:20-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies for native modules and Prisma
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    openssl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy package files (including workspace lockfile)
+COPY package*.json ./
+COPY backend/package*.json ./backend/
+COPY backend/prisma ./backend/prisma/
+
+# Install dependencies for the backend workspace
+WORKDIR /app/backend
+RUN npm install
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Copy source code
+COPY backend/ .
+
+# Expose port
+EXPOSE 3000
+
+# Start development server
+CMD ["npm", "run", "dev"]

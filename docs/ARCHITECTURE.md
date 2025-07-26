@@ -50,6 +50,68 @@ graph TB
 | **Background Jobs** | node-cron | Scheduled tasks and notifications | Horizontal via job queues |
 | **Email Service** | Nodemailer + SMTP | Notifications and invitations | External service |
 | **File Storage** | Local/S3 (future) | Static assets and backups | Cloud-native scaling |
+| **Containerization** | Docker + Docker Compose | Development and production deployment | Horizontal scaling |
+| **Cache Layer** | Redis | Session storage and caching | Horizontal sharding |
+
+### 🐳 **Containerized Architecture**
+
+```mermaid
+graph TB
+    subgraph "Load Balancer"
+        LB[Nginx Reverse Proxy]
+    end
+    
+    subgraph "Frontend Tier"
+        FE1[Frontend Container 1]
+        FE2[Frontend Container 2]
+    end
+    
+    subgraph "Backend Tier"
+        BE1[Backend Container 1]
+        BE2[Backend Container 2]
+        BE3[Backend Container 3]
+    end
+    
+    subgraph "Data Tier"
+        DB[PostgreSQL Container]
+        REDIS[Redis Container]
+    end
+    
+    subgraph "External Services"
+        EMAIL[Email Service]
+        MONITOR[Monitoring]
+    end
+    
+    LB --> FE1
+    LB --> FE2
+    LB --> BE1
+    LB --> BE2
+    LB --> BE3
+    
+    BE1 --> DB
+    BE2 --> DB
+    BE3 --> DB
+    BE1 --> REDIS
+    BE2 --> REDIS
+    BE3 --> REDIS
+    
+    BE1 --> EMAIL
+    BE2 --> EMAIL
+    BE3 --> EMAIL
+    
+    LB --> MONITOR
+    
+    style LB fill:#e3f2fd
+    style FE1 fill:#f3e5f5
+    style FE2 fill:#f3e5f5
+    style BE1 fill:#e8f5e8
+    style BE2 fill:#e8f5e8
+    style BE3 fill:#e8f5e8
+    style DB fill:#fff3e0
+    style REDIS fill:#fce4ec
+    style EMAIL fill:#f1f8e9
+    style MONITOR fill:#f5f5f5
+```
 
 ---
 
@@ -148,6 +210,24 @@ graph TB
 | **Rate Limiter** | DDoS protection | Redis-based rate limiting |
 | **bcrypt/argon2** | Password hashing | Secure password storage |
 
+### 🐳 **DevOps & Infrastructure**
+
+| Technology | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| **Docker** | 24+ | Containerization | Consistent environments, easy deployment |
+| **Docker Compose** | 2+ | Multi-container orchestration | Development and production orchestration |
+| **Redis** | 7+ | Caching & Sessions | Fast in-memory storage, session management |
+| **Nginx** | 1.24+ | Reverse Proxy | Load balancing, SSL termination |
+| **GitHub Actions** | - | CI/CD Pipeline | Automated testing and deployment |
+
+### 🔧 **Container Architecture Benefits**
+
+- **Development Consistency**: Same environment across all machines
+- **Production Parity**: Identical containers in dev and production
+- **Scalability**: Easy horizontal scaling with container orchestration
+- **Isolation**: Services isolated for security and stability
+- **Deployment**: Zero-downtime deployments with health checks
+
 ---
 
 ## 📈 Scalability Strategy
@@ -167,6 +247,43 @@ graph TB
 - **Stateless Design**: No server-side sessions
 - **Database Connection Pooling**: Efficient resource usage
 - **Microservice Ready**: Service separation capability
+
+#### **Container-Based Scaling**
+
+- **Horizontal Pod Autoscaling**: Kubernetes automatic scaling
+- **Docker Swarm Scaling**: `docker service scale backend=5`
+- **Container Health Checks**: Automatic unhealthy container replacement
+- **Blue-Green Deployments**: Zero-downtime updates
+- **Rolling Updates**: Gradual deployment with rollback capability
+
+```mermaid
+graph LR
+    LB[Load Balancer]
+    subgraph "Backend Containers"
+        BE1[Backend-1]
+        BE2[Backend-2]
+        BE3[Backend-3]
+        BEN[Backend-N]
+    end
+    DB[(Database)]
+    
+    LB --> BE1
+    LB --> BE2
+    LB --> BE3
+    LB --> BEN
+    
+    BE1 --> DB
+    BE2 --> DB
+    BE3 --> DB
+    BEN --> DB
+    
+    style LB fill:#e3f2fd
+    style BE1 fill:#e8f5e8
+    style BE2 fill:#e8f5e8
+    style BE3 fill:#e8f5e8
+    style BEN fill:#e8f5e8
+    style DB fill:#fff3e0
+```
 
 ### 📊 **Performance Optimization**
 

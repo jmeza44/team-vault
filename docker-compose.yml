@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: team-vault-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: team_vault_dev
+      POSTGRES_USER: teamvault
+      POSTGRES_PASSWORD: teamvault_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/prisma/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - team-vault-network
+
+  # Redis for sessions and caching
+  redis:
+    image: redis:7-alpine
+    container_name: team-vault-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - team-vault-network
+
+  # Backend API
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile.dev
+    container_name: team-vault-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://teamvault:teamvault_dev_password@postgres:5432/team_vault_dev
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: your-super-secure-jwt-secret-must-be-32-chars-minimum-dev
+      JWT_REFRESH_SECRET: your-super-secure-refresh-secret-different-from-above-dev
+      JWT_EXPIRES_IN: 1h
+      JWT_REFRESH_EXPIRES_IN: 7d
+      ENCRYPTION_KEY: your-32-byte-encryption-master-key-for-aes-256-encryption-dev
+      PORT: 3000
+      LOG_LEVEL: debug
+      CORS_ORIGIN: http://localhost:5173
+      RATE_LIMIT_WINDOW_MS: 900000
+      RATE_LIMIT_MAX_REQUESTS: 100
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app/backend
+      - /app/backend/node_modules
+      - /app/backend/dist
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - team-vault-network
+    command: npm run dev
+
+  # Frontend (React + Vite)
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile.dev
+    container_name: team-vault-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:3000/api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    depends_on:
+      - backend
+    networks:
+      - team-vault-network
+    command: npm run dev -- --host 0.0.0.0
+
+  # MailHog for email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: team-vault-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    networks:
+      - team-vault-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  team-vault-network:
+    driver: bridge

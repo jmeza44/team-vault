@@ -14,11 +14,12 @@ Welcome to the Team Vault documentation! This collection of documents provides c
 
 - **[API Documentation](./API_DOCUMENTATION.md)** - Complete REST API reference with examples and schemas
 - **[Deployment Guide](./DEPLOYMENT.md)** - Production deployment, monitoring, and troubleshooting
+- **[Docker Setup](./DOCKER.md)** - Complete containerization guide for development and production
 
 ### 📋 **Project Foundation**
 
 - **[Main README](../README.md)** - Project overview, features, and quick start guide
-- **[Technical Specification](../TECHNICAL_SPECIFICATION.md)** - Legacy comprehensive specification (now modular)
+- **[Getting Started Guide](../GETTING_STARTED.md)** - Step-by-step setup for development
 
 ---
 
@@ -43,20 +44,26 @@ graph LR
 **Quick Links:**
 
 - 📖 [Main README](../README.md) - Project overview and getting started
+- 🚀 [Getting Started Guide](../GETTING_STARTED.md) - Step-by-step development setup
 - 🏗️ [ARCHITECTURE.md](./ARCHITECTURE.md) - System design and tech stack
 - 🗄️ [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md) - Database design and schema
 - 🚀 [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) - Complete API reference
+- 🐳 [DOCKER.md](./DOCKER.md) - Containerization and Docker setup
 
 ### For DevOps/SysAdmins
 
-**Recommended Path:** Architecture → Security → Deployment
+**Recommended Path:** Architecture → Security → Docker → Deployment
 
 ```mermaid
 graph LR
     A[🏗️ ARCHITECTURE.md] --> B[🔒 SECURITY.md]
-    B --> C[🚀 DEPLOYMENT.md]
+    B --> C[� DOCKER.md]
+    C --> D[�🚀 DEPLOYMENT.md]
     
     style A fill:#e3f2fd
+    style B fill:#fce4ec
+    style C fill:#e8f5e8
+    style D fill:#fff3e0
     style B fill:#f3e5f5
     style C fill:#e8f5e8
 ```
@@ -65,7 +72,8 @@ graph LR
 
 - 🏗️ [ARCHITECTURE.md](./ARCHITECTURE.md) - System architecture and infrastructure
 - 🔒 [SECURITY.md](./SECURITY.md) - Security implementation and compliance
-- 🚀 [DEPLOYMENT.md](./DEPLOYMENT.md) - Production deployment guide
+- � [DOCKER.md](./DOCKER.md) - Containerization for development and production
+- �🚀 [DEPLOYMENT.md](./DEPLOYMENT.md) - Production deployment guide
 
 ### For Business Stakeholders
 

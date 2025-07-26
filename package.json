@@ -19,7 +19,15 @@
     "db:migrate": "cd backend && npx prisma migrate dev",
     "db:generate": "cd backend && npx prisma generate",
     "db:studio": "cd backend && npx prisma studio",
-    "db:seed": "cd backend && npx tsx prisma/seed.ts"
+    "db:seed": "cd backend && npx tsx prisma/seed.ts",
+    "docker:dev": "docker-compose up -d",
+    "docker:dev:build": "docker-compose up -d --build",
+    "docker:dev:logs": "docker-compose logs -f",
+    "docker:dev:down": "docker-compose down",
+    "docker:dev:clean": "docker-compose down -v",
+    "docker:prod": "docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d",
+    "docker:prod:build": "docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d --build",
+    "docker:prod:down": "docker-compose -f docker-compose.prod.yml down"
   },
   "keywords": [
     "credential-management",

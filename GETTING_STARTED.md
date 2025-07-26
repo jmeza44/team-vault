@@ -4,7 +4,16 @@ This guide will help you set up and run the Team Vault application locally for d
 
 ## 📋 Prerequisites
 
-Before you begin, ensure you have the following installed:
+### Option 1: Docker Setup (Recommended)
+
+The easiest way to get started with Team Vault is using Docker, which provides a consistent development environment:
+
+- **Docker Desktop** - [Download here](https://www.docker.com/products/docker-desktop/)
+- **Git** - [Download here](https://git-scm.com/)
+
+### Option 2: Manual Setup
+
+If you prefer to set up the environment manually:
 
 - **Node.js** (v18 or higher) - [Download here](https://nodejs.org/)
 - **npm** (comes with Node.js)
@@ -19,6 +28,47 @@ Before you begin, ensure you have the following installed:
 git clone https://github.com/your-username/team-vault.git
 cd team-vault
 ```
+
+### 2. Choose Your Setup Method
+
+## 🐳 Option 1: Docker Setup (Recommended)
+
+The Docker setup provides all services pre-configured and is the fastest way to get started:
+
+```bash
+# Start all services (PostgreSQL, Redis, Backend, Frontend, MailHog)
+npm run docker:dev
+
+# View logs to ensure everything is running
+npm run docker:dev:logs
+
+# Run database migrations (first time only)
+docker-compose exec backend npx prisma migrate dev
+
+# Seed the database with sample data (optional)
+docker-compose exec backend npx prisma db seed
+```
+
+**Services will be available at:**
+- 🌐 **Frontend**: http://localhost:5173
+- 🔧 **Backend API**: http://localhost:3000
+- 📧 **Email Testing (MailHog)**: http://localhost:8025
+- 🗄️ **Database**: postgresql://localhost:5432
+
+**Docker Commands:**
+```bash
+npm run docker:dev        # Start development environment
+npm run docker:dev:build  # Rebuild and start
+npm run docker:dev:logs   # View logs
+npm run docker:dev:down   # Stop all services
+npm run docker:dev:clean  # Remove volumes and clean state
+```
+
+**That's it! Skip to [Using the Application](#-using-the-application) section.**
+
+---
+
+## ⚙️ Option 2: Manual Setup
 
 ### 2. Install Dependencies
 
@@ -228,7 +278,85 @@ cat backend/prisma/schema.prisma
    cd frontend && npx tsc --noEmit
    ```
 
-## 📚 Next Steps
+## � Docker Troubleshooting
+
+### Common Docker Issues
+
+1. **Containers won't start:**
+   ```bash
+   # Check if ports are in use
+   npm run docker:dev:down
+   netstat -an | grep :5432  # Check PostgreSQL port
+   
+   # Clean up and restart
+   npm run docker:dev:clean
+   npm run docker:dev
+   ```
+
+2. **Database connection issues:**
+   ```bash
+   # Check database logs
+   docker-compose logs postgres
+   
+   # Reset database
+   docker-compose down -v postgres
+   docker-compose up -d postgres
+   ```
+
+3. **Frontend not loading:**
+   ```bash
+   # Check frontend logs
+   docker-compose logs frontend
+   
+   # Rebuild with latest changes
+   docker-compose up -d --build frontend
+   ```
+
+4. **Permission issues (Linux/Mac):**
+   ```bash
+   # Fix ownership
+   sudo chown -R $USER:$USER .
+   ```
+
+5. **Docker build fails with npm ci error:**
+   ```bash
+   # This usually means package-lock.json is missing
+   # Generate lockfiles if needed:
+   cd frontend && npm install --package-lock-only
+   cd ../backend && npm install --package-lock-only
+   
+   # Then rebuild containers
+   npm run docker:dev:build
+   ```
+
+6. **Out of disk space or old containers:**
+   ```bash
+   # Clean up Docker system
+   docker system prune -f
+   docker volume prune -f
+   
+   # Remove old images
+   docker image prune -a -f
+   ```
+
+### Useful Docker Commands
+
+```bash
+# View running containers
+docker-compose ps
+
+# Execute commands in containers
+docker-compose exec backend npx prisma studio
+docker-compose exec backend npm test
+docker-compose exec postgres psql -U teamvault team_vault_dev
+
+# Access container shell
+docker-compose exec backend sh
+```
+
+For complete Docker documentation, see [docs/DOCKER.md](docs/DOCKER.md).
+
+## �📚 Next Steps
 
 1. **Explore the Documentation:**
    - [System Architecture](docs/ARCHITECTURE.md)

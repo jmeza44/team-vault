@@ -1,0 +1,25 @@
+# Development Dockerfile for Frontend
+FROM node:20-alpine
+
+# Install necessary packages for crypto support
+RUN apk add --no-cache python3 make g++
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files (including workspace lockfile)
+COPY package*.json ./
+COPY frontend/package*.json ./frontend/
+
+# Install dependencies for the frontend workspace
+WORKDIR /app/frontend
+RUN npm install
+
+# Copy source code
+COPY frontend/ .
+
+# Expose port
+EXPOSE 5173
+
+# Start development server
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

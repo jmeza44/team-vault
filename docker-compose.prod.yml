@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: team-vault-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: team_vault_prod
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - team-vault-network
+    # Don't expose port in production - only accessible internally
+
+  # Redis for sessions and caching
+  redis:
+    image: redis:7-alpine
+    container_name: team-vault-redis-prod
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - team-vault-network
+    # Don't expose port in production - only accessible internally
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: team-vault-backend-prod
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/team_vault_prod
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      PORT: 3000
+      LOG_LEVEL: ${LOG_LEVEL}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS}
+      RATE_LIMIT_MAX_REQUESTS: ${RATE_LIMIT_MAX_REQUESTS}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - team-vault-network
+    # Don't expose port in production - accessed through reverse proxy
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    container_name: team-vault-frontend-prod
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - team-vault-network
+
+  # Reverse Proxy (Nginx)
+  nginx:
+    image: nginx:alpine
+    container_name: team-vault-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - team-vault-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  team-vault-network:
+    driver: bridge
