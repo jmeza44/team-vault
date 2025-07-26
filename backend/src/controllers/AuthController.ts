@@ -1,68 +1,30 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { logger } from '@/utils/logger';
-
-const prisma = new PrismaClient();
+import { ResponseUtil } from '@/utils/responseUtils';
+import { AuthService } from '@/services/authService';
+import { CreateUserData, LoginResponse, RefreshTokenResponse } from '@/models/AuthModels';
+import { generateTokens, generateAccessToken, verifyRefreshToken } from '@/utils/jwtUtils';
 
 export class AuthController {
   async register(req: Request, res: Response) {
     try {
-      const { email, name, password } = req.body;
+      const { email, name, password }: CreateUserData = req.body;
 
       // Check if user already exists
-      const existingUser = await prisma.user.findUnique({
-        where: { email },
-      });
-
-      if (existingUser) {
-        return res.status(400).json({
-          success: false,
-          error: {
-            message: 'User with this email already exists',
-          },
-        });
+      const userExists = await AuthService.userExists(email);
+      if (userExists) {
+        return ResponseUtil.conflict(res, 'User with this email already exists');
       }
 
-      // Hash password
-      const passwordHash = await bcrypt.hash(password, 12);
-
       // Create user
-      const user = await prisma.user.create({
-        data: {
-          email,
-          name,
-          passwordHash,
-        },
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          createdAt: true,
-        },
-      });
+      const user = await AuthService.createUser({ email, name, password });
 
-      logger.info('User registered', { userId: user.id, email: user.email });
-
-      res.status(201).json({
-        success: true,
-        data: {
-          user,
-          message: 'User registered successfully',
-        },
-      });
-      return;
+      ResponseUtil.success(res, {
+        user,
+        message: 'User registered successfully',
+      }, 201);
     } catch (error) {
-      logger.error('Registration error:', error);
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Registration failed',
-        },
-      });
-      return;
+      ResponseUtil.handleError(res, error, 'Registration');
     }
   }
 
@@ -70,99 +32,37 @@ export class AuthController {
     try {
       const { email, password } = req.body;
 
-      // Find user
-      const user = await prisma.user.findUnique({
-        where: { email },
-      });
-
-      if (!user || !user.isActive) {
-        res.status(401).json({
-          success: false,
-          error: {
-            message: 'Invalid credentials',
-          },
-        });
-        return;
-      }
-
-      // Verify password
-      const isValidPassword = await bcrypt.compare(password, user.passwordHash);
-
-      if (!isValidPassword) {
-        res.status(401).json({
-          success: false,
-          error: {
-            message: 'Invalid credentials',
-          },
-        });
-        return;
+      // Authenticate user
+      const user = await AuthService.authenticateUser(email, password);
+      if (!user) {
+        return ResponseUtil.unauthorized(res, 'Invalid credentials');
       }
 
       // Generate tokens
-      const jwtSecret = process.env['JWT_SECRET'];
-      const jwtRefreshSecret = process.env['JWT_REFRESH_SECRET'];
-      
-      if (!jwtSecret || !jwtRefreshSecret) {
-        res.status(500).json({
-          success: false,
-          error: {
-            message: 'Server configuration error',
-          },
-        });
-        return;
-      }
+      const { accessToken, refreshToken } = generateTokens(user.id);
 
-      const accessToken = jwt.sign(
-        { userId: user.id },
-        jwtSecret,
-        { expiresIn: '15m' }
-      );
-
-      const refreshToken = jwt.sign(
-        { userId: user.id },
-        jwtRefreshSecret,
-        { expiresIn: '7d' }
-      );
-
-      // Store refresh token
-      await prisma.refreshToken.create({
-        data: {
-          userId: user.id,
-          token: refreshToken,
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-        },
-      });
-
-      // Update last login
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { lastLoginAt: new Date() },
-      });
+      // Store refresh token and update last login
+      await Promise.all([
+        AuthService.storeRefreshToken(user.id, refreshToken),
+        AuthService.updateLastLogin(user.id),
+      ]);
 
       logger.info('User logged in', { userId: user.id, email: user.email });
 
-      res.json({
-        success: true,
-        data: {
-          user: {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            role: user.role,
-          },
-          accessToken,
-          refreshToken,
+      const loginResponse: LoginResponse = {
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
         },
-      });
+        accessToken,
+        refreshToken,
+      };
+
+      ResponseUtil.success(res, loginResponse);
     } catch (error) {
-      logger.error('Login error:', error);
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Login failed',
-        },
-      });
-      return;
+      ResponseUtil.handleError(res, error, 'Login');
     }
   }
 
@@ -170,60 +70,25 @@ export class AuthController {
     try {
       const { refreshToken } = req.body;
 
-      const jwtRefreshSecret = process.env['JWT_REFRESH_SECRET'];
-      const jwtSecret = process.env['JWT_SECRET'];
-      
-      if (!jwtRefreshSecret || !jwtSecret) {
-        res.status(500).json({
-          success: false,
-          error: {
-            message: 'Server configuration error',
-          },
-        });
-        return;
-      }
-
       // Verify refresh token
-      jwt.verify(refreshToken, jwtRefreshSecret);
+      verifyRefreshToken(refreshToken);
 
       // Check if refresh token exists in database
-      const storedToken = await prisma.refreshToken.findUnique({
-        where: { token: refreshToken },
-        include: { user: true },
-      });
-
-      if (!storedToken || !storedToken.user.isActive) {
-        res.status(401).json({
-          success: false,
-          error: {
-            message: 'Invalid refresh token',
-          },
-        });
-        return;
+      const storedToken = await AuthService.findRefreshToken(refreshToken);
+      if (!storedToken) {
+        return ResponseUtil.unauthorized(res, 'Invalid refresh token');
       }
 
       // Generate new access token
-      const accessToken = jwt.sign(
-        { userId: storedToken.userId },
-        jwtSecret,
-        { expiresIn: '15m' }
-      );
+      const accessToken = generateAccessToken(storedToken.userId);
 
-      res.json({
-        success: true,
-        data: {
-          accessToken,
-        },
-      });
+      const refreshResponse: RefreshTokenResponse = {
+        accessToken,
+      };
+
+      ResponseUtil.success(res, refreshResponse);
     } catch (error) {
-      logger.error('Token refresh error:', error);
-      res.status(401).json({
-        success: false,
-        error: {
-          message: 'Invalid refresh token',
-        },
-      });
-      return;
+      ResponseUtil.unauthorized(res, 'Invalid refresh token');
     }
   }
 
@@ -231,80 +96,44 @@ export class AuthController {
     try {
       // Implementation would require the refresh token to be sent
       // For now, just return success
-      res.json({
-        success: true,
-        data: {
-          message: 'Logged out successfully',
-        },
+      ResponseUtil.success(res, {
+        message: 'Logged out successfully',
       });
     } catch (error) {
-      logger.error('Logout error:', error);
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Logout failed',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Logout');
     }
   }
 
   async verifyEmail(_req: Request, res: Response) {
     try {
       // Implementation would require email verification tokens
-      res.json({
-        success: true,
-        data: {
-          message: 'Email verified successfully',
-        },
+      ResponseUtil.success(res, {
+        message: 'Email verified successfully',
       });
     } catch (error) {
-      logger.error('Email verification error:', error);
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Email verification failed',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Email verification');
     }
   }
 
   async forgotPassword(_req: Request, res: Response) {
     try {
       // Implementation would require email service
-      res.json({
-        success: true,
-        data: {
-          message: 'Password reset email sent',
-        },
+      ResponseUtil.success(res, {
+        message: 'Password reset email sent',
       });
     } catch (error) {
-      logger.error('Forgot password error:', error);
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Failed to send reset email',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Forgot password');
     }
   }
 
   async resetPassword(_req: Request, res: Response) {
     try {
       // Implementation would require reset tokens
-      res.json({
-        success: true,
-        data: {
-          message: 'Password reset successfully',
-        },
+      ResponseUtil.success(res, {
+        message: 'Password reset successfully',
       });
     } catch (error) {
-      logger.error('Password reset error:', error);
-      res.status(500).json({
-        success: false,
-        error: {
-          message: 'Password reset failed',
-        },
-      });
+      ResponseUtil.handleError(res, error, 'Password reset');
     }
   }
 }

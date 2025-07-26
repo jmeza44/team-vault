@@ -16,6 +16,7 @@ export interface Credential {
   name: string;
   username?: string;
   encryptedSecret: string;
+  secret?: string; // Decrypted secret when available
   description?: string;
   category?: string;
   url?: string;
@@ -27,6 +28,8 @@ export interface Credential {
   encryptionMethod: string;
   createdAt: string;
   updatedAt: string;
+  owner?: User;
+  sharedWith?: SharedCredential[];
 }
 
 export interface Team {

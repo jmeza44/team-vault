@@ -1,5 +1,10 @@
 import { Router } from 'express';
-import { CredentialController } from '@/controllers/CredentialController';
+import { 
+  CredentialController,
+  createCredentialValidation,
+  updateCredentialValidation,
+  credentialIdValidation
+} from '@/controllers/CredentialController';
 import { authenticateToken } from '@/middleware/authMiddleware';
 import { validateRequest } from '@/middleware/validationMiddleware';
 import { body, param } from 'express-validator';
@@ -16,7 +21,7 @@ router.get('/', credentialController.getCredentials);
 // Get credential by ID
 router.get(
   '/:id',
-  [param('id').isUUID()],
+  credentialIdValidation,
   validateRequest,
   credentialController.getCredentialById
 );
@@ -24,16 +29,7 @@ router.get(
 // Create credential
 router.post(
   '/',
-  [
-    body('name').trim().isLength({ min: 1, max: 100 }),
-    body('username').optional().trim().isLength({ max: 100 }),
-    body('encryptedSecret').exists(),
-    body('description').optional().trim().isLength({ max: 500 }),
-    body('category').optional().trim().isLength({ max: 50 }),
-    body('url').optional().isURL(),
-    body('tags').optional().isArray(),
-    body('expirationDate').optional().isISO8601(),
-  ],
+  createCredentialValidation,
   validateRequest,
   credentialController.createCredential
 );
@@ -41,17 +37,7 @@ router.post(
 // Update credential
 router.patch(
   '/:id',
-  [
-    param('id').isUUID(),
-    body('name').optional().trim().isLength({ min: 1, max: 100 }),
-    body('username').optional().trim().isLength({ max: 100 }),
-    body('encryptedSecret').optional(),
-    body('description').optional().trim().isLength({ max: 500 }),
-    body('category').optional().trim().isLength({ max: 50 }),
-    body('url').optional().isURL(),
-    body('tags').optional().isArray(),
-    body('expirationDate').optional().isISO8601(),
-  ],
+  updateCredentialValidation,
   validateRequest,
   credentialController.updateCredential
 );
@@ -59,7 +45,7 @@ router.patch(
 // Delete credential
 router.delete(
   '/:id',
-  [param('id').isUUID()],
+  credentialIdValidation,
   validateRequest,
   credentialController.deleteCredential
 );
@@ -68,11 +54,23 @@ router.delete(
 router.post(
   '/:id/share',
   [
-    param('id').isUUID(),
-    body('sharedWithUserId').optional().isUUID(),
-    body('sharedWithTeamId').optional().isUUID(),
-    body('accessLevel').isIn(['READ', 'WRITE']),
-    body('expiresAt').optional().isISO8601(),
+    param('id').isUUID().withMessage('Invalid credential ID'),
+    body('sharedWithUserId')
+      .optional()
+      .isUUID()
+      .withMessage('sharedWithUserId must be a valid UUID'),
+    body('sharedWithTeamId')
+      .optional()
+      .isUUID()
+      .withMessage('sharedWithTeamId must be a valid UUID'),
+    body('accessLevel')
+      .optional()
+      .isIn(['READ', 'WRITE'])
+      .withMessage('accessLevel must be READ or WRITE'),
+    body('expiresAt')
+      .optional()
+      .isISO8601()
+      .withMessage('expiresAt must be a valid date'),
   ],
   validateRequest,
   credentialController.shareCredential
@@ -82,9 +80,15 @@ router.post(
 router.post(
   '/:id/one-time-link',
   [
-    param('id').isUUID(),
-    body('accessLevel').isIn(['READ', 'WRITE']),
-    body('expiresAt').isISO8601(),
+    param('id').isUUID().withMessage('Invalid credential ID'),
+    body('accessLevel')
+      .optional()
+      .isIn(['READ', 'WRITE'])
+      .withMessage('accessLevel must be READ or WRITE'),
+    body('expiresAt')
+      .optional()
+      .isISO8601()
+      .withMessage('expiresAt must be a valid date'),
   ],
   validateRequest,
   credentialController.createOneTimeLink
