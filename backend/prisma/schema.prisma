@@ -1,0 +1,192 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model with authentication and profile information
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  name          String
+  passwordHash  String   @map("password_hash")
+  role          UserRole @default(USER)
+  isActive      Boolean  @default(true) @map("is_active")
+  emailVerified Boolean  @default(false) @map("email_verified")
+  lastLoginAt   DateTime? @map("last_login_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  ownedCredentials   Credential[]       @relation("CredentialOwner")
+  sharedCredentials  SharedCredential[] @relation("SharedWithUser")
+  createdShares      SharedCredential[] @relation("SharedByUser")
+  teamMemberships    TeamMembership[]
+  createdTeams       Team[]             @relation("TeamCreator")
+  createdOneTimeLinks OneTimeLink[]     @relation("OneTimeLinkCreator")
+  auditLogs          AuditLog[]
+  refreshTokens      RefreshToken[]
+
+  @@map("users")
+}
+
+// Team model for organizing users and credentials
+model Team {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdById String   @map("created_by_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  createdBy       User               @relation("TeamCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  memberships     TeamMembership[]
+  sharedCredentials SharedCredential[] @relation("SharedWithTeam")
+
+  @@map("teams")
+}
+
+// Junction table for team memberships
+model TeamMembership {
+  id       String   @id @default(uuid())
+  userId   String   @map("user_id")
+  teamId   String   @map("team_id")
+  role     TeamRole @default(MEMBER)
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamId])
+  @@map("team_memberships")
+}
+
+// Credential model for storing encrypted secrets
+model Credential {
+  id               String    @id @default(uuid())
+  name             String
+  username         String?
+  encryptedSecret  String    @map("encrypted_secret") @db.Text
+  description      String?
+  category         String?
+  url              String?
+  tags             String[]
+  ownerId          String    @map("owner_id")
+  expirationDate   DateTime? @map("expiration_date")
+  lastRotated      DateTime? @map("last_rotated")
+  riskLevel        RiskLevel @default(LOW) @map("risk_level")
+  encryptionMethod String    @default("aes-256-gcm") @map("encryption_method")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  // Relationships
+  owner           User               @relation("CredentialOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  sharedWith      SharedCredential[]
+  oneTimeLinks    OneTimeLink[]
+  auditLogs       AuditLog[]
+
+  @@map("credentials")
+}
+
+// Sharing model for credential access management
+model SharedCredential {
+  id                String      @id @default(uuid())
+  credentialId      String      @map("credential_id")
+  sharedWithUserId  String?     @map("shared_with_user_id")
+  sharedWithTeamId  String?     @map("shared_with_team_id")
+  accessLevel       AccessLevel @map("access_level")
+  createdById       String      @map("created_by_id")
+  expiresAt         DateTime?   @map("expires_at")
+  createdAt         DateTime    @default(now()) @map("created_at")
+
+  // Relationships
+  credential      Credential @relation(fields: [credentialId], references: [id], onDelete: Cascade)
+  sharedWithUser  User?      @relation("SharedWithUser", fields: [sharedWithUserId], references: [id], onDelete: Cascade)
+  sharedWithTeam  Team?      @relation("SharedWithTeam", fields: [sharedWithTeamId], references: [id], onDelete: Cascade)
+  createdBy       User       @relation("SharedByUser", fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@map("shared_credentials")
+}
+
+// One-time sharing links for external access
+model OneTimeLink {
+  id           String      @id @default(uuid())
+  credentialId String      @map("credential_id")
+  token        String      @unique
+  accessLevel  AccessLevel @map("access_level")
+  createdById  String      @map("created_by_id")
+  expiresAt    DateTime    @map("expires_at")
+  usedAt       DateTime?   @map("used_at")
+  usedByIp     String?     @map("used_by_ip")
+  createdAt    DateTime    @default(now()) @map("created_at")
+
+  // Relationships
+  credential Credential @relation(fields: [credentialId], references: [id], onDelete: Cascade)
+  createdBy  User       @relation("OneTimeLinkCreator", fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@map("one_time_links")
+}
+
+// Audit logging for compliance and security monitoring
+model AuditLog {
+  id           String    @id @default(uuid())
+  userId       String?   @map("user_id")
+  credentialId String?   @map("credential_id")
+  action       String
+  details      Json?
+  ipAddress    String?   @map("ip_address")
+  userAgent    String?   @map("user_agent")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  // Relationships
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  credential Credential? @relation(fields: [credentialId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}
+
+// Refresh token model for JWT token management
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+// Enums
+enum UserRole {
+  USER
+  TEAM_ADMIN
+  GLOBAL_ADMIN
+}
+
+enum TeamRole {
+  MEMBER
+  ADMIN
+}
+
+enum AccessLevel {
+  READ
+  WRITE
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
