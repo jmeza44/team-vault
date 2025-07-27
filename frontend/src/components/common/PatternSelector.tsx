@@ -2,6 +2,7 @@ import React from 'react';
 import { Check, Palette, Settings } from 'lucide-react';
 import { usePatternContext } from '@/contexts';
 import { AVAILABLE_PATTERNS } from '@/constants/patternConstants';
+import { getPatternFileUrl } from '@/utils/patternUtils';
 import { RangeSlider } from '@/components/common';
 import { PatternType } from '@/types';
 
@@ -114,10 +115,10 @@ export const PatternSelector: React.FC<PatternSelectorProps> = ({
                               className="absolute inset-0 dark:invert"
                               style={{
                                 backgroundImage:
-                                  typeof pattern.file === 'string' &&
-                                  pattern.file.startsWith('data:')
-                                    ? `url("${pattern.file}")`
-                                    : `url(${pattern.file})`,
+                                  typeof getPatternFileUrl(pattern.file) === 'string' &&
+                                  getPatternFileUrl(pattern.file).startsWith('data:')
+                                    ? `url("${getPatternFileUrl(pattern.file)}")`
+                                    : `url(${getPatternFileUrl(pattern.file)})`,
                                 backgroundSize: `${Math.max(
                                   Math.min(
                                     patternSettings.size || pattern.defaultSize,
@@ -276,10 +277,10 @@ export const PatternSelector: React.FC<PatternSelectorProps> = ({
                         className="absolute inset-0 dark:invert"
                         style={{
                           backgroundImage:
-                            typeof currentPatternData.file === 'string' &&
-                            currentPatternData.file.startsWith('data:')
-                              ? `url("${currentPatternData.file}")`
-                              : `url(${currentPatternData.file})`,
+                            typeof getPatternFileUrl(currentPatternData.file) === 'string' &&
+                            getPatternFileUrl(currentPatternData.file).startsWith('data:')
+                              ? `url("${getPatternFileUrl(currentPatternData.file)}")`
+                              : `url(${getPatternFileUrl(currentPatternData.file)})`,
                           backgroundSize: `${patternSettings.size || currentPatternData.defaultSize}px ${patternSettings.size || currentPatternData.defaultSize}px`,
                           backgroundRepeat: 'repeat',
                           backgroundPosition: 'center',

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AVAILABLE_PATTERNS } from '@/constants/patternConstants';
+import { getPatternFileUrl } from '@/utils/patternUtils';
 import { PatternType } from '@/types';
 
 interface BackgroundPatternProps {
@@ -73,11 +74,12 @@ export const BackgroundPattern: React.FC<BackgroundPatternProps> = ({
   const finalVariant =
     propVariant !== undefined ? propVariant : patternSettings.variant;
 
+  const fileUrl = getPatternFileUrl(selectedPattern.file);
   const backgroundStyle: React.CSSProperties = {
     backgroundImage:
-      typeof selectedPattern.file === 'string' && selectedPattern.file.startsWith('data:')
-        ? `url("${selectedPattern.file}")`
-        : `url(${selectedPattern.file})`,
+      typeof fileUrl === 'string' && fileUrl.startsWith('data:')
+        ? `url("${fileUrl}")`
+        : `url(${fileUrl})`,
     backgroundSize: `${finalSize}px ${finalSize}px`,
     backgroundRepeat: 'repeat',
     opacity: finalOpacity,
