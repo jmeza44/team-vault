@@ -4,6 +4,8 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { ThemeSwitch } from '@/components/common/ThemeSwitch';
 import { useAlertActions } from '@/hooks/useAlerts';
+import { usePatternContext } from '@/contexts/PatternContext';
+import { BackgroundPattern } from '@/components/common/BackgroundPattern';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -14,6 +16,7 @@ export const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const { showError, showSuccess } = useAlertActions();
+  const { pattern, settings } = usePatternContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,13 +37,21 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-900 sm:px-6 lg:px-8">
+    <div className="relative flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-900 sm:px-6 lg:px-8">
+      {/* Enhanced background pattern based on user preference */}
+      <BackgroundPattern
+        pattern={pattern}
+        opacity={settings.opacity}
+        size={settings.size}
+        variant={settings.variant}
+      />
+
       {/* Theme Switch - positioned in top right */}
-      <div className="absolute right-4 top-4">
+      <div className="absolute right-4 top-4 z-10">
         <ThemeSwitch />
       </div>
 
-      <div className="w-full max-w-md space-y-8">
+      <div className="relative z-10 w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">
             Sign in to Team Vault

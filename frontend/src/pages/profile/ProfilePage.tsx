@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { User, Lock, Settings } from 'lucide-react';
+import { User, Lock, Settings, Palette } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { User as UserType } from '@/types';
 import { ProfileForm } from '@/components/profile/ProfileForm';
 import { ChangePasswordForm } from '@/components/profile/ChangePasswordForm';
 import { SettingsForm } from '@/components/profile/SettingsForm';
+import { PatternSelector } from '@/components/common/PatternSelector';
 
-type ProfileTab = 'profile' | 'password' | 'settings';
+type ProfileTab = 'profile' | 'password' | 'settings' | 'appearance';
 
 export const ProfilePage: React.FC = () => {
   const { user: authUser, updateUser } = useAuth();
@@ -36,6 +37,7 @@ export const ProfilePage: React.FC = () => {
     { id: 'profile', label: 'Profile', icon: User },
     { id: 'password', label: 'Password', icon: Lock },
     { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'appearance', label: 'Appearance', icon: Palette },
   ] as const;
 
   if (!user) {
@@ -63,7 +65,7 @@ export const ProfilePage: React.FC = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="overflow-x-auto border-b border-gray-200 dark:border-gray-700">
+      <div className="overflow-x-auto overflow-y-hidden border-b border-gray-200 dark:border-gray-700">
         <nav className="-mb-px flex min-w-max space-x-4 px-1 md:space-x-8">
           {tabs.map(tab => (
             <button
@@ -181,6 +183,25 @@ export const ProfilePage: React.FC = () => {
         {activeTab === 'settings' && (
           <div className="space-y-6">
             <SettingsForm onCancel={() => setActiveTab('profile')} />
+          </div>
+        )}
+
+        {activeTab === 'appearance' && (
+          <div className="card">
+            <div className="card-header">
+              <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                Appearance Settings
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Customize the visual appearance of your Team Vault experience
+              </p>
+            </div>
+            <div className="card-body">
+              <PatternSelector onPatternChange={() => {
+                // Pattern change is handled automatically by the component
+                // Could add analytics or notifications here if needed
+              }} />
+            </div>
           </div>
         )}
       </div>
