@@ -121,7 +121,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
             id="name"
             value={formData.name}
             onChange={e => handleInputChange('name', e.target.value)}
-            className={`w-full rounded-md border bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-primary-400 ${
+            className={`w-full rounded-md border bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-primary-400 ${
               errors.name
                 ? 'border-danger-300 dark:border-danger-600'
                 : 'border-gray-300 dark:border-gray-600'
@@ -148,7 +148,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
             value={formData.description}
             onChange={e => handleInputChange('description', e.target.value)}
             rows={3}
-            className={`w-full rounded-md border bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-primary-400 ${
+            className={`w-full rounded-md border bg-white px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-primary-400 ${
               errors.description
                 ? 'border-danger-300 dark:border-danger-600'
                 : 'border-gray-300 dark:border-gray-600'
@@ -171,19 +171,23 @@ export const TeamForm: React.FC<TeamFormProps> = ({
             type="button"
             onClick={onCancel}
             disabled={isLoading}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:focus:ring-primary-400"
+            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:focus:ring-primary-400"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isLoading}
-            className="flex items-center rounded-md border border-transparent bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50"
+            className="flex items-center rounded-md border border-transparent bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isLoading && (
-              <Loader2 className="-ml-1 mr-2 h-4 w-4 animate-spin text-white" />
+            {isLoading ? (
+              <>
+                <Loader2 className="-ml-1 mr-2 h-4 w-4 animate-spin text-white" />
+                {team ? 'Updating...' : 'Creating...'}
+              </>
+            ) : (
+              team ? 'Update Team' : 'Create Team'
             )}
-            {team ? 'Update Team' : 'Create Team'}
           </button>
         </div>
       </form>

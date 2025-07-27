@@ -244,9 +244,16 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                     <button
                       type="submit"
                       disabled={loadingActions.addMember}
-                      className="rounded-md bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+                      className="flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                      Add
+                      {loadingActions.addMember ? (
+                        <>
+                          <div className="mr-2 h-3 w-3 animate-spin rounded-full border border-white border-b-transparent"></div>
+                          Adding...
+                        </>
+                      ) : (
+                        'Add Member'
+                      )}
                     </button>
                     <button
                       type="button"
@@ -305,10 +312,14 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                           disabled={
                             loadingActions[`remove-${membership.userId}`]
                           }
-                          className="rounded p-1.5 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:text-gray-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+                          className="rounded p-1.5 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                           title="Remove Member"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          {loadingActions[`remove-${membership.userId}`] ? (
+                            <div className="h-4 w-4 animate-spin rounded-full border border-gray-400 border-b-transparent"></div>
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
                         </button>
                       </>
                     ) : (

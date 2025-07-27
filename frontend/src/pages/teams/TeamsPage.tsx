@@ -293,9 +293,34 @@ export const TeamsPage: React.FC = () => {
               Manage your teams and members
             </p>
           </div>
+          <div className="h-11 w-32 bg-gray-200 rounded-md animate-pulse dark:bg-gray-700"></div>
         </div>
-        <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary-600"></div>
+        
+        {/* Search skeleton */}
+        <div className="h-11 bg-gray-200 rounded-md animate-pulse dark:bg-gray-700"></div>
+        
+        {/* Team cards skeleton */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow dark:border-gray-700 dark:bg-gray-800">
+              <div className="animate-pulse">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-2 dark:bg-gray-700"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2 dark:bg-gray-700"></div>
+                  </div>
+                  <div className="h-8 w-8 bg-gray-200 rounded dark:bg-gray-700"></div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="h-6 w-6 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    <div className="h-4 bg-gray-200 rounded w-16 dark:bg-gray-700"></div>
+                  </div>
+                  <div className="h-4 bg-gray-200 rounded w-20 dark:bg-gray-700"></div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );

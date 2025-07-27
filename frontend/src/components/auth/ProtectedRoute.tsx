@@ -11,8 +11,18 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-32 w-32 animate-spin rounded-full border-b-2 border-primary-600"></div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <div className="mx-auto h-16 w-16 animate-spin rounded-full border-4 border-primary-200 border-b-primary-600 dark:border-primary-800 dark:border-b-primary-400"></div>
+          <div className="mt-4 space-y-2">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+              Loading...
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Verifying your session
+            </p>
+          </div>
+        </div>
       </div>
     );
   }

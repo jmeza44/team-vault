@@ -354,15 +354,22 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
       <div className="flex gap-3">
         <button
           type="submit"
-          className="btn-primary"
+          className="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isLoading || !isFormValid}
         >
-          {isLoading ? 'Changing...' : 'Change Password'}
+          {isLoading ? (
+            <div className="flex items-center">
+              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+              Changing...
+            </div>
+          ) : (
+            'Change Password'
+          )}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="btn-secondary"
+          className="btn-secondary disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isLoading}
         >
           Cancel

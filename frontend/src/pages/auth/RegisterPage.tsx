@@ -193,10 +193,11 @@ export const RegisterPage: React.FC = () => {
                 name="name"
                 type="text"
                 required
-                className="form-input rounded-md"
+                className="form-input rounded-md disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Full name"
                 value={formData.name}
                 onChange={handleChange}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -209,10 +210,11 @@ export const RegisterPage: React.FC = () => {
                 type="email"
                 autoComplete="email"
                 required
-                className="form-input rounded-md"
+                className="form-input rounded-md disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Email address"
                 value={formData.email}
                 onChange={handleChange}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -225,16 +227,18 @@ export const RegisterPage: React.FC = () => {
                   name="password"
                   type={showPasswords.password ? 'text' : 'password'}
                   required
-                  className="form-input rounded-md pr-10"
+                  className="form-input rounded-md pr-10 disabled:cursor-not-allowed disabled:opacity-50"
                   placeholder="Password"
                   value={formData.password}
                   onChange={handleChange}
                   onBlur={() => handleBlur('password')}
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 disabled:cursor-not-allowed disabled:opacity-50"
                   onClick={() => togglePasswordVisibility('password')}
+                  disabled={isLoading}
                 >
                   {showPasswords.password ? (
                     <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
@@ -275,16 +279,18 @@ export const RegisterPage: React.FC = () => {
                   name="confirmPassword"
                   type={showPasswords.confirmPassword ? 'text' : 'password'}
                   required
-                  className="form-input rounded-md pr-10"
+                  className="form-input rounded-md pr-10 disabled:cursor-not-allowed disabled:opacity-50"
                   placeholder="Confirm password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   onBlur={() => handleBlur('confirmPassword')}
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 disabled:cursor-not-allowed disabled:opacity-50"
                   onClick={() => togglePasswordVisibility('confirmPassword')}
+                  disabled={isLoading}
                 >
                   {showPasswords.confirmPassword ? (
                     <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />

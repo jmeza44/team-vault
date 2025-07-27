@@ -111,12 +111,27 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ onCancel }) => {
 
   if (isLoadingSettings) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-          <p className="mt-2 text-gray-600 dark:text-gray-300">
-            Loading settings...
-          </p>
+      <div className="space-y-6 p-6">
+        {/* Settings sections skeleton */}
+        {Array.from({ length: 4 }).map((_, sectionIndex) => (
+          <div key={sectionIndex} className="space-y-4">
+            <div className="h-6 w-32 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></div>
+            <div className="space-y-3">
+              {Array.from({ length: 3 }).map((_, itemIndex) => (
+                <div key={itemIndex} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg dark:border-gray-700">
+                  <div className="space-y-2">
+                    <div className="h-4 w-24 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></div>
+                    <div className="h-3 w-40 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></div>
+                  </div>
+                  <div className="h-6 w-12 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+        {/* Save button skeleton */}
+        <div className="flex justify-end pt-4">
+          <div className="h-11 w-32 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></div>
         </div>
       </div>
     );
@@ -291,13 +306,24 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ onCancel }) => {
       </div>
 
       <div className="flex gap-3">
-        <button type="submit" className="btn-primary" disabled={isLoading}>
-          {isLoading ? 'Saving...' : 'Save Settings'}
+        <button 
+          type="submit" 
+          className="btn-primary disabled:cursor-not-allowed disabled:opacity-50" 
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <div className="flex items-center">
+              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+              Saving...
+            </div>
+          ) : (
+            'Save Settings'
+          )}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="btn-secondary"
+          className="btn-secondary disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isLoading}
         >
           Cancel

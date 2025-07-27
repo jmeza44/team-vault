@@ -464,11 +464,31 @@ export const CredentialsPage: React.FC = () => {
 
       {/* Loading State */}
       {loading ? (
-        <div className="py-8 text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-primary-600 dark:border-primary-400"></div>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Loading credentials...
-          </p>
+        <div className="space-y-4">
+          {/* Skeleton loader for credential cards */}
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow dark:border-gray-700 dark:bg-gray-800">
+              <div className="animate-pulse">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="h-5 bg-gray-200 rounded w-3/4 mb-3 dark:bg-gray-700"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2 dark:bg-gray-700"></div>
+                    <div className="flex space-x-2 mb-3">
+                      <div className="h-6 bg-gray-200 rounded-full w-16 dark:bg-gray-700"></div>
+                      <div className="h-6 bg-gray-200 rounded-full w-20 dark:bg-gray-700"></div>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <div className="h-8 w-8 bg-gray-200 rounded dark:bg-gray-700"></div>
+                    <div className="h-8 w-8 bg-gray-200 rounded dark:bg-gray-700"></div>
+                    <div className="h-8 w-8 bg-gray-200 rounded dark:bg-gray-700"></div>
+                  </div>
+                </div>
+                <div className="h-4 bg-gray-200 rounded w-full mb-2 dark:bg-gray-700"></div>
+                <div className="h-4 bg-gray-200 rounded w-2/3 dark:bg-gray-700"></div>
+              </div>
+            </div>
+          ))}
         </div>
       ) : credentials.length === 0 ? (
         /* Empty State */

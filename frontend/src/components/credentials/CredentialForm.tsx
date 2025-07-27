@@ -459,17 +459,24 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="min-h-[44px] rounded-md border border-gray-300 px-4 py-3 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+            className="min-h-[44px] rounded-md border border-gray-300 px-4 py-3 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isLoading}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="min-h-[44px] rounded-md bg-blue-600 px-4 py-3 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600"
+            className="min-h-[44px] rounded-md bg-blue-600 px-4 py-3 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600"
             disabled={isLoading}
           >
-            {isLoading ? 'Saving...' : credential ? 'Update' : 'Create'}
+            {isLoading ? (
+              <div className="flex items-center">
+                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+                {credential ? 'Updating...' : 'Creating...'}
+              </div>
+            ) : (
+              credential ? 'Update Credential' : 'Create Credential'
+            )}
           </button>
         </div>
       </form>

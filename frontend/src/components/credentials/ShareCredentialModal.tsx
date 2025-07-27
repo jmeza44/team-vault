@@ -209,7 +209,24 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
             Current Shares
           </h3>
           {sharesLoading ? (
-            <p className="text-gray-500">Loading shares...</p>
+            <div className="space-y-3">
+              {/* Skeleton loaders for shares */}
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="animate-pulse flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-700"
+                >
+                  <div className="flex items-center space-x-3 flex-1">
+                    <div className="h-8 w-8 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    <div className="flex-1">
+                      <div className="h-4 bg-gray-200 rounded w-1/3 mb-1 dark:bg-gray-700"></div>
+                      <div className="h-3 bg-gray-200 rounded w-1/2 dark:bg-gray-700"></div>
+                    </div>
+                  </div>
+                  <div className="h-8 w-8 bg-gray-200 rounded dark:bg-gray-700"></div>
+                </div>
+              ))}
+            </div>
           ) : shares.length > 0 ? (
             <div className="space-y-3">
               {shares.map(share => (
@@ -359,9 +376,16 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
                 <button
                   type="submit"
                   disabled={loading || selectedTeams.length === 0}
-                  className="btn-primary"
+                  className="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {loading ? 'Sharing...' : 'Share Credential'}
+                  {loading ? (
+                    <div className="flex items-center">
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+                      Sharing...
+                    </div>
+                  ) : (
+                    'Share Credential'
+                  )}
                 </button>
               </div>
             </form>

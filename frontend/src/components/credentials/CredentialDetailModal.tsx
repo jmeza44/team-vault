@@ -48,6 +48,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
   onShare,
 }) => {
   const [showSecret, setShowSecret] = useState(false);
+  const [copyingField, setCopyingField] = useState<string | null>(null);
   const { showCopySuccess, showCopyError } = useToast();
   const { getCredentialPermissions } = usePermissions();
 
@@ -58,10 +59,13 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
 
   const handleCopy = async (text: string, label: string) => {
     try {
+      setCopyingField(label);
       await navigator.clipboard.writeText(text);
       showCopySuccess(label);
     } catch (err) {
       showCopyError();
+    } finally {
+      setCopyingField(null);
     }
   };
 
@@ -131,10 +135,15 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
               </code>
               <button
                 onClick={() => handleCopy(credential.username!, 'Username')}
-                className="p-2 text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                className="p-2 text-gray-600 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:text-blue-400"
                 title="Copy username"
+                disabled={copyingField === 'Username'}
               >
-                <Copy className="h-4 w-4" />
+                {copyingField === 'Username' ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border border-gray-400 border-b-transparent"></div>
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
               </button>
             </div>
           </div>
@@ -170,11 +179,15 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
             {permissions.canCopySecret && (
               <button
                 onClick={() => handleCopy(credential.secret || '', 'Secret')}
-                className="p-2 text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                className="p-2 text-gray-600 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:text-blue-400"
                 title="Copy secret"
-                disabled={!credential.secret}
+                disabled={!credential.secret || copyingField === 'Secret'}
               >
-                <Copy className="h-4 w-4" />
+                {copyingField === 'Secret' ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border border-gray-400 border-b-transparent"></div>
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
               </button>
             )}
           </div>
@@ -192,10 +205,15 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
               </code>
               <button
                 onClick={() => handleCopy(credential.url!, 'URL')}
-                className="p-2 text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                className="p-2 text-gray-600 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:text-blue-400"
                 title="Copy URL"
+                disabled={copyingField === 'URL'}
               >
-                <Copy className="h-4 w-4" />
+                {copyingField === 'URL' ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border border-gray-400 border-b-transparent"></div>
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
               </button>
               <button
                 onClick={handleOpenUrl}

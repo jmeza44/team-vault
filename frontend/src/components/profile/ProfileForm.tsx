@@ -62,7 +62,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
           type="text"
           id="name"
           name="name"
-          className="form-input"
+          className="form-input disabled:cursor-not-allowed disabled:opacity-50"
           value={formData.name || ''}
           onChange={handleChange}
           required
@@ -78,7 +78,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
           type="email"
           id="email"
           name="email"
-          className="form-input"
+          className="form-input disabled:cursor-not-allowed disabled:opacity-50"
           value={formData.email || ''}
           onChange={handleChange}
           required
@@ -101,13 +101,24 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
       </div>
 
       <div className="flex gap-3">
-        <button type="submit" className="btn-primary" disabled={isLoading}>
-          {isLoading ? 'Updating...' : 'Update Profile'}
+        <button 
+          type="submit" 
+          className="btn-primary disabled:cursor-not-allowed disabled:opacity-50" 
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <div className="flex items-center">
+              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+              Updating...
+            </div>
+          ) : (
+            'Update Profile'
+          )}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="btn-secondary"
+          className="btn-secondary disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isLoading}
         >
           Cancel
