@@ -6,6 +6,7 @@ import { CredentialForm, CredentialFormData } from '@/components/credentials/Cre
 import { CredentialCard } from '@/components/credentials/CredentialCard';
 import { CredentialDetailModal } from '@/components/credentials/CredentialDetailModal';
 import { ShareCredentialModal } from '@/components/credentials/ShareCredentialModal';
+import { Shield } from 'lucide-react';
 
 const CATEGORIES = [
   'Database',
@@ -393,7 +394,9 @@ export const CredentialsPage: React.FC = () => {
       ) : credentials.length === 0 ? (
         /* Empty State */
         <div className="bg-white rounded-lg shadow border border-gray-200 p-8 text-center">
-          <div className="text-gray-400 text-6xl mb-4">🔐</div>
+          <div className="text-gray-400 mb-4 flex justify-center">
+            <Shield className="h-16 w-16" />
+          </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No credentials found</h3>
           <p className="text-gray-600 mb-4">
             {searchTerm || selectedCategory || selectedRiskLevel || selectedTeam

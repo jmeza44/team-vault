@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { Bell } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { user } = useAuth();
@@ -19,7 +20,7 @@ export const Header: React.FC = () => {
           
           <div className="flex items-center space-x-4">
             <button className="p-2 text-gray-400 hover:text-gray-500">
-              🔔
+              <Bell className="h-5 w-5" />
             </button>
             <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
               <span className="text-sm font-medium text-primary-700">

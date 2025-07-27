@@ -1,13 +1,14 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { BarChart3, Shield, Users, User, Settings } from "lucide-react";
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: "📊" },
-  { name: "Credentials", href: "/credentials", icon: "🔐" },
-  { name: "Teams", href: "/teams", icon: "👥" },
-  { name: "Profile", href: "/profile", icon: "👤" },
-  { name: "Settings", href: "/settings", icon: "⚙️" },
+  { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
+  { name: "Credentials", href: "/credentials", icon: Shield },
+  { name: "Teams", href: "/teams", icon: Users },
+  { name: "Profile", href: "/profile", icon: User },
+  { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -20,22 +21,25 @@ export const Sidebar: React.FC = () => {
       </div>
 
       <nav className="px-4 space-y-2">
-        {navigation.map((item) => (
-          <NavLink
-            key={item.name}
-            to={item.href}
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                isActive
-                  ? "bg-primary-100 text-primary-700"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-              }`
-            }
-          >
-            <span className="mr-3">{item.icon}</span>
-            {item.name}
-          </NavLink>
-        ))}
+        {navigation.map((item) => {
+          const IconComponent = item.icon;
+          return (
+            <NavLink
+              key={item.name}
+              to={item.href}
+              className={({ isActive }) =>
+                `flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive
+                    ? "bg-primary-100 text-primary-700"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                }`
+              }
+            >
+              <IconComponent className="mr-3 h-4 w-4" />
+              {item.name}
+            </NavLink>
+          );
+        })}
       </nav>
 
       <div className="absolute bottom-4 left-4 right-4">

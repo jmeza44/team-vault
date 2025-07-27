@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Credential, RiskLevel } from '@/types';
+import { Copy, Eye, EyeOff, ExternalLink, X } from 'lucide-react';
 
 interface CredentialDetailModalProps {
   credential: Credential;
@@ -93,9 +94,9 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+              className="text-gray-400 hover:text-gray-600"
             >
-              ×
+              <X className="h-6 w-6" />
             </button>
           </div>
         </div>
@@ -117,7 +118,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                   className="p-2 text-gray-600 hover:text-blue-600"
                   title="Copy username"
                 >
-                  📋
+                  <Copy className="h-4 w-4" />
                 </button>
               </div>
             </div>
@@ -141,7 +142,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-600"
                   title={showSecret ? 'Hide secret' : 'Show secret'}
                 >
-                  {showSecret ? '👁️' : '👁️‍🗨️'}
+                  {showSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
               <button
@@ -150,7 +151,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                 title="Copy secret"
                 disabled={!credential.secret}
               >
-                📋
+                <Copy className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -170,14 +171,14 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                   className="p-2 text-gray-600 hover:text-blue-600"
                   title="Copy URL"
                 >
-                  📋
+                  <Copy className="h-4 w-4" />
                 </button>
                 <button
                   onClick={handleOpenUrl}
                   className="p-2 text-gray-600 hover:text-green-600"
                   title="Open URL"
                 >
-                  🔗
+                  <ExternalLink className="h-4 w-4" />
                 </button>
               </div>
             </div>

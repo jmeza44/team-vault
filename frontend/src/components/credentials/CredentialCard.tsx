@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Credential, RiskLevel } from '@/types';
+import { Copy, Eye, Edit, Share, Trash2, AlertTriangle, Clock } from 'lucide-react';
 
 interface CredentialCardProps {
   credential: Credential;
@@ -87,7 +88,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
                 className="text-blue-600 hover:text-blue-800"
                 title="Copy username"
               >
-                📋
+                <Copy className="h-4 w-4" />
               </button>
             </div>
           )}
@@ -150,12 +151,14 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
         {credential.expirationDate && (
           <div className="text-sm">
             {isExpired(credential.expirationDate) ? (
-              <span className="text-red-600 font-medium">
-                ⚠️ Expired on {formatDate(credential.expirationDate)}
+              <span className="text-red-600 font-medium flex items-center">
+                <AlertTriangle className="h-4 w-4 mr-1" />
+                Expired on {formatDate(credential.expirationDate)}
               </span>
             ) : isExpiringSoon(credential.expirationDate) ? (
-              <span className="text-orange-600 font-medium">
-                ⏰ Expires {formatDate(credential.expirationDate)}
+              <span className="text-orange-600 font-medium flex items-center">
+                <Clock className="h-4 w-4 mr-1" />
+                Expires {formatDate(credential.expirationDate)}
               </span>
             ) : (
               <span className="text-gray-600">
@@ -182,28 +185,28 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
             className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded"
             title="View details"
           >
-            👁️
+            <Eye className="h-4 w-4" />
           </button>
           <button
             onClick={() => onEdit(credential)}
             className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded"
             title="Edit"
           >
-            ✏️
+            <Edit className="h-4 w-4" />
           </button>
           <button
             onClick={() => onShare(credential)}
             className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded"
             title="Share"
           >
-            🔗
+            <Share className="h-4 w-4" />
           </button>
           <button
             onClick={() => onDelete(credential)}
             className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded"
             title="Delete"
           >
-            🗑️
+            <Trash2 className="h-4 w-4" />
           </button>
         </div>
       )}

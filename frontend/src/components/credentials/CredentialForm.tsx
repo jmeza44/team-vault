@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Credential, RiskLevel } from '@/types';
+import { Eye, EyeOff, RefreshCw } from 'lucide-react';
 
 interface CredentialFormProps {
   credential?: Credential;
@@ -173,7 +174,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
                 className="p-1 text-gray-400 hover:text-gray-600"
                 title={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
               <button
                 type="button"
@@ -181,7 +182,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
                 className="p-1 text-gray-400 hover:text-gray-600"
                 title="Generate secure password"
               >
-                🔄
+                <RefreshCw className="h-4 w-4" />
               </button>
             </div>
           </div>
