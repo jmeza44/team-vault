@@ -6,6 +6,7 @@ import { ThemeSwitch } from '@/components/common/ThemeSwitch';
 import { useAlertActions } from '@/hooks/useAlerts';
 import { usePatternContext } from '@/contexts/PatternContext';
 import { BackgroundPattern } from '@/components/common/BackgroundPattern';
+import { Logo } from '@/components/common/Logo';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -53,6 +54,9 @@ export const LoginPage: React.FC = () => {
 
       <div className="relative z-10 w-full max-w-md space-y-8">
         <div>
+          <div className="flex justify-center mb-6">
+            <Logo size={96} showText={false} />
+          </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">
             Sign in to Team Vault
           </h2>

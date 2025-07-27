@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMobile } from '@/contexts/MobileContext';
 import { BarChart3, Shield, Users, User } from 'lucide-react';
+import { Logo } from '@/components/common/Logo';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
@@ -25,9 +26,7 @@ export const Sidebar: React.FC = () => {
   return (
     <div className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <div className="p-6">
-        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-          Team Vault
-        </h1>
+        <Logo size={64} textSize='2xl' />
       </div>
 
       <nav className="flex-1 space-y-2 px-4">
