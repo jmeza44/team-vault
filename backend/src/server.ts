@@ -3,7 +3,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
-
 import { errorHandler, notFound } from '@/middleware/errorMiddleware';
 import { logger } from '@/utils/logger';
 import authRoutes from '@/routes/authRoutes';
@@ -11,6 +10,7 @@ import userRoutes from '@/routes/userRoutes';
 import credentialRoutes from '@/routes/credentialRoutes';
 import teamRoutes from '@/routes/teamRoutes';
 import auditRoutes from '@/routes/auditRoutes';
+import analyticsRoutes from '@/routes/analyticsRoutes';
 
 // Load environment variables
 dotenv.config();
@@ -59,6 +59,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/credentials', credentialRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/audit', auditRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // API info endpoint
 app.get('/api', (_req, res) => {
@@ -72,6 +73,7 @@ app.get('/api', (_req, res) => {
       credentials: '/api/credentials',
       teams: '/api/teams',
       audit: '/api/audit',
+      analytics: '/api/analytics',
     },
   });
 });
