@@ -1,14 +1,13 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { BarChart3, Shield, Users, User, Settings } from "lucide-react";
+import { BarChart3, Shield, Users, User } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
   { name: "Credentials", href: "/credentials", icon: Shield },
   { name: "Teams", href: "/teams", icon: Users },
   { name: "Profile", href: "/profile", icon: User },
-  { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 export const Sidebar: React.FC = () => {

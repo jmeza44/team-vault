@@ -9,7 +9,6 @@ import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
 import { CredentialsPage } from '@/pages/credentials/CredentialsPage'
 import { TeamsPage } from '@/pages/teams/TeamsPage'
-import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { ProfilePage } from '@/pages/profile/ProfilePage'
 import AlertContainer from '@/components/common/AlertContainer'
 
@@ -34,7 +33,6 @@ function App() {
           <Route path="credentials" element={<CredentialsPage />} />
           <Route path="teams" element={<TeamsPage />} />
           <Route path="profile" element={<ProfilePage />} />
-          <Route path="settings" element={<SettingsPage />} />
         </Route>
         
         {/* Catch all route */}
