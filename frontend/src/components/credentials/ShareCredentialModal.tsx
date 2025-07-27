@@ -3,6 +3,10 @@ import { Credential, Team } from '@/types';
 import { credentialService, ShareCredentialRequest } from '@/services/credentialService';
 import teamService from '@/services/teamService';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAlertActions } from '@/hooks/useAlerts';
+import { useConfirm } from '@/hooks/useConfirm';
+import { Dialog } from '@/components/common/Dialog';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { X, Users, User as UserIcon } from 'lucide-react';
 
 interface ShareCredentialModalProps {
@@ -43,6 +47,8 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
   onSuccess,
 }) => {
   const { user } = useAuth();
+  const { showError, showSuccess } = useAlertActions();
+  const { confirm, confirmState, handleClose, handleConfirm } = useConfirm();
   const [teams, setTeams] = useState<Team[]>([]);
   const [shares, setShares] = useState<ShareData['shares']>([]);
   const [loading, setLoading] = useState(false);
@@ -89,7 +95,7 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
   const handleShare = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedTeams.length === 0) {
-      setError('Please select at least one team to share with');
+      showError('Please select at least one team to share with');
       return;
     }
 
@@ -109,6 +115,7 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
       const response = await credentialService.shareCredential(credential.id, shareData);
 
       if (response.success) {
+        showSuccess('Credential shared successfully');
         onSuccess();
         // Reload shares to show the updated list
         loadShares();
@@ -117,10 +124,10 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
         setExpiresAt('');
         setAccessLevel('READ');
       } else {
-        setError(response.error?.message || 'Failed to share credential');
+        showError(response.error?.message || 'Failed to share credential');
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      showError('An unexpected error occurred');
       console.error('Share error:', err);
     } finally {
       setLoading(false);
@@ -128,7 +135,15 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
   };
 
   const handleRemoveShare = async (shareId: string) => {
-    if (!confirm('Are you sure you want to remove this share?')) {
+    const confirmed = await confirm({
+      title: 'Remove Share',
+      message: 'Are you sure you want to remove this share? The user or team will lose access to this credential.',
+      confirmText: 'Remove Share',
+      cancelText: 'Cancel',
+      variant: 'warning'
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -136,11 +151,12 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
       const response = await credentialService.removeCredentialShare(credential.id, shareId);
       if (response.success) {
         loadShares(); // Reload shares
+        showSuccess('Share removed successfully');
       } else {
-        setError(response.error?.message || 'Failed to remove share');
+        showError(response.error?.message || 'Failed to remove share');
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      showError('An unexpected error occurred');
       console.error('Remove share error:', err);
     }
   };
@@ -150,20 +166,20 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Share "{credential.name}"
-            </h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
+    <Dialog isOpen={isOpen} onClose={onClose}>
+      <div className="flex justify-between items-center mb-6 p-6 pb-0">
+        <h2 className="text-xl font-semibold text-gray-900">
+          Share "{credential.name}"
+        </h2>
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-gray-600"
+        >
+          <X className="w-6 h-6" />
+        </button>
+      </div>
+
+      <div className="px-6 pb-6">
 
           {error && (
             <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -289,7 +305,19 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
             )}
           </div>
         </div>
-      </div>
-    </div>
+        
+        {/* Confirmation Dialog */}
+        <ConfirmDialog
+          isOpen={confirmState.isOpen}
+          onClose={handleClose}
+          onConfirm={handleConfirm}
+          title={confirmState.title}
+          message={confirmState.message}
+          confirmText={confirmState.confirmText}
+          cancelText={confirmState.cancelText}
+          variant={confirmState.variant}
+          loading={confirmState.loading}
+        />
+    </Dialog>
   );
 };

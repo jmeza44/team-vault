@@ -71,7 +71,7 @@ const AlertItem: React.FC<AlertItemProps> = ({ alert }) => {
   return (
     <div
       className={`
-        relative rounded-lg border p-4 shadow-lg backdrop-blur-sm
+        relative rounded-lg border p-4 shadow-md
         ${config.bgColor} ${config.borderColor}
         transform transition-all duration-300 ease-in-out
         animate-slide-up

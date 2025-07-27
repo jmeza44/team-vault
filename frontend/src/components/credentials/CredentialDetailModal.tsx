@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { Credential, RiskLevel } from '@/types';
 import { Copy, Eye, EyeOff, ExternalLink, X } from 'lucide-react';
+import { Dialog } from '@/components/common/Dialog';
+import { useToast } from '@/hooks/useToast';
 
 interface CredentialDetailModalProps {
   credential: Credential;
+  isOpen: boolean;
   onClose: () => void;
   onEdit: (credential: Credential) => void;
   onDelete: (credential: Credential) => void;
@@ -37,22 +40,21 @@ const formatDate = (dateString: string) => {
 
 export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
   credential,
+  isOpen,
   onClose,
   onEdit,
   onDelete,
   onShare
 }) => {
   const [showSecret, setShowSecret] = useState(false);
-  const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
+  const { showCopySuccess, showCopyError } = useToast();
 
   const handleCopy = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      setCopyFeedback(`${label} copied!`);
-      setTimeout(() => setCopyFeedback(null), 2000);
+      showCopySuccess(label);
     } catch (err) {
-      setCopyFeedback('Failed to copy');
-      setTimeout(() => setCopyFeedback(null), 2000);
+      showCopyError();
     }
   };
 
@@ -62,25 +64,17 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
     }
   };
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
+  if (!isOpen) return null;
 
   return (
-    <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-      onClick={handleBackdropClick}
-    >
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                {credential.name}
-              </h2>
+    <Dialog isOpen={isOpen} onClose={onClose}>
+      {/* Header */}
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              {credential.name}
+            </h2>
               <div className="flex items-center space-x-3">
                 <span className={`px-3 py-1 text-sm font-medium rounded-full ${getRiskLevelColor(credential.riskLevel)}`}>
                   {credential.riskLevel} Risk
@@ -259,7 +253,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
           </div>
 
           {/* Owner */}
-          {credential.owner && (
+          {credential.owner && credential.owner.name && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Owner
@@ -273,13 +267,6 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                   <p className="text-xs text-gray-600">{credential.owner.email}</p>
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Copy Feedback */}
-          {copyFeedback && (
-            <div className="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
-              {copyFeedback}
             </div>
           )}
         </div>
@@ -309,7 +296,6 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </Dialog>
   );
 };

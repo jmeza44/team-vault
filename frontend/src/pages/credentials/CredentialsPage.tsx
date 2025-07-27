@@ -6,7 +6,9 @@ import { CredentialForm, CredentialFormData } from '@/components/credentials/Cre
 import { CredentialCard } from '@/components/credentials/CredentialCard';
 import { CredentialDetailModal } from '@/components/credentials/CredentialDetailModal';
 import { ShareCredentialModal } from '@/components/credentials/ShareCredentialModal';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { useAlertActions, useApiErrorHandler } from '@/hooks/useAlerts';
+import { useConfirm } from '@/hooks/useConfirm';
 import { Shield, ArrowLeft } from 'lucide-react';
 
 const CATEGORIES = [
@@ -30,8 +32,9 @@ export const CredentialsPage: React.FC = () => {
   const [selectedCredential, setSelectedCredential] = useState<Credential | null>(null);
   
   // Alert hooks
-  const { showSuccess, showError, showWarning } = useAlertActions();
+  const { showSuccess, showError } = useAlertActions();
   const { handleApiError } = useApiErrorHandler();
+  const { confirm, confirmState, handleClose, handleConfirm } = useConfirm();
   
   // Filters and search
   const [searchTerm, setSearchTerm] = useState('');
@@ -199,7 +202,15 @@ export const CredentialsPage: React.FC = () => {
   };
 
   const handleDeleteCredential = async (credential: Credential) => {
-    if (!confirm(`Are you sure you want to delete "${credential.name}"? This action cannot be undone.`)) {
+    const confirmed = await confirm({
+      title: 'Delete Credential',
+      message: `Are you sure you want to delete "${credential.name}"? This action cannot be undone and will permanently remove all credential data.`,
+      confirmText: 'Delete Credential',
+      cancelText: 'Cancel',
+      variant: 'danger'
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -429,18 +440,17 @@ export const CredentialsPage: React.FC = () => {
       )}
 
       {/* Credential Detail Modal */}
-      {viewMode === 'detail' && selectedCredential && (
-        <CredentialDetailModal
-          credential={selectedCredential}
-          onClose={() => {
-            setViewMode('list');
-            setSelectedCredential(null);
-          }}
-          onEdit={handleEditCredential}
-          onDelete={handleDeleteCredential}
-          onShare={handleShareCredential}
-        />
-      )}
+      <CredentialDetailModal
+        credential={selectedCredential!}
+        isOpen={viewMode === 'detail' && !!selectedCredential}
+        onClose={() => {
+          setViewMode('list');
+          setSelectedCredential(null);
+        }}
+        onEdit={handleEditCredential}
+        onDelete={handleDeleteCredential}
+        onShare={handleShareCredential}
+      />
 
       {/* Share Credential Modal */}
       {isShareModalOpen && credentialToShare && (
@@ -454,6 +464,19 @@ export const CredentialsPage: React.FC = () => {
           onSuccess={handleShareSuccess}
         />
       )}
+
+      {/* Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={confirmState.isOpen}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+        title={confirmState.title}
+        message={confirmState.message}
+        confirmText={confirmState.confirmText}
+        cancelText={confirmState.cancelText}
+        variant={confirmState.variant}
+        loading={confirmState.loading}
+      />
     </div>
   );
 };

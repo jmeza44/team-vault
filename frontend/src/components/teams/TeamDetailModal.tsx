@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { Team, TeamRole } from '@/types';
 import { TeamWithMembers, AddMemberRequest, UpdateMemberRequest } from '@/services/teamService';
+import { useConfirm } from '@/hooks/useConfirm';
+import { Dialog } from '@/components/common/Dialog';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { Edit, X, Trash2 } from 'lucide-react';
 
 interface TeamDetailModalProps {
   team: TeamWithMembers;
   currentUserId: string;
+  isOpen: boolean;
   onClose: () => void;
   onEdit: (team: Team) => void;
   onAddMember: (teamId: string, data: AddMemberRequest) => Promise<void>;
@@ -37,6 +41,7 @@ const isTeamAdmin = (team: TeamWithMembers, userId: string): boolean => {
 export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
   team,
   currentUserId,
+  isOpen,
   onClose,
   onEdit,
   onAddMember,
@@ -47,6 +52,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
   const [newMemberEmail, setNewMemberEmail] = useState('');
   const [newMemberRole, setNewMemberRole] = useState<TeamRole>(TeamRole.MEMBER);
   const [loadingActions, setLoadingActions] = useState<{ [key: string]: boolean }>({});
+  const { confirm, confirmState, handleClose, handleConfirm } = useConfirm();
 
   const userRole = getUserRole(team, currentUserId);
   const isAdmin = isTeamAdmin(team, currentUserId);
@@ -83,7 +89,16 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
   };
 
   const handleRemoveMember = async (userId: string) => {
-    if (!confirm('Are you sure you want to remove this member from the team?')) return;
+    const member = team.memberships?.find(m => m.userId === userId);
+    const memberName = member?.user?.name || member?.user?.email || 'this member';
+    
+    const confirmed = await confirm({
+      title: 'Remove Team Member',
+      message: `Are you sure you want to remove ${memberName} from the team? This action cannot be undone.`,
+      variant: 'danger'
+    });
+    
+    if (!confirmed) return;
 
     setLoadingActions(prev => ({ ...prev, [`remove-${userId}`]: true }));
     try {
@@ -95,14 +110,16 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">{team.name}</h2>
-            <p className="text-sm text-gray-500">
+    <>
+      <Dialog isOpen={isOpen} onClose={onClose}>
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900">{team.name}</h2>
+          <p className="text-sm text-gray-500">
               {team.memberCount || team.memberships?.length || 0} {(team.memberCount || team.memberships?.length || 0) === 1 ? 'member' : 'members'}
             </p>
           </div>
@@ -256,7 +273,13 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </Dialog>
+    
+    <ConfirmDialog
+      {...confirmState}
+      onClose={handleClose}
+      onConfirm={handleConfirm}
+    />
+    </>
   );
 };

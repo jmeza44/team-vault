@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Team } from '@/types';
+import { Dialog } from '@/components/common/Dialog';
 import { Loader2 } from 'lucide-react';
 
 interface TeamFormProps {
   team?: Team;
+  isOpen: boolean;
   onSubmit: (data: TeamFormData) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
@@ -16,6 +18,7 @@ export interface TeamFormData {
 
 export const TeamForm: React.FC<TeamFormProps> = ({
   team,
+  isOpen,
   onSubmit,
   onCancel,
   isLoading = false
@@ -87,12 +90,13 @@ export const TeamForm: React.FC<TeamFormProps> = ({
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
-            {team ? 'Edit Team' : 'Create New Team'}
+    <Dialog isOpen={isOpen} onClose={onCancel}>
+      <div className="px-6 py-4 border-b border-gray-200">
+        <h2 className="text-xl font-semibold text-gray-900">
+          {team ? 'Edit Team' : 'Create New Team'}
           </h2>
         </div>
 
@@ -166,7 +170,6 @@ export const TeamForm: React.FC<TeamFormProps> = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </Dialog>
   );
 };

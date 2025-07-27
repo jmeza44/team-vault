@@ -5,12 +5,15 @@ import teamService, { TeamWithMembers, CreateTeamRequest, UpdateTeamRequest, Add
 import { TeamForm, TeamFormData } from '@/components/teams/TeamForm';
 import { TeamCard } from '@/components/teams/TeamCard';
 import { TeamDetailModal } from '@/components/teams/TeamDetailModal';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { useConfirm } from '@/hooks/useConfirm';
 import { Users } from 'lucide-react';
 
 type ViewMode = 'list' | 'form' | 'detail';
 
 export const TeamsPage: React.FC = () => {
   const { user } = useAuth();
+  const { confirm, confirmState, handleClose, handleConfirm } = useConfirm();
   const [teams, setTeams] = useState<Team[]>([]);
   const [teamsWithMembers, setTeamsWithMembers] = useState<{ [key: string]: TeamWithMembers }>({});
   const [loading, setLoading] = useState(true);
@@ -119,7 +122,15 @@ export const TeamsPage: React.FC = () => {
   };
 
   const handleDeleteTeam = async (team: Team | TeamWithMembers) => {
-    if (!confirm(`Are you sure you want to delete "${team.name}"? This action cannot be undone.`)) {
+    const confirmed = await confirm({
+      title: 'Delete Team',
+      message: `Are you sure you want to delete "${team.name}"? This action cannot be undone and will remove all team data.`,
+      confirmText: 'Delete Team',
+      cancelText: 'Cancel',
+      variant: 'danger'
+    });
+
+    if (!confirmed) {
       return;
     }
 
@@ -373,26 +384,26 @@ export const TeamsPage: React.FC = () => {
       )}
 
       {/* Modals */}
-      {viewMode === 'form' && (
-        <TeamForm
-          team={selectedTeam && 'memberships' in selectedTeam ? {
-            id: selectedTeam.id,
-            name: selectedTeam.name,
-            description: selectedTeam.description,
-            createdById: selectedTeam.createdById,
-            createdAt: selectedTeam.createdAt,
-            updatedAt: selectedTeam.updatedAt
-          } : selectedTeam as Team}
-          onSubmit={selectedTeam ? handleUpdateTeam : handleCreateTeam}
-          onCancel={handleCloseModal}
-          isLoading={isFormLoading}
-        />
-      )}
+      <TeamForm
+        team={selectedTeam && 'memberships' in selectedTeam ? {
+          id: selectedTeam.id,
+          name: selectedTeam.name,
+          description: selectedTeam.description,
+          createdById: selectedTeam.createdById,
+          createdAt: selectedTeam.createdAt,
+          updatedAt: selectedTeam.updatedAt
+        } : selectedTeam as Team}
+        isOpen={viewMode === 'form'}
+        onSubmit={selectedTeam ? handleUpdateTeam : handleCreateTeam}
+        onCancel={handleCloseModal}
+        isLoading={isFormLoading}
+      />
 
       {viewMode === 'detail' && selectedTeam && 'memberships' in selectedTeam && user && (
         <TeamDetailModal
           team={selectedTeam as TeamWithMembers}
           currentUserId={user.id}
+          isOpen={viewMode === 'detail'}
           onClose={handleCloseModal}
           onEdit={handleEditTeam}
           onAddMember={handleAddMember}
@@ -400,6 +411,19 @@ export const TeamsPage: React.FC = () => {
           onRemoveMember={handleRemoveMember}
         />
       )}
+
+      {/* Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={confirmState.isOpen}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+        title={confirmState.title}
+        message={confirmState.message}
+        confirmText={confirmState.confirmText}
+        cancelText={confirmState.cancelText}
+        variant={confirmState.variant}
+        loading={confirmState.loading}
+      />
     </div>
   );
 };
