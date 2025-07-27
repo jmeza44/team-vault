@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
-import { logger } from '@/utils/logger';
-import { ResponseUtil } from '@/utils/responseUtils';
+import { logger, ResponseUtil, generateTokens, generateAccessToken, verifyRefreshToken } from '@/utils';
 import { AuthService } from '@/services/authService';
 import { CreateUserData, LoginResponse, RefreshTokenResponse } from '@/models/AuthModels';
-import { generateTokens, generateAccessToken, verifyRefreshToken } from '@/utils/jwtUtils';
 
 export class AuthController {
   async register(req: Request, res: Response) {

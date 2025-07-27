@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import { logger } from '@/utils/logger';
+import { logger } from '@/utils';
 import { CreateUserData, UserResponse } from '@/models/AuthModels';
 
 const prisma = new PrismaClient();

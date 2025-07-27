@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '@/middleware/authMiddleware';
-import { ResponseUtil } from '@/utils/responseUtils';
+import { ResponseUtil } from '@/utils';
 import { TeamService } from '@/services/teamService';
 import { CreateTeamData, UpdateTeamData, AddTeamMemberData, UpdateTeamMemberRoleData, TeamFilters } from '@/models/TeamModels';
 

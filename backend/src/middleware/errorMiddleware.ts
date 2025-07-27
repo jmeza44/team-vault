@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '@/utils/logger';
+import { logger } from '@/utils';
 
 export interface ApiError extends Error {
   statusCode?: number;

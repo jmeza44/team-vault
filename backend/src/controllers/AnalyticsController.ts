@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '@/middleware/authMiddleware';
 import { AnalyticsService } from '@/services/analyticsService';
-import { ResponseUtil } from '@/utils/responseUtils';
+import { ResponseUtil } from '@/utils';
 import { AnalyticsFilters } from '@/models/AnalyticsModels';
 import { UserRole } from '@prisma/client';
 

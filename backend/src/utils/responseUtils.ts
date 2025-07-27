@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { logger } from '@/utils/logger';
+import { logger } from './logger';
 
 // Standard error response interface
 export interface ErrorResponse {

@@ -1,5 +1,5 @@
 import { PrismaClient, UserRole } from '@prisma/client';
-import { logger } from '@/utils/logger';
+import { logger } from '@/utils';
 import {
   DashboardMetrics,
   CredentialStatistics,
