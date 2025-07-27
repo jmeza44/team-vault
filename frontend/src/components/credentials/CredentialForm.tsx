@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Credential, RiskLevel } from '@/types';
-import { Eye, EyeOff, RefreshCw } from 'lucide-react';
+import { Eye, EyeOff, RefreshCw, Circle, CheckCircle } from 'lucide-react';
 
 interface CredentialFormProps {
   credential?: Credential;
@@ -52,6 +52,59 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
 
   const [tagInput, setTagInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Password strength and requirement checking
+  const passwordRequirements = useMemo(() => {
+    const password = formData.secret;
+    
+    // Skip validation for very short passwords to avoid noise
+    if (password.length === 0) {
+      return { allMet: false, firstUnmetRequirement: null, strength: 'none' };
+    }
+
+    const requirements = [
+      {
+        id: 'length',
+        test: password.length >= 8,
+        message: 'At least 8 characters',
+      },
+      {
+        id: 'lowercase',
+        test: /[a-z]/.test(password),
+        message: 'One lowercase letter',
+      },
+      {
+        id: 'uppercase',
+        test: /[A-Z]/.test(password),
+        message: 'One uppercase letter',
+      },
+      {
+        id: 'number',
+        test: /\d/.test(password),
+        message: 'One number',
+      },
+      {
+        id: 'special',
+        test: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password),
+        message: 'One special character (!@#$%^&*()_+-=[]{}|;:,.<>?)',
+      },
+    ];
+
+    const firstUnmetRequirement = requirements.find(req => !req.test);
+    const allMet = requirements.every(req => req.test);
+    const metCount = requirements.filter(req => req.test).length;
+
+    let strength = 'weak';
+    if (allMet) strength = 'strong';
+    else if (metCount >= 3) strength = 'medium';
+
+    return {
+      requirements,
+      firstUnmetRequirement,
+      allMet,
+      strength,
+    };
+  }, [formData.secret]);
 
   useEffect(() => {
     if (credential) {
@@ -106,7 +159,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
   };
 
   const generatePassword = () => {
-    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?`~';
     let password = '';
     for (let i = 0; i < 20; i++) {
       password += charset.charAt(Math.floor(Math.random() * charset.length));
@@ -186,6 +239,25 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
               </button>
             </div>
           </div>
+          
+          {/* Password strength indicator - show when there's a password */}
+          {formData.secret && (
+            <div className="mt-2">
+              <div className="text-sm">
+                {passwordRequirements.allMet ? (
+                  <div className="flex items-center text-green-600">
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    <span className="font-medium">Strong password</span>
+                  </div>
+                ) : passwordRequirements.firstUnmetRequirement ? (
+                  <div className="flex items-center text-amber-600 dark:text-amber-400">
+                    <Circle className="h-4 w-4 mr-2" />
+                    <span>Consider: {passwordRequirements.firstUnmetRequirement.message}</span>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Category and Risk Level */}

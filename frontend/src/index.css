@@ -63,6 +63,16 @@
     @apply text-sm text-danger-600 mt-1;
     @apply dark:text-danger-400;
   }
+
+  .form-radio {
+    @apply h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300;
+    @apply dark:border-gray-600 dark:bg-gray-800 dark:focus:ring-blue-400;
+  }
+
+  .form-checkbox {
+    @apply h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded;
+    @apply dark:border-gray-600 dark:bg-gray-800 dark:focus:ring-blue-400;
+  }
   
   .card {
     @apply bg-white rounded-lg shadow-sm border border-gray-200;
