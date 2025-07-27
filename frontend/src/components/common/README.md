@@ -68,20 +68,16 @@ const MyComponent = () => {
 const { showWarning } = useAlertActions();
 
 const handleWarning = () => {
-  showWarning(
-    'Warning Title',
-    'This is a detailed warning message',
-    {
-      duration: 8000, // 8 seconds
-      action: {
-        label: 'View Details',
-        onClick: () => {
-          // Handle action click
-          console.log('Action clicked');
-        }
-      }
-    }
-  );
+  showWarning('Warning Title', 'This is a detailed warning message', {
+    duration: 8000, // 8 seconds
+    action: {
+      label: 'View Details',
+      onClick: () => {
+        // Handle action click
+        console.log('Action clicked');
+      },
+    },
+  });
 };
 ```
 
@@ -107,24 +103,28 @@ const MyComponent = () => {
 ## 🎨 Alert Types & Configurations
 
 ### Success Alerts
+
 - **Color**: Green theme
 - **Icon**: CheckCircle
 - **Default Duration**: 5 seconds
 - **Use Case**: Successful operations, confirmations
 
 ### Error Alerts
+
 - **Color**: Red theme
 - **Icon**: XCircle
 - **Default Duration**: No auto-dismiss (0)
 - **Use Case**: Errors, failures, critical issues
 
 ### Warning Alerts
+
 - **Color**: Yellow/Orange theme
 - **Icon**: AlertTriangle
 - **Default Duration**: 8 seconds
 - **Use Case**: Warnings, cautions, important notices
 
 ### Info Alerts
+
 - **Color**: Blue theme
 - **Icon**: Info
 - **Default Duration**: 5 seconds
@@ -135,37 +135,36 @@ const MyComponent = () => {
 ### Hook: `useAlertActions()`
 
 ```tsx
-const {
-  showSuccess,
-  showError,
-  showWarning,
-  showInfo
-} = useAlertActions();
+const { showSuccess, showError, showWarning, showInfo } = useAlertActions();
 ```
 
 #### Methods
 
 **`showSuccess(title, message?, options?)`**
+
 - `title`: Required string
 - `message`: Optional description
 - `options`: Optional configuration object
 
 **`showError(title, message?, options?)`**
+
 - Same parameters as above
 - Defaults to no auto-dismiss
 
 **`showWarning(title, message?, options?)`**
+
 - Same parameters as above
 - Defaults to 8-second duration
 
 **`showInfo(title, message?, options?)`**
+
 - Same parameters as above
 
 #### Options Object
 
 ```tsx
 interface Options {
-  duration?: number;    // Milliseconds (0 = no auto-dismiss)
+  duration?: number; // Milliseconds (0 = no auto-dismiss)
   action?: {
     label: string;
     onClick: () => void;
@@ -180,6 +179,7 @@ const { handleApiError } = useApiErrorHandler();
 ```
 
 **`handleApiError(error, defaultMessage?)`**
+
 - Automatically handles common HTTP status codes
 - Shows appropriate error messages
 - Extracts error details from API responses
@@ -189,18 +189,20 @@ const { handleApiError } = useApiErrorHandler();
 ### Replace Inline Error Messages
 
 **Before:**
+
 ```tsx
 const [error, setError] = useState<string | null>(null);
 
 // In JSX
-{error && (
-  <div className="bg-red-50 border border-red-200 text-red-700">
-    {error}
-  </div>
-)}
+{
+  error && (
+    <div className="border border-red-200 bg-red-50 text-red-700">{error}</div>
+  );
+}
 ```
 
 **After:**
+
 ```tsx
 const { showError } = useAlertActions();
 
@@ -214,7 +216,7 @@ showError('Operation Failed', error.message);
 const MyForm = () => {
   const { showSuccess, showError } = useAlertActions();
 
-  const handleSubmit = async (data) => {
+  const handleSubmit = async data => {
     try {
       await api.submitForm(data);
       showSuccess(
@@ -223,8 +225,8 @@ const MyForm = () => {
         {
           action: {
             label: 'View Details',
-            onClick: () => navigateToDetails()
-          }
+            onClick: () => navigateToDetails(),
+          },
         }
       );
     } catch (error) {
@@ -254,19 +256,15 @@ const CrudComponent = () => {
     }
   };
 
-  const handleCreate = async (data) => {
+  const handleCreate = async data => {
     try {
       await api.create(data);
-      showSuccess(
-        'Created Successfully',
-        'The new item has been added',
-        {
-          action: {
-            label: 'View Item',
-            onClick: () => navigateToItem()
-          }
-        }
-      );
+      showSuccess('Created Successfully', 'The new item has been added', {
+        action: {
+          label: 'View Item',
+          onClick: () => navigateToItem(),
+        },
+      });
     } catch (error) {
       handleApiError(error, 'Failed to create item');
     }

@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, ApiResponse, AuthResponse, LoginRequest, RegisterRequest } from '@/types';
+import {
+  User,
+  ApiResponse,
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+} from '@/types';
 import { authService } from '@/services/authService';
 
 interface AuthContextType {
@@ -64,15 +70,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (credentials: LoginRequest) => {
     try {
-      const response: ApiResponse<AuthResponse> = await authService.login(credentials);
-      
+      const response: ApiResponse<AuthResponse> =
+        await authService.login(credentials);
+
       if (response.success && response.data) {
         const { user, accessToken, refreshToken } = response.data;
-        
+
         // Store tokens
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        
+
         // Set user
         setUser(user);
       } else {
@@ -87,11 +94,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const register = async (data: RegisterRequest) => {
     try {
       const response = await authService.register(data);
-      
+
       if (!response.success) {
         throw new Error(response.error?.message || 'Registration failed');
       }
-      
+
       // After registration, user needs to login
     } catch (error) {
       console.error('Registration error:', error);
@@ -121,7 +128,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       const response = await authService.refreshToken(storedRefreshToken);
-      
+
       if (response.success && response.data) {
         localStorage.setItem('accessToken', response.data.accessToken);
         return true;
@@ -157,9 +164,5 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     updateUser,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

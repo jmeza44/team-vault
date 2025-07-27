@@ -18,6 +18,6 @@ export const useToast = (): UseToastReturn => {
 
   return {
     showCopySuccess,
-    showCopyError
+    showCopyError,
   };
 };

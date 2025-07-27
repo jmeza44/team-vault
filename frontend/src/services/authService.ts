@@ -1,11 +1,17 @@
 import { AxiosResponse } from 'axios';
-import { ApiResponse, AuthResponse, LoginRequest, RegisterRequest } from '@/types';
+import {
+  ApiResponse,
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+} from '@/types';
 import { apiClient } from './apiClient';
 
 export const authService = {
   async login(credentials: LoginRequest): Promise<ApiResponse<AuthResponse>> {
     try {
-      const response: AxiosResponse<ApiResponse<AuthResponse>> = await apiClient.post('/auth/login', credentials);
+      const response: AxiosResponse<ApiResponse<AuthResponse>> =
+        await apiClient.post('/auth/login', credentials);
       return response.data;
     } catch (error: any) {
       return {
@@ -20,30 +26,38 @@ export const authService = {
 
   async register(data: RegisterRequest): Promise<ApiResponse> {
     try {
-      const response: AxiosResponse<ApiResponse> = await apiClient.post('/auth/register', data);
+      const response: AxiosResponse<ApiResponse> = await apiClient.post(
+        '/auth/register',
+        data
+      );
       return response.data;
     } catch (error: any) {
       return {
         success: false,
         error: {
-          message: error.response?.data?.error?.message || 'Registration failed',
+          message:
+            error.response?.data?.error?.message || 'Registration failed',
           statusCode: error.response?.status,
         },
       };
     }
   },
 
-  async refreshToken(refreshToken: string): Promise<ApiResponse<{ accessToken: string }>> {
+  async refreshToken(
+    refreshToken: string
+  ): Promise<ApiResponse<{ accessToken: string }>> {
     try {
-      const response: AxiosResponse<ApiResponse<{ accessToken: string }>> = await apiClient.post('/auth/refresh', {
-        refreshToken,
-      });
+      const response: AxiosResponse<ApiResponse<{ accessToken: string }>> =
+        await apiClient.post('/auth/refresh', {
+          refreshToken,
+        });
       return response.data;
     } catch (error: any) {
       return {
         success: false,
         error: {
-          message: error.response?.data?.error?.message || 'Token refresh failed',
+          message:
+            error.response?.data?.error?.message || 'Token refresh failed',
           statusCode: error.response?.status,
         },
       };
@@ -52,7 +66,8 @@ export const authService = {
 
   async logout(): Promise<ApiResponse> {
     try {
-      const response: AxiosResponse<ApiResponse> = await apiClient.post('/auth/logout');
+      const response: AxiosResponse<ApiResponse> =
+        await apiClient.post('/auth/logout');
       return response.data;
     } catch (error: any) {
       return {
@@ -67,13 +82,15 @@ export const authService = {
 
   async getProfile(): Promise<ApiResponse<{ user: any }>> {
     try {
-      const response: AxiosResponse<ApiResponse<{ user: any }>> = await apiClient.get('/users/profile');
+      const response: AxiosResponse<ApiResponse<{ user: any }>> =
+        await apiClient.get('/users/profile');
       return response.data;
     } catch (error: any) {
       return {
         success: false,
         error: {
-          message: error.response?.data?.error?.message || 'Failed to get profile',
+          message:
+            error.response?.data?.error?.message || 'Failed to get profile',
           statusCode: error.response?.status,
         },
       };

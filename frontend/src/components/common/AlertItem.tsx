@@ -20,7 +20,8 @@ const AlertItem: React.FC<AlertItemProps> = ({ alert }) => {
           iconColor: 'text-green-400 dark:text-green-400',
           titleColor: 'text-green-800 dark:text-green-200',
           textColor: 'text-green-700 dark:text-green-300',
-          buttonColor: 'text-green-500 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-800/60',
+          buttonColor:
+            'text-green-500 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-800/60',
         };
       case 'error':
         return {
@@ -30,7 +31,8 @@ const AlertItem: React.FC<AlertItemProps> = ({ alert }) => {
           iconColor: 'text-red-400 dark:text-red-400',
           titleColor: 'text-red-800 dark:text-red-200',
           textColor: 'text-red-700 dark:text-red-300',
-          buttonColor: 'text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-800/60',
+          buttonColor:
+            'text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-800/60',
         };
       case 'warning':
         return {
@@ -40,7 +42,8 @@ const AlertItem: React.FC<AlertItemProps> = ({ alert }) => {
           iconColor: 'text-yellow-400 dark:text-yellow-400',
           titleColor: 'text-yellow-800 dark:text-yellow-200',
           textColor: 'text-yellow-700 dark:text-yellow-300',
-          buttonColor: 'text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-800/60',
+          buttonColor:
+            'text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-800/60',
         };
       case 'info':
         return {
@@ -50,7 +53,8 @@ const AlertItem: React.FC<AlertItemProps> = ({ alert }) => {
           iconColor: 'text-blue-400 dark:text-blue-400',
           titleColor: 'text-blue-800 dark:text-blue-200',
           textColor: 'text-blue-700 dark:text-blue-300',
-          buttonColor: 'text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-800/60',
+          buttonColor:
+            'text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-800/60',
         };
       default:
         return {
@@ -60,7 +64,8 @@ const AlertItem: React.FC<AlertItemProps> = ({ alert }) => {
           iconColor: 'text-gray-400 dark:text-gray-500',
           titleColor: 'text-gray-800 dark:text-gray-200',
           textColor: 'text-gray-700 dark:text-gray-300',
-          buttonColor: 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700/60',
+          buttonColor:
+            'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700/60',
         };
     }
   };
@@ -70,63 +75,64 @@ const AlertItem: React.FC<AlertItemProps> = ({ alert }) => {
 
   return (
     <div
-      className={`
-        relative rounded-lg border p-4 shadow-md
-        ${config.bgColor} ${config.borderColor}
-        transform transition-all duration-300 ease-in-out
-        animate-slide-up
-      `}
+      className={`relative rounded-lg border p-4 shadow-md ${config.bgColor} ${config.borderColor} transform animate-slide-up transition-all duration-300 ease-in-out`}
       role="alert"
     >
       <div className="flex">
         <div className="flex-shrink-0">
-          <IconComponent className={`h-5 w-5 ${config.iconColor}`} aria-hidden="true" />
+          <IconComponent
+            className={`h-5 w-5 ${config.iconColor}`}
+            aria-hidden="true"
+          />
         </div>
-        
+
         <div className="ml-3 flex-1">
           <h3 className={`text-sm font-medium ${config.titleColor}`}>
             {alert.title}
           </h3>
-          
+
           {alert.message && (
             <div className={`mt-1 text-sm ${config.textColor}`}>
               {alert.message}
             </div>
           )}
-          
+
           {alert.action && (
             <div className="mt-3">
               <button
                 type="button"
                 onClick={alert.action.onClick}
-                className={`
-                  rounded-md text-sm font-medium underline
-                  ${config.textColor} hover:no-underline
-                  focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800
-                  focus:ring-${alert.type === 'success' ? 'green' : 
-                    alert.type === 'error' ? 'red' : 
-                    alert.type === 'warning' ? 'yellow' : 'blue'}-500
-                `}
+                className={`rounded-md text-sm font-medium underline ${config.textColor} hover:no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 focus:ring-${
+                  alert.type === 'success'
+                    ? 'green'
+                    : alert.type === 'error'
+                      ? 'red'
+                      : alert.type === 'warning'
+                        ? 'yellow'
+                        : 'blue'
+                }-500 `}
               >
                 {alert.action.label}
               </button>
             </div>
           )}
         </div>
-        
+
         {alert.dismissible && (
           <div className="ml-auto pl-3">
             <div className="-mx-1.5 -my-1.5">
               <button
                 type="button"
                 onClick={() => dismissAlert(alert.id)}
-                className={`
-                  inline-flex rounded-md p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800
-                  ${config.buttonColor}
-                  focus:ring-${alert.type === 'success' ? 'green' : 
-                    alert.type === 'error' ? 'red' : 
-                    alert.type === 'warning' ? 'yellow' : 'blue'}-500
-                `}
+                className={`inline-flex rounded-md p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${config.buttonColor} focus:ring-${
+                  alert.type === 'success'
+                    ? 'green'
+                    : alert.type === 'error'
+                      ? 'red'
+                      : alert.type === 'warning'
+                        ? 'yellow'
+                        : 'blue'
+                }-500 `}
                 aria-label="Dismiss alert"
               >
                 <X className="h-4 w-4" aria-hidden="true" />

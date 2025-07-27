@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Credential, Team } from "@/types";
+import React, { useState, useEffect } from 'react';
+import { Credential, Team } from '@/types';
 import {
   credentialService,
   ShareCredentialRequest,
-} from "@/services/credentialService";
-import teamService from "@/services/teamService";
-import { useAlertActions } from "@/hooks/useAlerts";
-import { useConfirm } from "@/hooks/useConfirm";
-import { usePermissions } from "@/hooks/usePermissions";
-import { Dialog } from "@/components/common/Dialog";
-import { ConfirmDialog } from "@/components/common/ConfirmDialog";
-import { X, Users, User as UserIcon } from "lucide-react";
+} from '@/services/credentialService';
+import teamService from '@/services/teamService';
+import { useAlertActions } from '@/hooks/useAlerts';
+import { useConfirm } from '@/hooks/useConfirm';
+import { usePermissions } from '@/hooks/usePermissions';
+import { Dialog } from '@/components/common/Dialog';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { X, Users, User as UserIcon } from 'lucide-react';
 
 interface ShareCredentialModalProps {
   credential: Credential;
@@ -22,7 +22,7 @@ interface ShareCredentialModalProps {
 interface ShareData {
   shares: Array<{
     id: string;
-    accessLevel: "READ" | "WRITE";
+    accessLevel: 'READ' | 'WRITE';
     expiresAt?: string;
     sharedWithUser?: {
       id: string;
@@ -54,15 +54,15 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
   const { getCredentialPermissions } = usePermissions();
   const permissions = getCredentialPermissions(credential);
   const [teams, setTeams] = useState<Team[]>([]);
-  const [shares, setShares] = useState<ShareData["shares"]>([]);
+  const [shares, setShares] = useState<ShareData['shares']>([]);
   const [loading, setLoading] = useState(false);
   const [sharesLoading, setSharesLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Form state
   const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
-  const [accessLevel, setAccessLevel] = useState<"READ" | "WRITE">("READ");
-  const [expiresAt, setExpiresAt] = useState<string>("");
+  const [accessLevel, setAccessLevel] = useState<'READ' | 'WRITE'>('READ');
+  const [expiresAt, setExpiresAt] = useState<string>('');
 
   useEffect(() => {
     if (isOpen) {
@@ -78,7 +78,7 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
         setTeams(response.data.teams);
       }
     } catch (err) {
-      console.error("Failed to load teams:", err);
+      console.error('Failed to load teams:', err);
     }
   };
 
@@ -92,7 +92,7 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
         setShares(response.data.shares);
       }
     } catch (err) {
-      console.error("Failed to load shares:", err);
+      console.error('Failed to load shares:', err);
     } finally {
       setSharesLoading(false);
     }
@@ -100,14 +100,16 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
 
   const handleShare = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const availableTeams = teams.filter(team => !shares.some(share => share.sharedWithTeam?.id === team.id));
-    
+
+    const availableTeams = teams.filter(
+      team => !shares.some(share => share.sharedWithTeam?.id === team.id)
+    );
+
     if (selectedTeams.length === 0) {
       if (availableTeams.length === 0) {
-        showError("All available teams already have access to this credential");
+        showError('All available teams already have access to this credential');
       } else {
-        showError("Please select at least one team to share with");
+        showError('Please select at least one team to share with');
       }
       return;
     }
@@ -118,7 +120,7 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
 
       const shareData: ShareCredentialRequest = {
         teamIds: selectedTeams,
-        accessLevel: accessLevel.toUpperCase() as "READ" | "WRITE",
+        accessLevel: accessLevel.toUpperCase() as 'READ' | 'WRITE',
       };
 
       if (expiresAt) {
@@ -131,20 +133,20 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
       );
 
       if (response.success) {
-        showSuccess("Credential shared successfully");
+        showSuccess('Credential shared successfully');
         onSuccess();
         // Reload shares to show the updated list
         loadShares();
         // Reset form
         setSelectedTeams([]);
-        setExpiresAt("");
-        setAccessLevel("READ");
+        setExpiresAt('');
+        setAccessLevel('READ');
       } else {
-        showError(response.error?.message || "Failed to share credential");
+        showError(response.error?.message || 'Failed to share credential');
       }
     } catch (err) {
-      showError("An unexpected error occurred");
-      console.error("Share error:", err);
+      showError('An unexpected error occurred');
+      console.error('Share error:', err);
     } finally {
       setLoading(false);
     }
@@ -152,12 +154,12 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
 
   const handleRemoveShare = async (shareId: string) => {
     const confirmed = await confirm({
-      title: "Remove Share",
+      title: 'Remove Share',
       message:
-        "Are you sure you want to remove this share? The user or team will lose access to this credential.",
-      confirmText: "Remove Share",
-      cancelText: "Cancel",
-      variant: "warning",
+        'Are you sure you want to remove this share? The user or team will lose access to this credential.',
+      confirmText: 'Remove Share',
+      cancelText: 'Cancel',
+      variant: 'warning',
     });
 
     if (!confirmed) {
@@ -171,13 +173,13 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
       );
       if (response.success) {
         loadShares(); // Reload shares
-        showSuccess("Share removed successfully");
+        showSuccess('Share removed successfully');
       } else {
-        showError(response.error?.message || "Failed to remove share");
+        showError(response.error?.message || 'Failed to remove share');
       }
     } catch (err) {
-      showError("An unexpected error occurred");
-      console.error("Remove share error:", err);
+      showError('An unexpected error occurred');
+      console.error('Remove share error:', err);
     }
   };
 
@@ -185,45 +187,45 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
-      <div className="flex justify-between items-center mb-6 p-6 pb-0">
+      <div className="mb-6 flex items-center justify-between p-6 pb-0">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
           Share "{credential.name}"
         </h2>
         <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-          <X className="w-6 h-6" />
+          <X className="h-6 w-6" />
         </button>
       </div>
 
       <div className="px-6 pb-6">
         {error && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          <div className="mb-4 rounded border border-red-400 bg-red-100 p-3 text-red-700">
             {error}
           </div>
         )}
 
         {/* Current Shares */}
         <div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+          <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
             Current Shares
           </h3>
           {sharesLoading ? (
             <p className="text-gray-500">Loading shares...</p>
           ) : shares.length > 0 ? (
             <div className="space-y-3">
-              {shares.map((share) => (
+              {shares.map(share => (
                 <div
                   key={share.id}
-                  className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg"
+                  className="flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-700"
                 >
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
                       {share.sharedWithTeam ? (
-                        <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center dark:bg-purple-300">
-                          <Users className="w-4 h-4 text-purple-600 dark:text-purple-800" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-300">
+                          <Users className="h-4 w-4 text-purple-600 dark:text-purple-800" />
                         </div>
                       ) : (
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center dark:bg-blue-300">
-                          <UserIcon className="w-4 h-4 text-blue-600 dark:text-blue-800" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-300">
+                          <UserIcon className="h-4 w-4 text-blue-600 dark:text-blue-800" />
                         </div>
                       )}
                       <div>
@@ -234,12 +236,12 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-300">
                           {share.sharedWithTeam
-                            ? "Team"
-                            : share.sharedWithUser?.email}{" "}
+                            ? 'Team'
+                            : share.sharedWithUser?.email}{' '}
                           •
-                          {share.accessLevel === "READ"
-                            ? " Read Only"
-                            : " Read & Write"}
+                          {share.accessLevel === 'READ'
+                            ? ' Read Only'
+                            : ' Read & Write'}
                           {share.expiresAt &&
                             ` • Expires ${new Date(
                               share.expiresAt
@@ -251,7 +253,7 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
                   {permissions.canShare && (
                     <button
                       onClick={() => handleRemoveShare(share.id)}
-                      className="text-red-600 hover:text-red-800 text-sm dark:text-red-400 dark:hover:text-red-300"
+                      className="text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
                     >
                       Remove
                     </button>
@@ -269,17 +271,27 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
         {/* Share with Teams Form */}
         {permissions.canShare && (
           <div className="mt-8">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+            <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
               Share with Teams
             </h3>
             <form onSubmit={handleShare} className="space-y-4">
               <div>
                 <label className="form-label">Select Teams to Share With</label>
-                <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2 dark:border-gray-700">
-                  {teams.filter(team => !shares.some(share => share.sharedWithTeam?.id === team.id)).length > 0 ? (
+                <div className="max-h-40 space-y-2 overflow-y-auto rounded-md border border-gray-300 p-2 dark:border-gray-700">
+                  {teams.filter(
+                    team =>
+                      !shares.some(
+                        share => share.sharedWithTeam?.id === team.id
+                      )
+                  ).length > 0 ? (
                     teams
-                      .filter(team => !shares.some(share => share.sharedWithTeam?.id === team.id))
-                      .map((team) => (
+                      .filter(
+                        team =>
+                          !shares.some(
+                            share => share.sharedWithTeam?.id === team.id
+                          )
+                      )
+                      .map(team => (
                         <label
                           key={team.id}
                           className="flex items-center space-x-2"
@@ -287,12 +299,12 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
                           <input
                             type="checkbox"
                             checked={selectedTeams.includes(team.id)}
-                            onChange={(e) => {
+                            onChange={e => {
                               if (e.target.checked) {
                                 setSelectedTeams([...selectedTeams, team.id]);
                               } else {
                                 setSelectedTeams(
-                                  selectedTeams.filter((id) => id !== team.id)
+                                  selectedTeams.filter(id => id !== team.id)
                                 );
                               }
                             }}
@@ -301,7 +313,7 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
                           <span className="text-sm">
                             <span className="font-medium">{team.name}</span>
                             {team.description && (
-                              <span className="text-gray-500 ml-2 dark:text-gray-400">
+                              <span className="ml-2 text-gray-500 dark:text-gray-400">
                                 - {team.description}
                               </span>
                             )}
@@ -309,8 +321,9 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
                         </label>
                       ))
                   ) : (
-                    <p className="text-sm text-gray-500 dark:text-gray-400 py-2">
-                      All available teams already have access to this credential.
+                    <p className="py-2 text-sm text-gray-500 dark:text-gray-400">
+                      All available teams already have access to this
+                      credential.
                     </p>
                   )}
                 </div>
@@ -321,8 +334,8 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
                   <label className="form-label">Access Level</label>
                   <select
                     value={accessLevel}
-                    onChange={(e) =>
-                      setAccessLevel(e.target.value as "READ" | "WRITE")
+                    onChange={e =>
+                      setAccessLevel(e.target.value as 'READ' | 'WRITE')
                     }
                     className="form-input"
                   >
@@ -336,7 +349,7 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
                   <input
                     type="datetime-local"
                     value={expiresAt}
-                    onChange={(e) => setExpiresAt(e.target.value)}
+                    onChange={e => setExpiresAt(e.target.value)}
                     className="form-input"
                   />
                 </div>
@@ -348,7 +361,7 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
                   disabled={loading || selectedTeams.length === 0}
                   className="btn-primary"
                 >
-                  {loading ? "Sharing..." : "Share Credential"}
+                  {loading ? 'Sharing...' : 'Share Credential'}
                 </button>
               </div>
             </form>

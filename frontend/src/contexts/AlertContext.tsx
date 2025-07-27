@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useCallback,
+  ReactNode,
+} from 'react';
 import { Alert, AlertContextType } from '@/types/alert';
 
 // Actions for the reducer
@@ -67,9 +73,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
   };
 
   return (
-    <AlertContext.Provider value={value}>
-      {children}
-    </AlertContext.Provider>
+    <AlertContext.Provider value={value}>{children}</AlertContext.Provider>
   );
 };
 

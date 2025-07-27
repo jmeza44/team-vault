@@ -13,13 +13,13 @@ const AlertContainer: React.FC = () => {
   // Create portal to render alerts at the top level
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] pointer-events-none"
+      className="pointer-events-none fixed inset-0 z-[9999]"
       aria-live="assertive"
     >
       {/* Alert container positioned at top-right */}
-      <div className="flex flex-col items-end justify-start min-h-screen pt-6 px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-sm space-y-3 pointer-events-auto">
-          {alerts.map((alert) => (
+      <div className="flex min-h-screen flex-col items-end justify-start px-4 pt-6 sm:px-6 lg:px-8">
+        <div className="pointer-events-auto w-full max-w-sm space-y-3">
+          {alerts.map(alert => (
             <AlertItem key={alert.id} alert={alert} />
           ))}
         </div>

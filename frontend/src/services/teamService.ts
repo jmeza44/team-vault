@@ -63,7 +63,10 @@ class TeamService {
   }
 
   // Update team
-  async updateTeam(teamId: string, data: UpdateTeamRequest): Promise<ApiResponse<Team>> {
+  async updateTeam(
+    teamId: string,
+    data: UpdateTeamRequest
+  ): Promise<ApiResponse<Team>> {
     try {
       const response = await apiClient.patch(`/teams/${teamId}`, data);
       return response.data;
@@ -83,7 +86,10 @@ class TeamService {
   }
 
   // Add team member
-  async addMember(teamId: string, data: AddMemberRequest): Promise<ApiResponse<any>> {
+  async addMember(
+    teamId: string,
+    data: AddMemberRequest
+  ): Promise<ApiResponse<any>> {
     try {
       const response = await apiClient.post(`/teams/${teamId}/members`, data);
       return response.data;
@@ -93,9 +99,16 @@ class TeamService {
   }
 
   // Update member role
-  async updateMember(teamId: string, userId: string, data: UpdateMemberRequest): Promise<ApiResponse<any>> {
+  async updateMember(
+    teamId: string,
+    userId: string,
+    data: UpdateMemberRequest
+  ): Promise<ApiResponse<any>> {
     try {
-      const response = await apiClient.patch(`/teams/${teamId}/members/${userId}`, data);
+      const response = await apiClient.patch(
+        `/teams/${teamId}/members/${userId}`,
+        data
+      );
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -103,9 +116,14 @@ class TeamService {
   }
 
   // Remove team member
-  async removeMember(teamId: string, userId: string): Promise<ApiResponse<void>> {
+  async removeMember(
+    teamId: string,
+    userId: string
+  ): Promise<ApiResponse<void>> {
     try {
-      const response = await apiClient.delete(`/teams/${teamId}/members/${userId}`);
+      const response = await apiClient.delete(
+        `/teams/${teamId}/members/${userId}`
+      );
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -115,7 +133,9 @@ class TeamService {
   // Error handling helper
   private handleError(error: any): Error {
     if (error.response?.data?.error) {
-      return new Error(error.response.data.error.message || 'Team operation failed');
+      return new Error(
+        error.response.data.error.message || 'Team operation failed'
+      );
     }
     return new Error(error.message || 'An unexpected error occurred');
   }

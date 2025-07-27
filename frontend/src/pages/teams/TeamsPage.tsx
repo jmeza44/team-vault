@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Team } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
-import teamService, { TeamWithMembers, CreateTeamRequest, UpdateTeamRequest, AddMemberRequest, UpdateMemberRequest } from '@/services/teamService';
+import teamService, {
+  TeamWithMembers,
+  CreateTeamRequest,
+  UpdateTeamRequest,
+  AddMemberRequest,
+  UpdateMemberRequest,
+} from '@/services/teamService';
 import { TeamForm, TeamFormData } from '@/components/teams/TeamForm';
 import { TeamCard } from '@/components/teams/TeamCard';
 import { TeamDetailModal } from '@/components/teams/TeamDetailModal';
@@ -15,12 +21,16 @@ export const TeamsPage: React.FC = () => {
   const { user } = useAuth();
   const { confirm, confirmState, handleClose, handleConfirm } = useConfirm();
   const [teams, setTeams] = useState<Team[]>([]);
-  const [teamsWithMembers, setTeamsWithMembers] = useState<{ [key: string]: TeamWithMembers }>({});
+  const [teamsWithMembers, setTeamsWithMembers] = useState<{
+    [key: string]: TeamWithMembers;
+  }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
-  const [selectedTeam, setSelectedTeam] = useState<Team | TeamWithMembers | null>(null);
-  
+  const [selectedTeam, setSelectedTeam] = useState<
+    Team | TeamWithMembers | null
+  >(null);
+
   // Search
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -35,14 +45,14 @@ export const TeamsPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await teamService.getTeams();
-      
+
       if (response.success && response.data) {
         // The backend returns { teams: Team[], count: number }
         const teamsData = response.data.teams;
         setTeams(teamsData);
-        
+
         // Load detailed info for each team
         const teamDetails: { [key: string]: TeamWithMembers } = {};
         for (const team of teamsData) {
@@ -70,14 +80,14 @@ export const TeamsPage: React.FC = () => {
   const handleCreateTeam = async (formData: TeamFormData) => {
     try {
       setIsFormLoading(true);
-      
+
       const createData: CreateTeamRequest = {
         name: formData.name,
         description: formData.description || undefined,
       };
 
       const response = await teamService.createTeam(createData);
-      
+
       if (response.success) {
         await loadTeams(); // Reload the list
         setViewMode('list');
@@ -98,14 +108,17 @@ export const TeamsPage: React.FC = () => {
 
     try {
       setIsFormLoading(true);
-      
+
       const updateData: UpdateTeamRequest = {
         name: formData.name,
         description: formData.description || undefined,
       };
 
-      const response = await teamService.updateTeam(selectedTeam.id, updateData);
-      
+      const response = await teamService.updateTeam(
+        selectedTeam.id,
+        updateData
+      );
+
       if (response.success) {
         await loadTeams(); // Reload the list
         setViewMode('list');
@@ -127,7 +140,7 @@ export const TeamsPage: React.FC = () => {
       message: `Are you sure you want to delete "${team.name}"? This action cannot be undone and will remove all team data.`,
       confirmText: 'Delete Team',
       cancelText: 'Cancel',
-      variant: 'danger'
+      variant: 'danger',
     });
 
     if (!confirmed) {
@@ -136,7 +149,7 @@ export const TeamsPage: React.FC = () => {
 
     try {
       const response = await teamService.deleteTeam(team.id);
-      
+
       if (response.success) {
         await loadTeams(); // Reload the list
         if (selectedTeam?.id === team.id) {
@@ -155,7 +168,7 @@ export const TeamsPage: React.FC = () => {
   const handleViewTeam = async (team: Team | TeamWithMembers) => {
     try {
       let teamWithMembers: TeamWithMembers;
-      
+
       if ('memberships' in team && team.memberships) {
         teamWithMembers = team as TeamWithMembers;
       } else {
@@ -167,7 +180,7 @@ export const TeamsPage: React.FC = () => {
           return;
         }
       }
-      
+
       setSelectedTeam(teamWithMembers);
       setViewMode('detail');
     } catch (err) {
@@ -184,7 +197,7 @@ export const TeamsPage: React.FC = () => {
   const handleAddMember = async (teamId: string, data: AddMemberRequest) => {
     try {
       const response = await teamService.addMember(teamId, data);
-      
+
       if (response.success) {
         // Reload team details
         const teamResponse = await teamService.getTeam(teamId);
@@ -192,7 +205,7 @@ export const TeamsPage: React.FC = () => {
           setSelectedTeam(teamResponse.data.team);
           setTeamsWithMembers(prev => ({
             ...prev,
-            [teamId]: teamResponse.data!.team
+            [teamId]: teamResponse.data!.team,
           }));
         }
       } else {
@@ -204,10 +217,14 @@ export const TeamsPage: React.FC = () => {
     }
   };
 
-  const handleUpdateMember = async (teamId: string, userId: string, data: UpdateMemberRequest) => {
+  const handleUpdateMember = async (
+    teamId: string,
+    userId: string,
+    data: UpdateMemberRequest
+  ) => {
     try {
       const response = await teamService.updateMember(teamId, userId, data);
-      
+
       if (response.success) {
         // Reload team details
         const teamResponse = await teamService.getTeam(teamId);
@@ -215,7 +232,7 @@ export const TeamsPage: React.FC = () => {
           setSelectedTeam(teamResponse.data.team);
           setTeamsWithMembers(prev => ({
             ...prev,
-            [teamId]: teamResponse.data!.team
+            [teamId]: teamResponse.data!.team,
           }));
         }
       } else {
@@ -230,7 +247,7 @@ export const TeamsPage: React.FC = () => {
   const handleRemoveMember = async (teamId: string, userId: string) => {
     try {
       const response = await teamService.removeMember(teamId, userId);
-      
+
       if (response.success) {
         // Reload team details
         const teamResponse = await teamService.getTeam(teamId);
@@ -238,7 +255,7 @@ export const TeamsPage: React.FC = () => {
           setSelectedTeam(teamResponse.data.team);
           setTeamsWithMembers(prev => ({
             ...prev,
-            [teamId]: teamResponse.data!.team
+            [teamId]: teamResponse.data!.team,
           }));
         }
       } else {
@@ -251,9 +268,11 @@ export const TeamsPage: React.FC = () => {
   };
 
   // Filter teams based on search
-  const filteredTeams = teams.filter(team =>
-    team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (team.description && team.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredTeams = teams.filter(
+    team =>
+      team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (team.description &&
+        team.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleCloseModal = () => {
@@ -265,14 +284,18 @@ export const TeamsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Teams</h1>
-            <p className="text-gray-600 dark:text-gray-300">Manage your teams and members</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              Teams
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
+              Manage your teams and members
+            </p>
           </div>
         </div>
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="flex items-center justify-center py-12">
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
         </div>
       </div>
     );
@@ -281,17 +304,21 @@ export const TeamsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Teams</h1>
-          <p className="text-gray-600 dark:text-gray-300">Manage your teams and members</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Teams
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300">
+            Manage your teams and members
+          </p>
         </div>
         <button
           onClick={() => {
             setSelectedTeam(null);
             setViewMode('form');
           }}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-md font-medium transition-colors min-h-[44px] w-full sm:w-auto"
+          className="min-h-[44px] w-full rounded-md bg-blue-600 px-4 py-3 font-medium text-white transition-colors hover:bg-blue-700 sm:w-auto"
         >
           Create Team
         </button>
@@ -299,7 +326,7 @@ export const TeamsPage: React.FC = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-700">
           {error}
           <button
             onClick={() => setError(null)}
@@ -311,11 +338,11 @@ export const TeamsPage: React.FC = () => {
       )}
 
       {/* Search */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-1">
           <div className="relative">
             <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+              className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -331,8 +358,8 @@ export const TeamsPage: React.FC = () => {
               type="text"
               placeholder="Search teams..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+              onChange={e => setSearchTerm(e.target.value)}
+              className="w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-4 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
             />
           </div>
         </div>
@@ -340,8 +367,8 @@ export const TeamsPage: React.FC = () => {
 
       {/* Teams Grid */}
       {filteredTeams.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTeams.map((team) => {
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredTeams.map(team => {
             const teamWithMembers = teamsWithMembers[team.id] || team;
             return (
               <TeamCard
@@ -356,16 +383,16 @@ export const TeamsPage: React.FC = () => {
           })}
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
-          <div className="mx-auto mb-4 text-gray-400 flex justify-center">
+        <div className="rounded-lg border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <div className="mx-auto mb-4 flex justify-center text-gray-400">
             <Users className="h-12 w-12" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+          <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
             {searchTerm ? 'No teams found' : 'No teams yet'}
           </h3>
-          <p className="text-gray-500 mb-4">
-            {searchTerm 
-              ? 'Try adjusting your search terms.' 
+          <p className="mb-4 text-gray-500">
+            {searchTerm
+              ? 'Try adjusting your search terms.'
               : 'Create your first team to start collaborating with your colleagues.'}
           </p>
           {!searchTerm && (
@@ -374,7 +401,7 @@ export const TeamsPage: React.FC = () => {
                 setSelectedTeam(null);
                 setViewMode('form');
               }}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors"
+              className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
             >
               Create Your First Team
             </button>
@@ -384,32 +411,39 @@ export const TeamsPage: React.FC = () => {
 
       {/* Modals */}
       <TeamForm
-        team={selectedTeam && 'memberships' in selectedTeam ? {
-          id: selectedTeam.id,
-          name: selectedTeam.name,
-          description: selectedTeam.description,
-          createdById: selectedTeam.createdById,
-          createdAt: selectedTeam.createdAt,
-          updatedAt: selectedTeam.updatedAt
-        } : selectedTeam as Team}
+        team={
+          selectedTeam && 'memberships' in selectedTeam
+            ? {
+                id: selectedTeam.id,
+                name: selectedTeam.name,
+                description: selectedTeam.description,
+                createdById: selectedTeam.createdById,
+                createdAt: selectedTeam.createdAt,
+                updatedAt: selectedTeam.updatedAt,
+              }
+            : (selectedTeam as Team)
+        }
         isOpen={viewMode === 'form'}
         onSubmit={selectedTeam ? handleUpdateTeam : handleCreateTeam}
         onCancel={handleCloseModal}
         isLoading={isFormLoading}
       />
 
-      {viewMode === 'detail' && selectedTeam && 'memberships' in selectedTeam && user && (
-        <TeamDetailModal
-          team={selectedTeam as TeamWithMembers}
-          currentUserId={user.id}
-          isOpen={viewMode === 'detail'}
-          onClose={handleCloseModal}
-          onEdit={handleEditTeam}
-          onAddMember={handleAddMember}
-          onUpdateMember={handleUpdateMember}
-          onRemoveMember={handleRemoveMember}
-        />
-      )}
+      {viewMode === 'detail' &&
+        selectedTeam &&
+        'memberships' in selectedTeam &&
+        user && (
+          <TeamDetailModal
+            team={selectedTeam as TeamWithMembers}
+            currentUserId={user.id}
+            isOpen={viewMode === 'detail'}
+            onClose={handleCloseModal}
+            onEdit={handleEditTeam}
+            onAddMember={handleAddMember}
+            onUpdateMember={handleUpdateMember}
+            onRemoveMember={handleRemoveMember}
+          />
+        )}
 
       {/* Confirmation Dialog */}
       <ConfirmDialog

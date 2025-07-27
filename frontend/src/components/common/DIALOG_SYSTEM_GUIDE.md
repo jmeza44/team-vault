@@ -3,31 +3,37 @@
 ## 🔍 **Issues with Previous Dialog Implementation**
 
 ### 1. **Backdrop Margin Problem**
+
 **Root Cause:** The combination of `flex items-center justify-center` with `p-4` padding created apparent margins:
 
 ```tsx
 // ❌ Problematic approach
-className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+className =
+  'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
 ```
 
 **Issues:**
+
 - `p-4` adds 16px padding on all sides
 - Creates visual "margin" at top/bottom
 - Inconsistent spacing on different screen sizes
 - Content can touch screen edges on mobile
 
 ### 2. **Z-Index Inconsistency**
+
 - **Dialogs**: `z-50` (z-index: 50)
 - **Alerts**: `z-[9999]` (z-index: 9999)
 - **Result**: Alerts could appear behind dialogs
 
 ### 3. **Accessibility Issues**
+
 - No focus trapping
 - No escape key handling
 - Missing ARIA attributes
 - No focus restoration after close
 
 ### 4. **Poor UX Patterns**
+
 - Fixed position copy feedback overlaps content
 - No body scroll prevention
 - No portal rendering (stacking context issues)
@@ -46,11 +52,13 @@ className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center
 #### **Key Improvements:**
 
 1. **🎯 Proper Z-Index Management**
+
    ```tsx
-   z-[9998] // Just below alerts (9999)
+   z - [9998]; // Just below alerts (9999)
    ```
 
 2. **🔧 Fixed Backdrop Margins**
+
    ```tsx
    // ✅ Improved approach
    <div className="fixed inset-0 z-[9998] flex items-center justify-center">
@@ -77,16 +85,20 @@ className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center
 ### **Enhanced Copy System**
 
 **Before:**
+
 ```tsx
 // ❌ Fixed position overlay (can conflict)
-{copyFeedback && (
-  <div className="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
-    {copyFeedback}
-  </div>
-)}
+{
+  copyFeedback && (
+    <div className="fixed bottom-4 right-4 rounded-md bg-green-500 px-4 py-2 text-white shadow-lg">
+      {copyFeedback}
+    </div>
+  );
+}
 ```
 
 **After:**
+
 ```tsx
 // ✅ Uses global alert system
 const { showCopySuccess, showCopyError } = useToast();
@@ -104,23 +116,27 @@ const handleCopy = async (text: string, label: string) => {
 ## 🎨 **Visual Improvements**
 
 ### **Modern Backdrop**
+
 ```tsx
 bg-black/50 backdrop-blur-sm  // Modern glass effect
 ```
 
 ### **Better Shadows**
+
 ```tsx
 shadow-2xl  // More prominent dialog separation
 ```
 
 ### **Smooth Transitions**
+
 ```tsx
-transition-colors  // Smooth hover effects on buttons
+transition - colors; // Smooth hover effects on buttons
 ```
 
 ## 📋 **Usage Patterns**
 
 ### **Basic Dialog**
+
 ```tsx
 import { Dialog } from '@/components/common/Dialog';
 
@@ -139,18 +155,20 @@ function MyComponent() {
 ```
 
 ### **Modal with Custom Behavior**
+
 ```tsx
-<Dialog 
-  isOpen={isOpen} 
+<Dialog
+  isOpen={isOpen}
   onClose={handleClose}
-  closeOnBackdrop={false}  // Prevent backdrop close
-  closeOnEscape={true}     // Allow escape key
+  closeOnBackdrop={false} // Prevent backdrop close
+  closeOnEscape={true} // Allow escape key
 >
   {/* Content */}
 </Dialog>
 ```
 
 ### **Integration with Alerts**
+
 ```tsx
 import { useToast } from '@/hooks/useToast';
 
@@ -167,16 +185,18 @@ function MyModal() {
 ## 🔧 **Migration Guide**
 
 ### **Step 1: Replace Manual Backdrop**
+
 ```tsx
 // ❌ Before
 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
   <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
 
-// ✅ After  
+// ✅ After
 <Dialog isOpen={isOpen} onClose={onClose}>
 ```
 
 ### **Step 2: Update Props**
+
 ```tsx
 // ❌ Before
 interface ModalProps {
@@ -187,12 +207,13 @@ interface ModalProps {
 // ✅ After
 interface ModalProps {
   credential: Credential;
-  isOpen: boolean;  // Add this
+  isOpen: boolean; // Add this
   onClose: () => void;
 }
 ```
 
 ### **Step 3: Replace Fixed Notifications**
+
 ```tsx
 // ❌ Before
 const [feedback, setFeedback] = useState<string | null>(null);
@@ -202,29 +223,35 @@ const { showCopySuccess } = useToast();
 ```
 
 ### **Step 4: Update Parent Components**
+
 ```tsx
 // ❌ Before
-{showModal && <MyModal credential={cred} onClose={close} />}
+{
+  showModal && <MyModal credential={cred} onClose={close} />;
+}
 
 // ✅ After
-<MyModal credential={cred} isOpen={showModal} onClose={close} />
+<MyModal credential={cred} isOpen={showModal} onClose={close} />;
 ```
 
 ## 🎯 **Benefits of New System**
 
 ### **Developer Experience**
+
 - ✅ Consistent API across all modals
 - ✅ Built-in accessibility features
 - ✅ No z-index conflicts to manage
 - ✅ Automatic focus management
 
 ### **User Experience**
+
 - ✅ No more backdrop margins
 - ✅ Smooth animations
 - ✅ Proper keyboard navigation
 - ✅ Consistent notification system
 
 ### **Maintenance**
+
 - ✅ Single Dialog component to maintain
 - ✅ Centralized accessibility logic
 - ✅ Reusable across all modals

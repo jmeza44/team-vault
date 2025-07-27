@@ -24,7 +24,7 @@ export const useConfirm = () => {
   });
 
   const confirm = (options: ConfirmOptions): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setConfirmState({
         ...options,
         isOpen: true,
@@ -46,8 +46,11 @@ export const useConfirm = () => {
     });
   };
 
-  const confirmAsync = (options: ConfirmOptions, asyncAction: () => Promise<void>): Promise<boolean> => {
-    return new Promise((resolve) => {
+  const confirmAsync = (
+    options: ConfirmOptions,
+    asyncAction: () => Promise<void>
+  ): Promise<boolean> => {
+    return new Promise(resolve => {
       setConfirmState({
         ...options,
         isOpen: true,
@@ -61,7 +64,11 @@ export const useConfirm = () => {
             resolve(false);
             throw error; // Re-throw so the caller can handle it
           } finally {
-            setConfirmState(prev => ({ ...prev, isOpen: false, loading: false }));
+            setConfirmState(prev => ({
+              ...prev,
+              isOpen: false,
+              loading: false,
+            }));
           }
         },
       });

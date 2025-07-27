@@ -45,7 +45,9 @@ export const usePermissions = () => {
     };
   }, [user]);
 
-  const getCredentialPermissions = (credential: Credential | null): CredentialPermissions => {
+  const getCredentialPermissions = (
+    credential: Credential | null
+  ): CredentialPermissions => {
     if (!user || !credential) {
       return {
         canView: false,
@@ -89,8 +91,9 @@ export const usePermissions = () => {
 
     // Check shared access
     const userSharedAccess = credential.sharedWith?.find(
-      share => share.sharedWithUserId === user.id && 
-      (!share.expiresAt || new Date(share.expiresAt) > new Date())
+      share =>
+        share.sharedWithUserId === user.id &&
+        (!share.expiresAt || new Date(share.expiresAt) > new Date())
     );
 
     if (userSharedAccess) {

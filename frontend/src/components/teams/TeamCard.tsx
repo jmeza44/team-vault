@@ -15,11 +15,14 @@ const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
   });
 };
 
-const getUserRole = (team: TeamWithMembers, userId: string): TeamRole | null => {
+const getUserRole = (
+  team: TeamWithMembers,
+  userId: string
+): TeamRole | null => {
   if (!('memberships' in team) || !team.memberships) return null;
   const membership = team.memberships.find(m => m.userId === userId);
   return membership?.role || null;
@@ -35,43 +38,55 @@ export const TeamCard: React.FC<TeamCardProps> = ({
   onView,
   onEdit,
   onDelete,
-  currentUserId
+  currentUserId,
 }) => {
   const [showActions, setShowActions] = useState(false);
-  
+
   const isWithMembers = 'memberships' in team && team.memberships;
-  const memberCount = isWithMembers ? (team as TeamWithMembers).memberCount || (team as TeamWithMembers).memberships?.length || 0 : 0;
-  const userRole = isWithMembers && currentUserId ? getUserRole(team as TeamWithMembers, currentUserId) : null;
-  const isAdmin = isWithMembers && currentUserId ? isTeamAdmin(team as TeamWithMembers, currentUserId) : false;
+  const memberCount = isWithMembers
+    ? (team as TeamWithMembers).memberCount ||
+      (team as TeamWithMembers).memberships?.length ||
+      0
+    : 0;
+  const userRole =
+    isWithMembers && currentUserId
+      ? getUserRole(team as TeamWithMembers, currentUserId)
+      : null;
+  const isAdmin =
+    isWithMembers && currentUserId
+      ? isTeamAdmin(team as TeamWithMembers, currentUserId)
+      : false;
 
   return (
-    <div 
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow relative cursor-pointer touch-manipulation"
+    <div
+      className="relative cursor-pointer touch-manipulation rounded-lg border border-gray-200 bg-white p-4 shadow-md transition-shadow hover:shadow-lg dark:border-gray-700 dark:bg-gray-800"
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
       onClick={() => onView(team)}
     >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
-        <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 truncate">
+      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0 flex-1">
+          <h3 className="mb-1 truncate text-lg font-semibold text-gray-900 dark:text-gray-100">
             {team.name}
           </h3>
           {team.description && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+            <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
               {team.description}
             </p>
           )}
         </div>
-        
+
         {/* User Role Badge */}
         {userRole && (
           <div className="flex-shrink-0">
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              userRole === TeamRole.ADMIN 
-                ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' 
-                : 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100'
-            }`}>
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                userRole === TeamRole.ADMIN
+                  ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100'
+                  : 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100'
+              }`}
+            >
               {userRole}
             </span>
           </div>
@@ -79,14 +94,16 @@ export const TeamCard: React.FC<TeamCardProps> = ({
       </div>
 
       {/* Team Stats */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
           <div className="flex items-center">
-            <Users className="w-4 h-4 mr-1" />
-            <span>{memberCount} {memberCount === 1 ? 'member' : 'members'}</span>
+            <Users className="mr-1 h-4 w-4" />
+            <span>
+              {memberCount} {memberCount === 1 ? 'member' : 'members'}
+            </span>
           </div>
           <div className="flex items-center">
-            <Lock className="w-4 h-4 mr-1" />
+            <Lock className="mr-1 h-4 w-4" />
             <span>Team Vault</span>
           </div>
         </div>
@@ -99,40 +116,40 @@ export const TeamCard: React.FC<TeamCardProps> = ({
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="absolute top-2 right-2 flex gap-1 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 p-1">
+        <div className="absolute right-2 top-2 flex gap-1 rounded-md border border-gray-200 bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
           <button
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               onView(team);
             }}
-            className="p-2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+            className="flex min-h-[36px] min-w-[36px] items-center justify-center rounded p-2 text-gray-500 transition-colors hover:bg-blue-50 hover:text-blue-600 dark:text-gray-400 dark:hover:bg-blue-900/20 dark:hover:text-blue-400"
             title="View Details"
           >
-            <Eye className="w-4 h-4" />
+            <Eye className="h-4 w-4" />
           </button>
 
           {isAdmin && (
             <>
               <button
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   onEdit(team);
                 }}
-                className="p-2 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                className="flex min-h-[36px] min-w-[36px] items-center justify-center rounded p-2 text-gray-500 transition-colors hover:bg-yellow-50 hover:text-yellow-600 dark:text-gray-400 dark:hover:bg-yellow-900/20 dark:hover:text-yellow-400"
                 title="Edit Team"
               >
-                <Edit className="w-4 h-4" />
+                <Edit className="h-4 w-4" />
               </button>
 
               <button
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   onDelete(team);
                 }}
-                className="p-2 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                className="flex min-h-[36px] min-w-[36px] items-center justify-center rounded p-2 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:text-gray-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                 title="Delete Team"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="h-4 w-4" />
               </button>
             </>
           )}

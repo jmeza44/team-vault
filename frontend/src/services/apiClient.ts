@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 class ApiClient {
   private static instance: ApiClient;
@@ -32,22 +33,22 @@ class ApiClient {
   private setupInterceptors() {
     // Request interceptor to add auth token
     this.axiosInstance.interceptors.request.use(
-      (config) => {
+      config => {
         const token = localStorage.getItem('accessToken');
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
       },
-      (error) => {
+      error => {
         return Promise.reject(error);
       }
     );
 
     // Response interceptor to handle token refresh
     this.axiosInstance.interceptors.response.use(
-      (response) => response,
-      async (error) => {
+      response => response,
+      async error => {
         const originalRequest = error.config;
 
         if (error.response?.status === 401 && !originalRequest._retry) {
@@ -55,12 +56,14 @@ class ApiClient {
             // If refresh is in progress, queue the request
             return new Promise((resolve, reject) => {
               this.failedQueue.push({ resolve, reject });
-            }).then((token) => {
-              originalRequest.headers.Authorization = `Bearer ${token}`;
-              return this.axiosInstance(originalRequest);
-            }).catch((err) => {
-              return Promise.reject(err);
-            });
+            })
+              .then(token => {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                return this.axiosInstance(originalRequest);
+              })
+              .catch(err => {
+                return Promise.reject(err);
+              });
           }
 
           originalRequest._retry = true;
@@ -69,17 +72,20 @@ class ApiClient {
           try {
             const refreshToken = localStorage.getItem('refreshToken');
             if (refreshToken) {
-              const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-                refreshToken,
-              });
+              const response = await axios.post(
+                `${API_BASE_URL}/auth/refresh`,
+                {
+                  refreshToken,
+                }
+              );
 
               if (response.data.success) {
                 const newAccessToken = response.data.data.accessToken;
                 localStorage.setItem('accessToken', newAccessToken);
-                
+
                 // Process failed queue
                 this.processQueue(null, newAccessToken);
-                
+
                 // Retry the original request with new token
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                 return this.axiosInstance(originalRequest);
@@ -109,7 +115,7 @@ class ApiClient {
         resolve(token);
       }
     });
-    
+
     this.failedQueue = [];
   }
 
@@ -122,15 +128,27 @@ class ApiClient {
     return this.axiosInstance.get<T>(url, config);
   }
 
-  public post<T = any>(url: string, data?: any, config?: any): Promise<AxiosResponse<T>> {
+  public post<T = any>(
+    url: string,
+    data?: any,
+    config?: any
+  ): Promise<AxiosResponse<T>> {
     return this.axiosInstance.post<T>(url, data, config);
   }
 
-  public put<T = any>(url: string, data?: any, config?: any): Promise<AxiosResponse<T>> {
+  public put<T = any>(
+    url: string,
+    data?: any,
+    config?: any
+  ): Promise<AxiosResponse<T>> {
     return this.axiosInstance.put<T>(url, data, config);
   }
 
-  public patch<T = any>(url: string, data?: any, config?: any): Promise<AxiosResponse<T>> {
+  public patch<T = any>(
+    url: string,
+    data?: any,
+    config?: any
+  ): Promise<AxiosResponse<T>> {
     return this.axiosInstance.patch<T>(url, data, config);
   }
 

@@ -27,7 +27,8 @@ export const RegisterPage: React.FC = () => {
   const { showError, showSuccess } = useAlertActions();
 
   // Password validation regex - matches backend validation
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/;
 
   // Password strength and requirement checking
   const passwordRequirements = useMemo(() => {
@@ -79,13 +80,19 @@ export const RegisterPage: React.FC = () => {
 
     // Enhanced password validation
     if (formData.password.length < 8) {
-      showError('Invalid Password', 'Password must be at least 8 characters long');
+      showError(
+        'Invalid Password',
+        'Password must be at least 8 characters long'
+      );
       setIsLoading(false);
       return;
     }
 
     if (!passwordRegex.test(formData.password)) {
-      showError('Invalid Password', 'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character');
+      showError(
+        'Invalid Password',
+        'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'
+      );
       setIsLoading(false);
       return;
     }
@@ -102,10 +109,16 @@ export const RegisterPage: React.FC = () => {
         email: formData.email,
         password: formData.password,
       });
-      showSuccess('Account Created Successfully!', 'Please sign in with your new account');
+      showSuccess(
+        'Account Created Successfully!',
+        'Please sign in with your new account'
+      );
       navigate('/login');
     } catch (error: any) {
-      showError('Registration Failed', error.message || 'Failed to create account. Please try again.');
+      showError(
+        'Registration Failed',
+        error.message || 'Failed to create account. Please try again.'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -133,13 +146,13 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-900 sm:px-6 lg:px-8">
       {/* Theme Switch - positioned in top right */}
-      <div className="absolute top-4 right-4">
+      <div className="absolute right-4 top-4">
         <ThemeSwitch />
       </div>
-      
-      <div className="max-w-md w-full space-y-8">
+
+      <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">
             Create your account
@@ -148,7 +161,7 @@ export const RegisterPage: React.FC = () => {
             Or{' '}
             <Link
               to="/login"
-              className="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300"
+              className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
             >
               sign in to your existing account
             </Link>
@@ -205,7 +218,7 @@ export const RegisterPage: React.FC = () => {
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
                   onClick={() => togglePasswordVisibility('password')}
                 >
                   {showPasswords.password ? (
@@ -215,20 +228,22 @@ export const RegisterPage: React.FC = () => {
                   )}
                 </button>
               </div>
-              
+
               {/* Password requirements - show one at a time */}
               {touched.password && formData.password && (
                 <div className="mt-2">
                   <div className="text-sm">
                     {passwordRequirements.allMet ? (
                       <div className="flex items-center text-green-600">
-                        <CheckCircle className="h-4 w-4 mr-2" />
+                        <CheckCircle className="mr-2 h-4 w-4" />
                         <span className="font-medium">Strong password</span>
                       </div>
                     ) : passwordRequirements.firstUnmetRequirement ? (
                       <div className="flex items-center text-gray-500 dark:text-gray-400">
-                        <Circle className="h-4 w-4 mr-2" />
-                        <span>{passwordRequirements.firstUnmetRequirement.message}</span>
+                        <Circle className="mr-2 h-4 w-4" />
+                        <span>
+                          {passwordRequirements.firstUnmetRequirement.message}
+                        </span>
                       </div>
                     ) : null}
                   </div>
@@ -253,7 +268,7 @@ export const RegisterPage: React.FC = () => {
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
                   onClick={() => togglePasswordVisibility('confirmPassword')}
                 >
                   {showPasswords.confirmPassword ? (
@@ -263,23 +278,25 @@ export const RegisterPage: React.FC = () => {
                   )}
                 </button>
               </div>
-              
+
               {/* Password match indicator */}
-              {touched.confirmPassword && formData.confirmPassword && formData.password && (
-                <div className="mt-2">
-                  {formData.password === formData.confirmPassword ? (
-                    <p className="text-sm text-green-600 flex items-center">
-                      <CheckCircle className="h-4 w-4 mr-1" />
-                      Passwords match
-                    </p>
-                  ) : (
-                    <p className="text-sm text-red-600 flex items-center">
-                      <Circle className="h-4 w-4 mr-1" />
-                      Passwords do not match
-                    </p>
-                  )}
-                </div>
-              )}
+              {touched.confirmPassword &&
+                formData.confirmPassword &&
+                formData.password && (
+                  <div className="mt-2">
+                    {formData.password === formData.confirmPassword ? (
+                      <p className="flex items-center text-sm text-green-600">
+                        <CheckCircle className="mr-1 h-4 w-4" />
+                        Passwords match
+                      </p>
+                    ) : (
+                      <p className="flex items-center text-sm text-red-600">
+                        <Circle className="mr-1 h-4 w-4" />
+                        Passwords do not match
+                      </p>
+                    )}
+                  </div>
+                )}
             </div>
           </div>
 
@@ -287,11 +304,11 @@ export const RegisterPage: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              className="group relative flex w-full justify-center rounded-md border border-transparent bg-primary-600 px-4 py-3 text-sm font-medium text-white transition-colors duration-200 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? (
                 <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                   Creating account...
                 </div>
               ) : (

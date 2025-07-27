@@ -14,7 +14,10 @@ interface ValidationErrors {
   confirmPassword?: string;
 }
 
-export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSuccess, onCancel }) => {
+export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
+  onSuccess,
+  onCancel,
+}) => {
   const [formData, setFormData] = useState<ChangePasswordRequest>({
     currentPassword: '',
     newPassword: '',
@@ -34,7 +37,8 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
   const { showSuccess, showError } = useAlertActions();
 
   // Password validation regex - matches backend validation
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/;
 
   // Validation logic
   const validationErrors = useMemo<ValidationErrors>(() => {
@@ -52,7 +56,8 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
       } else if (formData.newPassword.length < 8) {
         errors.newPassword = 'New password must be at least 8 characters long';
       } else if (!passwordRegex.test(formData.newPassword)) {
-        errors.newPassword = 'New password must contain at least one lowercase letter, one uppercase letter, one number, and one special character';
+        errors.newPassword =
+          'New password must contain at least one lowercase letter, one uppercase letter, one number, and one special character';
       }
     }
 
@@ -60,13 +65,22 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
     if (touched.confirmPassword) {
       if (!confirmPassword) {
         errors.confirmPassword = 'Please confirm your new password';
-      } else if (formData.newPassword && confirmPassword !== formData.newPassword) {
+      } else if (
+        formData.newPassword &&
+        confirmPassword !== formData.newPassword
+      ) {
         errors.confirmPassword = 'Passwords do not match';
       }
     }
 
     return errors;
-  }, [formData.currentPassword, formData.newPassword, confirmPassword, touched, passwordRegex]);
+  }, [
+    formData.currentPassword,
+    formData.newPassword,
+    confirmPassword,
+    touched,
+    passwordRegex,
+  ]);
 
   // Password strength and requirement checking
   const passwordRequirements = useMemo(() => {
@@ -110,10 +124,11 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
     };
   }, [formData.newPassword]);
 
-  const isFormValid = Object.keys(validationErrors).length === 0 && 
-                     formData.currentPassword && 
-                     formData.newPassword && 
-                     confirmPassword;
+  const isFormValid =
+    Object.keys(validationErrors).length === 0 &&
+    formData.currentPassword &&
+    formData.newPassword &&
+    confirmPassword;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,17 +149,26 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
 
     // Additional client-side checks (though these should be caught by validation)
     if (formData.newPassword !== confirmPassword) {
-      showError('Password Mismatch', 'New password and confirmation do not match');
+      showError(
+        'Password Mismatch',
+        'New password and confirmation do not match'
+      );
       return;
     }
 
     if (formData.newPassword.length < 8) {
-      showError('Invalid Password', 'New password must be at least 8 characters long');
+      showError(
+        'Invalid Password',
+        'New password must be at least 8 characters long'
+      );
       return;
     }
 
     if (!passwordRegex.test(formData.newPassword)) {
-      showError('Invalid Password', 'New password must contain at least one lowercase letter, one uppercase letter, one number, and one special character');
+      showError(
+        'Invalid Password',
+        'New password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'
+      );
       return;
     }
 
@@ -152,12 +176,15 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
 
     try {
       const response = await userService.changePassword(formData);
-      
+
       if (response.success) {
         showSuccess('Password changed successfully');
         onSuccess();
       } else {
-        showError('Password Change Failed', response.error?.message || 'Failed to change password');
+        showError(
+          'Password Change Failed',
+          response.error?.message || 'Failed to change password'
+        );
       }
     } catch (error) {
       showError('Password Change Failed', 'Failed to change password');
@@ -168,7 +195,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
+
     if (name === 'confirmPassword') {
       setConfirmPassword(value);
     } else {
@@ -213,7 +240,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
           />
           <button
             type="button"
-            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+            className="absolute inset-y-0 right-0 flex items-center pr-3"
             onClick={() => togglePasswordVisibility('current')}
           >
             {showPasswords.current ? (
@@ -246,7 +273,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
           />
           <button
             type="button"
-            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+            className="absolute inset-y-0 right-0 flex items-center pr-3"
             onClick={() => togglePasswordVisibility('new')}
           >
             {showPasswords.new ? (
@@ -256,26 +283,28 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
             )}
           </button>
         </div>
-        
+
         {/* Password requirements - show one at a time */}
         <div className="mt-2">
           {formData.newPassword && (
             <div className="text-sm">
               {passwordRequirements.allMet ? (
                 <div className="flex items-center text-green-600">
-                  <CheckCircle className="h-4 w-4 mr-2" />
+                  <CheckCircle className="mr-2 h-4 w-4" />
                   <span className="font-medium">Strong password</span>
                 </div>
               ) : passwordRequirements.firstUnmetRequirement ? (
                 <div className="flex items-center text-gray-500 dark:text-gray-400">
-                  <Circle className="h-4 w-4 mr-2" />
-                  <span>{passwordRequirements.firstUnmetRequirement.message}</span>
+                  <Circle className="mr-2 h-4 w-4" />
+                  <span>
+                    {passwordRequirements.firstUnmetRequirement.message}
+                  </span>
                 </div>
               ) : null}
             </div>
           )}
         </div>
-        
+
         {validationErrors.newPassword && (
           <p className="form-error">{validationErrors.newPassword}</p>
         )}
@@ -299,7 +328,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
           />
           <button
             type="button"
-            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+            className="absolute inset-y-0 right-0 flex items-center pr-3"
             onClick={() => togglePasswordVisibility('confirm')}
           >
             {showPasswords.confirm ? (
@@ -312,12 +341,14 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSucces
         {validationErrors.confirmPassword && (
           <p className="form-error">{validationErrors.confirmPassword}</p>
         )}
-        {!validationErrors.confirmPassword && confirmPassword && formData.newPassword === confirmPassword && (
-          <p className="text-sm text-green-600 mt-1 flex items-center">
-            <CheckCircle className="h-4 w-4 mr-1" />
-            Passwords match
-          </p>
-        )}
+        {!validationErrors.confirmPassword &&
+          confirmPassword &&
+          formData.newPassword === confirmPassword && (
+            <p className="mt-1 flex items-center text-sm text-green-600">
+              <CheckCircle className="mr-1 h-4 w-4" />
+              Passwords match
+            </p>
+          )}
       </div>
 
       <div className="flex gap-3">

@@ -1,14 +1,14 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { useMobile } from "@/contexts/MobileContext";
-import { BarChart3, Shield, Users, User } from "lucide-react";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useMobile } from '@/contexts/MobileContext';
+import { BarChart3, Shield, Users, User } from 'lucide-react';
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
-  { name: "Credentials", href: "/credentials", icon: Shield },
-  { name: "Teams", href: "/teams", icon: Users },
-  { name: "Profile", href: "/profile", icon: User },
+  { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
+  { name: 'Credentials', href: '/credentials', icon: Shield },
+  { name: 'Teams', href: '/teams', icon: Users },
+  { name: 'Profile', href: '/profile', icon: User },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -23,13 +23,15 @@ export const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="w-64 bg-white dark:bg-gray-800 shadow-sm border-r border-gray-200 dark:border-gray-700 h-screen flex flex-col">
+    <div className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <div className="p-6">
-        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Team Vault</h1>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+          Team Vault
+        </h1>
       </div>
 
-      <nav className="px-4 space-y-2 flex-1">
-        {navigation.map((item) => {
+      <nav className="flex-1 space-y-2 px-4">
+        {navigation.map(item => {
           const IconComponent = item.icon;
           return (
             <NavLink
@@ -37,10 +39,10 @@ export const Sidebar: React.FC = () => {
               to={item.href}
               onClick={handleNavLinkClick}
               className={({ isActive }) =>
-                `flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors min-h-[44px] ${
+                `flex min-h-[44px] items-center rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300"
-                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100"
+                    ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-100'
                 }`
               }
             >
@@ -51,13 +53,17 @@ export const Sidebar: React.FC = () => {
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-        <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{user?.name}</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.email}</p>
+      <div className="border-t border-gray-200 p-4 dark:border-gray-700">
+        <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+          <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
+            {user?.name}
+          </p>
+          <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+            {user?.email}
+          </p>
           <button
             onClick={logout}
-            className="btn btn-outline mt-3 w-full text-xs py-2 px-3 rounded-md border transition-colors min-h-[36px]"
+            className="btn btn-outline mt-3 min-h-[36px] w-full rounded-md border px-3 py-2 text-xs transition-colors"
           >
             Sign out
           </button>

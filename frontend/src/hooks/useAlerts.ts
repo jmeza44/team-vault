@@ -4,7 +4,14 @@ import { useAlert } from '@/contexts/AlertContext';
 export const useAlertActions = () => {
   const { showAlert } = useAlert();
 
-  const showSuccess = (title: string, message?: string, options?: { duration?: number; action?: { label: string; onClick: () => void } }) => {
+  const showSuccess = (
+    title: string,
+    message?: string,
+    options?: {
+      duration?: number;
+      action?: { label: string; onClick: () => void };
+    }
+  ) => {
     showAlert({
       type: 'success',
       title,
@@ -13,7 +20,14 @@ export const useAlertActions = () => {
     });
   };
 
-  const showError = (title: string, message?: string, options?: { duration?: number; action?: { label: string; onClick: () => void } }) => {
+  const showError = (
+    title: string,
+    message?: string,
+    options?: {
+      duration?: number;
+      action?: { label: string; onClick: () => void };
+    }
+  ) => {
     showAlert({
       type: 'error',
       title,
@@ -23,7 +37,14 @@ export const useAlertActions = () => {
     });
   };
 
-  const showWarning = (title: string, message?: string, options?: { duration?: number; action?: { label: string; onClick: () => void } }) => {
+  const showWarning = (
+    title: string,
+    message?: string,
+    options?: {
+      duration?: number;
+      action?: { label: string; onClick: () => void };
+    }
+  ) => {
     showAlert({
       type: 'warning',
       title,
@@ -33,7 +54,14 @@ export const useAlertActions = () => {
     });
   };
 
-  const showInfo = (title: string, message?: string, options?: { duration?: number; action?: { label: string; onClick: () => void } }) => {
+  const showInfo = (
+    title: string,
+    message?: string,
+    options?: {
+      duration?: number;
+      action?: { label: string; onClick: () => void };
+    }
+  ) => {
     showAlert({
       type: 'info',
       title,
@@ -54,7 +82,10 @@ export const useAlertActions = () => {
 export const useApiErrorHandler = () => {
   const { showError } = useAlertActions();
 
-  const handleApiError = (error: any, defaultMessage = 'An unexpected error occurred') => {
+  const handleApiError = (
+    error: any,
+    defaultMessage = 'An unexpected error occurred'
+  ) => {
     let title = 'Error';
     let message = defaultMessage;
 

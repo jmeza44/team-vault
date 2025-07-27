@@ -17,12 +17,12 @@ export const AlertDemo: React.FC = () => {
     showError(
       'Error Occurred',
       'This is an error message that stays until dismissed',
-      { 
+      {
         duration: 0, // Won't auto-dismiss
         action: {
           label: 'Retry',
-          onClick: () => showInfo('Retry', 'Retry action clicked!')
-        }
+          onClick: () => showInfo('Retry', 'Retry action clicked!'),
+        },
       }
     );
   };
@@ -34,8 +34,8 @@ export const AlertDemo: React.FC = () => {
       {
         action: {
           label: 'View Details',
-          onClick: () => showInfo('Details', 'Warning details viewed')
-        }
+          onClick: () => showInfo('Details', 'Warning details viewed'),
+        },
       }
     );
   };
@@ -49,26 +49,30 @@ export const AlertDemo: React.FC = () => {
 
   const demoMultipleAlerts = () => {
     showSuccess('First Alert', 'This will appear first');
-    setTimeout(() => showWarning('Second Alert', 'This appears after a delay'), 500);
+    setTimeout(
+      () => showWarning('Second Alert', 'This appears after a delay'),
+      500
+    );
     setTimeout(() => showInfo('Third Alert', 'This appears last'), 1000);
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
         <Zap className="h-5 w-5 text-blue-500 dark:text-blue-400" />
         Alert System Demo
       </h3>
-      
-      <p className="text-gray-600 dark:text-gray-300 mb-6">
-        Click the buttons below to test different types of alerts. Notice how they appear in the top-right corner 
-        with proper z-index positioning over all other elements.
+
+      <p className="mb-6 text-gray-600 dark:text-gray-300">
+        Click the buttons below to test different types of alerts. Notice how
+        they appear in the top-right corner with proper z-index positioning over
+        all other elements.
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
         <button
           onClick={demoSuccessAlert}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+          className="flex items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2 text-white transition-colors hover:bg-green-700"
         >
           <CheckCircle className="h-4 w-4" />
           Success
@@ -76,7 +80,7 @@ export const AlertDemo: React.FC = () => {
 
         <button
           onClick={demoErrorAlert}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+          className="flex items-center justify-center gap-2 rounded-md bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
         >
           <XCircle className="h-4 w-4" />
           Error
@@ -84,7 +88,7 @@ export const AlertDemo: React.FC = () => {
 
         <button
           onClick={demoWarningAlert}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors"
+          className="flex items-center justify-center gap-2 rounded-md bg-yellow-600 px-4 py-2 text-white transition-colors hover:bg-yellow-700"
         >
           <AlertTriangle className="h-4 w-4" />
           Warning
@@ -92,7 +96,7 @@ export const AlertDemo: React.FC = () => {
 
         <button
           onClick={demoInfoAlert}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="flex items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
         >
           <Info className="h-4 w-4" />
           Info
@@ -100,23 +104,40 @@ export const AlertDemo: React.FC = () => {
 
         <button
           onClick={demoMultipleAlerts}
-          className="col-span-2 md:col-span-2 flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+          className="col-span-2 flex items-center justify-center gap-2 rounded-md bg-purple-600 px-4 py-2 text-white transition-colors hover:bg-purple-700 md:col-span-2"
         >
           <Zap className="h-4 w-4" />
           Multiple Alerts
         </button>
       </div>
 
-      <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
-        <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Features Demonstrated:</h4>
-        <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-          <li>• <strong>Different alert types</strong> with appropriate colors and icons</li>
-          <li>• <strong>Auto-dismiss</strong> with configurable timing</li>
-          <li>• <strong>Manual dismiss</strong> with close button</li>
-          <li>• <strong>Action buttons</strong> for interactive alerts</li>
-          <li>• <strong>Stacking</strong> when multiple alerts are shown</li>
-          <li>• <strong>High z-index</strong> positioning over dialogs and modals</li>
-          <li>• <strong>Responsive design</strong> that works on all screen sizes</li>
+      <div className="mt-6 rounded-md bg-gray-50 p-4 dark:bg-gray-700">
+        <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">
+          Features Demonstrated:
+        </h4>
+        <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+          <li>
+            • <strong>Different alert types</strong> with appropriate colors and
+            icons
+          </li>
+          <li>
+            • <strong>Auto-dismiss</strong> with configurable timing
+          </li>
+          <li>
+            • <strong>Manual dismiss</strong> with close button
+          </li>
+          <li>
+            • <strong>Action buttons</strong> for interactive alerts
+          </li>
+          <li>
+            • <strong>Stacking</strong> when multiple alerts are shown
+          </li>
+          <li>
+            • <strong>High z-index</strong> positioning over dialogs and modals
+          </li>
+          <li>
+            • <strong>Responsive design</strong> that works on all screen sizes
+          </li>
         </ul>
       </div>
     </div>

@@ -5,22 +5,22 @@ import { MetricCard } from '@/components/common/MetricCard';
 import { RecentActivityList } from '@/components/common/RecentActivityList';
 import { TimeRangeSelector } from '@/components/common/TimeRangeSelector';
 // import { AlertDemo } from '@/components/common/AlertDemo';
-import { 
-  KeyRound, 
-  Clock, 
-  AlertTriangle, 
-  Users, 
-  Share2, 
-  Shield, 
+import {
+  KeyRound,
+  Clock,
+  AlertTriangle,
+  Users,
+  Share2,
+  Shield,
   RefreshCw,
   Eye,
-  EyeOff
+  EyeOff,
 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
   const [showFilters, setShowFilters] = useState(false);
-  
+
   const {
     dashboardMetrics,
     teamActivity,
@@ -30,9 +30,9 @@ export const DashboardPage: React.FC = () => {
     isTeamActivityLoading,
     filters,
     setFilters,
-    refreshAll
+    refreshAll,
   } = useAnalytics({
-    timeRange: 'last24h'
+    timeRange: 'last24h',
   });
 
   const handleRefresh = () => {
@@ -41,25 +41,27 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-300">Welcome back, {user?.name}! Overview of your team's credentials and activity</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Dashboard
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300">
+            Welcome back, {user?.name}! Overview of your team's credentials and
+            activity
+          </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-md 
-                     bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 
-                     hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center space-x-2 min-h-[44px]"
+            className="flex min-h-[44px] items-center justify-center space-x-2 rounded-md border border-gray-300 bg-white px-4 py-3 text-sm text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
           >
             {showFilters ? <EyeOff size={16} /> : <Eye size={16} />}
             <span>{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
           </button>
           <button
             onClick={handleRefresh}
-            className="px-4 py-3 text-sm bg-primary-600 text-white rounded-md 
-                     hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 min-h-[44px]"
+            className="flex min-h-[44px] items-center justify-center space-x-2 rounded-md bg-primary-600 px-4 py-3 text-sm text-white transition-colors hover:bg-primary-700"
           >
             <RefreshCw size={16} />
             <span>Refresh</span>
@@ -70,18 +72,17 @@ export const DashboardPage: React.FC = () => {
       {showFilters && (
         <div className="card">
           <div className="card-header">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Filters</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+              Filters
+            </h3>
           </div>
           <div className="card-body">
-            <TimeRangeSelector 
-              filters={filters} 
-              onFiltersChange={setFilters} 
-            />
+            <TimeRangeSelector filters={filters} onFiltersChange={setFilters} />
           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         <MetricCard
           title="Total Credentials"
           value={dashboardMetrics?.totalCredentials ?? 0}
@@ -131,7 +132,12 @@ export const DashboardPage: React.FC = () => {
           title="Security Alerts"
           value={dashboardMetrics?.securityAlerts ?? 0}
           description="Recent security events"
-          variant={dashboardMetrics?.securityAlerts && dashboardMetrics.securityAlerts > 0 ? "danger" : "success"}
+          variant={
+            dashboardMetrics?.securityAlerts &&
+            dashboardMetrics.securityAlerts > 0
+              ? 'danger'
+              : 'success'
+          }
           isLoading={isDashboardLoading}
           icon={<Shield size={20} />}
         />
@@ -141,7 +147,10 @@ export const DashboardPage: React.FC = () => {
         <div className="card border-l-4 border-l-warning-500 bg-warning-50 dark:bg-warning-900/20">
           <div className="card-body">
             <div className="flex items-center space-x-3">
-              <AlertTriangle size={24} className="text-warning-600 dark:text-warning-400" />
+              <AlertTriangle
+                size={24}
+                className="text-warning-600 dark:text-warning-400"
+              />
               <div>
                 <h3 className="font-medium text-warning-800 dark:text-warning-200">
                   Elevated Security Risk Score: {securityMetrics.riskScore}
@@ -155,14 +164,16 @@ export const DashboardPage: React.FC = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="card">
           <div className="card-header">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Recent Activity</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+              Recent Activity
+            </h2>
           </div>
           <div className="card-body">
-            <RecentActivityList 
-              activities={recentActivity || []} 
+            <RecentActivityList
+              activities={recentActivity || []}
               isLoading={isTeamActivityLoading}
               maxItems={8}
             />
@@ -171,47 +182,59 @@ export const DashboardPage: React.FC = () => {
 
         <div className="card">
           <div className="card-header">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Team Overview</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+              Team Overview
+            </h2>
           </div>
           <div className="card-body">
             {isTeamActivityLoading ? (
               <div className="animate-pulse space-y-3">
                 {Array.from({ length: 4 }).map((_, index) => (
                   <div key={index} className="flex justify-between">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+                    <div className="h-4 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="h-4 w-16 rounded bg-gray-200 dark:bg-gray-700"></div>
                   </div>
                 ))}
               </div>
             ) : teamActivity ? (
               <div className="space-y-3">
-                <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Total Teams</span>
+                <div className="flex justify-between border-b border-gray-200 py-2 dark:border-gray-700">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Total Teams
+                  </span>
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {teamActivity.totalTeams}
                   </span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Active Teams</span>
+                <div className="flex justify-between border-b border-gray-200 py-2 dark:border-gray-700">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Active Teams
+                  </span>
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {teamActivity.activeTeams}
                   </span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Team Credentials</span>
+                <div className="flex justify-between border-b border-gray-200 py-2 dark:border-gray-700">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Team Credentials
+                  </span>
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {teamActivity.teamCredentials}
                   </span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Total Members</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Total Members
+                  </span>
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {teamActivity.totalMembers}
                   </span>
                 </div>
               </div>
             ) : (
-              <p className="text-gray-500 dark:text-gray-400">No team data available.</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                No team data available.
+              </p>
             )}
           </div>
         </div>

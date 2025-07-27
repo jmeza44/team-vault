@@ -9,7 +9,11 @@ interface ProfileFormProps {
   onCancel: () => void;
 }
 
-export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onUpdate, onCancel }) => {
+export const ProfileForm: React.FC<ProfileFormProps> = ({
+  user,
+  onUpdate,
+  onCancel,
+}) => {
   const [formData, setFormData] = useState<UpdateProfileRequest>({
     name: user.name,
     email: user.email,
@@ -23,12 +27,15 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onUpdate, onCanc
 
     try {
       const response = await userService.updateProfile(formData);
-      
+
       if (response.success && response.data?.user) {
         onUpdate(response.data.user);
         showSuccess('Profile updated successfully');
       } else {
-        showError('Update Failed', response.error?.message || 'Failed to update profile');
+        showError(
+          'Update Failed',
+          response.error?.message || 'Failed to update profile'
+        );
       }
     } catch (error) {
       showError('Update Failed', 'Failed to update profile');
@@ -88,17 +95,13 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onUpdate, onCanc
           readOnly
           disabled
         />
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="mt-1 text-sm text-gray-500">
           Role cannot be changed from this interface
         </p>
       </div>
 
       <div className="flex gap-3">
-        <button
-          type="submit"
-          className="btn-primary"
-          disabled={isLoading}
-        >
+        <button type="submit" className="btn-primary" disabled={isLoading}>
           {isLoading ? 'Updating...' : 'Update Profile'}
         </button>
         <button

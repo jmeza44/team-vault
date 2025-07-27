@@ -198,9 +198,17 @@ export interface TeamActivityMetrics {
 
 export interface RecentActivity {
   id: string;
-  type: 'CREDENTIAL_CREATED' | 'CREDENTIAL_UPDATED' | 'CREDENTIAL_DELETED' | 'CREDENTIAL_ACCESSED' | 
-        'CREDENTIAL_SHARED' | 'TEAM_CREATED' | 'TEAM_MEMBER_ADDED' | 'TEAM_MEMBER_REMOVED' | 
-        'USER_LOGIN' | 'SECURITY_ALERT';
+  type:
+    | 'CREDENTIAL_CREATED'
+    | 'CREDENTIAL_UPDATED'
+    | 'CREDENTIAL_DELETED'
+    | 'CREDENTIAL_ACCESSED'
+    | 'CREDENTIAL_SHARED'
+    | 'TEAM_CREATED'
+    | 'TEAM_MEMBER_ADDED'
+    | 'TEAM_MEMBER_REMOVED'
+    | 'USER_LOGIN'
+    | 'SECURITY_ALERT';
   description: string;
   userId: string;
   userName: string;
@@ -221,7 +229,11 @@ export interface SecurityMetrics {
 
 export interface SecurityEvent {
   id: string;
-  type: 'FAILED_LOGIN' | 'SUSPICIOUS_ACTIVITY' | 'UNAUTHORIZED_ACCESS' | 'TOKEN_THEFT';
+  type:
+    | 'FAILED_LOGIN'
+    | 'SUSPICIOUS_ACTIVITY'
+    | 'UNAUTHORIZED_ACCESS'
+    | 'TOKEN_THEFT';
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   description: string;
   userId?: string;

@@ -12,46 +12,49 @@ const timeRangeOptions = [
   { value: 'last7d', label: 'Last 7 Days' },
   { value: 'last30d', label: 'Last 30 Days' },
   { value: 'last90d', label: 'Last 90 Days' },
-  { value: 'last1y', label: 'Last Year' }
+  { value: 'last1y', label: 'Last Year' },
 ] as const;
 
 export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
   filters,
   onFiltersChange,
-  className = ''
+  className = '',
 }) => {
   const handleTimeRangeChange = (timeRange: string) => {
     onFiltersChange({
       ...filters,
       timeRange: timeRange as AnalyticsFilters['timeRange'],
       startDate: undefined,
-      endDate: undefined
+      endDate: undefined,
     });
   };
 
-  const handleCustomDateChange = (field: 'startDate' | 'endDate', value: string) => {
+  const handleCustomDateChange = (
+    field: 'startDate' | 'endDate',
+    value: string
+  ) => {
     onFiltersChange({
       ...filters,
       timeRange: undefined,
-      [field]: value || undefined
+      [field]: value || undefined,
     });
   };
 
   return (
     <div className={`space-y-4 ${className}`}>
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Time Range
         </label>
         <div className="flex flex-wrap gap-2">
-          {timeRangeOptions.map((option) => (
+          {timeRangeOptions.map(option => (
             <button
               key={option.value}
               onClick={() => handleTimeRangeChange(option.value)}
-              className={`px-3 py-1 text-sm rounded-md border transition-colors ${
+              className={`rounded-md border px-3 py-1 text-sm transition-colors ${
                 filters.timeRange === option.value
-                  ? 'bg-primary-500 text-white border-primary-500'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  ? 'border-primary-500 bg-primary-500 text-white'
+                  : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
               }`}
             >
               {option.label}
@@ -60,33 +63,35 @@ export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label
+            htmlFor="start-date"
+            className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
             Custom Start Date
           </label>
           <input
             type="date"
             id="start-date"
             value={filters.startDate || ''}
-            onChange={(e) => handleCustomDateChange('startDate', e.target.value)}
-            className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md 
-                     bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
-                     focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            onChange={e => handleCustomDateChange('startDate', e.target.value)}
+            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
           />
         </div>
         <div>
-          <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label
+            htmlFor="end-date"
+            className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
             Custom End Date
           </label>
           <input
             type="date"
             id="end-date"
             value={filters.endDate || ''}
-            onChange={(e) => handleCustomDateChange('endDate', e.target.value)}
-            className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md 
-                     bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
-                     focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            onChange={e => handleCustomDateChange('endDate', e.target.value)}
+            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
           />
         </div>
       </div>

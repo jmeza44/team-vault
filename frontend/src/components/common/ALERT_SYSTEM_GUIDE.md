@@ -7,6 +7,7 @@ The alert system provides a clean, consistent way to display notifications, succ
 ## 🏗️ Architecture
 
 ### Components Structure
+
 ```
 src/
 ├── types/alert.ts                      # Alert type definitions
@@ -22,12 +23,14 @@ src/
 ## 🎨 Alert Types & Styling
 
 ### Available Alert Types
+
 - **Success** (Green) - ✅ CheckCircle icon, auto-dismiss after 5s
 - **Error** (Red) - ❌ XCircle icon, manual dismiss only
-- **Warning** (Yellow) - ⚠️ AlertTriangle icon, auto-dismiss after 8s  
+- **Warning** (Yellow) - ⚠️ AlertTriangle icon, auto-dismiss after 8s
 - **Info** (Blue) - ℹ️ Info icon, auto-dismiss after 5s
 
 ### Visual Features
+
 - **Clean design** with Tailwind CSS
 - **Lucide React icons** for visual clarity
 - **Smooth animations** (slide-in from top, fade effects)
@@ -53,9 +56,7 @@ function MyComponent() {
     showError('Error', 'Something went wrong');
   };
 
-  return (
-    <button onClick={handleSuccess}>Show Success</button>
-  );
+  return <button onClick={handleSuccess}>Show Success</button>;
 }
 ```
 
@@ -74,8 +75,8 @@ showError('Failed!', 'Operation failed', { duration: 0 });
 showWarning('Warning!', 'Please review', {
   action: {
     label: 'Review Now',
-    onClick: () => console.log('Action clicked!')
-  }
+    onClick: () => console.log('Action clicked!'),
+  },
 });
 ```
 
@@ -103,15 +104,17 @@ function MyComponent() {
 ## 🔧 Configuration Options
 
 ### Alert Interface
+
 ```typescript
 interface Alert {
-  id: string;                    // Auto-generated
+  id: string; // Auto-generated
   type: 'success' | 'error' | 'warning' | 'info';
-  title: string;                 // Main message
-  message?: string;              // Optional description
-  duration?: number;             // Auto-dismiss time (0 = manual only)
-  dismissible?: boolean;         // Show close button (default: true)
-  action?: {                     // Optional action button
+  title: string; // Main message
+  message?: string; // Optional description
+  duration?: number; // Auto-dismiss time (0 = manual only)
+  dismissible?: boolean; // Show close button (default: true)
+  action?: {
+    // Optional action button
     label: string;
     onClick: () => void;
   };
@@ -119,6 +122,7 @@ interface Alert {
 ```
 
 ### Default Durations
+
 - **Success**: 5000ms (5 seconds)
 - **Error**: 0ms (manual dismiss only)
 - **Warning**: 8000ms (8 seconds)
@@ -129,21 +133,25 @@ interface Alert {
 ### Replace Inline Error Messages
 
 **Before:**
+
 ```tsx
 const [error, setError] = useState<string | null>(null);
 
 // In JSX
-{error && (
-  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-    {error}
-  </div>
-)}
+{
+  error && (
+    <div className="rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+      {error}
+    </div>
+  );
+}
 
 // In error handling
 setError('Something went wrong');
 ```
 
 **After:**
+
 ```tsx
 const { showError } = useAlertActions();
 
@@ -154,25 +162,29 @@ showError('Error', 'Something went wrong');
 ### Replace Success Messages
 
 **Before:**
+
 ```tsx
 const [success, setSuccess] = useState<string | null>(null);
 
-// In JSX  
-{success && (
-  <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
-    {success}
-  </div>
-)}
+// In JSX
+{
+  success && (
+    <div className="rounded border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+      {success}
+    </div>
+  );
+}
 
 // In success handling
 setSuccess('Operation successful');
 ```
 
 **After:**
+
 ```tsx
 const { showSuccess } = useAlertActions();
 
-// In success handling  
+// In success handling
 showSuccess('Success', 'Operation successful');
 ```
 
@@ -203,11 +215,13 @@ Visit the **Dashboard page** to see the AlertDemo component in action. It includ
 ## 🔄 Next Steps
 
 ### Immediate Improvements
+
 1. **Replace existing error handling** in components
 2. **Add success messages** for all CRUD operations
 3. **Implement warning alerts** for destructive actions
 
 ### Future Enhancements
+
 1. **Sound notifications** option
 2. **Persistent alerts** for critical errors
 3. **Alert history/log** functionality
@@ -219,16 +233,19 @@ Visit the **Dashboard page** to see the AlertDemo component in action. It includ
 ### Common Issues
 
 **Alerts not showing:**
+
 - Ensure `AlertProvider` wraps your app
 - Check `AlertContainer` is rendered
 - Verify hook usage inside provider
 
 **Styling issues:**
+
 - Confirm Tailwind CSS classes are available
 - Check z-index conflicts
 - Verify Lucide icons are installed
 
 **TypeScript errors:**
+
 - Import types from `@/types/alert`
 - Ensure hooks are used within provider
 - Check function signatures match interfaces

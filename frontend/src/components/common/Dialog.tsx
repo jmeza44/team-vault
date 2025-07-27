@@ -16,7 +16,7 @@ export const Dialog: React.FC<DialogProps> = ({
   children,
   className = '',
   closeOnBackdrop = true,
-  closeOnEscape = true
+  closeOnEscape = true,
 }) => {
   React.useEffect(() => {
     if (!isOpen) return;
@@ -30,7 +30,7 @@ export const Dialog: React.FC<DialogProps> = ({
     // Prevent body scroll
     const originalStyle = window.getComputedStyle(document.body).overflow;
     document.body.style.overflow = 'hidden';
-    
+
     // Add escape listener
     document.addEventListener('keydown', handleEscape);
 
@@ -42,7 +42,11 @@ export const Dialog: React.FC<DialogProps> = ({
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     // Only close on backdrop click for desktop (md and above)
-    if (closeOnBackdrop && e.target === e.currentTarget && window.innerWidth >= 768) {
+    if (
+      closeOnBackdrop &&
+      e.target === e.currentTarget &&
+      window.innerWidth >= 768
+    ) {
       onClose();
     }
   };
@@ -57,22 +61,14 @@ export const Dialog: React.FC<DialogProps> = ({
     >
       {/* Backdrop - only visible on desktop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm hidden md:block"
+        className="absolute inset-0 hidden bg-black/50 backdrop-blur-sm md:block"
         onClick={handleBackdropClick}
         aria-hidden="true"
       />
-      
+
       {/* Dialog Content */}
-      <div 
-        className={`
-          relative bg-white dark:bg-gray-800 shadow-2xl 
-          /* Mobile: Full screen */
-          h-full w-full md:rounded-lg
-          /* Desktop: Modal with constraints */
-          md:max-h-[90vh] md:max-w-[95vw] md:w-full overflow-y-auto
-          md:sm:max-w-2xl md:md:max-w-3xl md:lg:max-w-4xl
-          ${className}
-        `}
+      <div
+        className={`/* Mobile: Full screen */ /* Desktop: Modal with constraints */ relative h-full w-full overflow-y-auto bg-white shadow-2xl dark:bg-gray-800 md:sm:max-w-2xl md:max-h-[90vh] md:w-full md:max-w-[95vw] md:md:max-w-3xl md:rounded-lg md:lg:max-w-4xl ${className} `}
       >
         {children}
       </div>

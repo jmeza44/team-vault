@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Credential, RiskLevel, Team } from '@/types';
-import { credentialService, CreateCredentialRequest, UpdateCredentialRequest, GetCredentialsParams } from '@/services/credentialService';
+import {
+  credentialService,
+  CreateCredentialRequest,
+  UpdateCredentialRequest,
+  GetCredentialsParams,
+} from '@/services/credentialService';
 import teamService from '@/services/teamService';
-import { CredentialForm, CredentialFormData } from '@/components/credentials/CredentialForm';
+import {
+  CredentialForm,
+  CredentialFormData,
+} from '@/components/credentials/CredentialForm';
 import { CredentialCard } from '@/components/credentials/CredentialCard';
 import { CredentialDetailModal } from '@/components/credentials/CredentialDetailModal';
 import { ShareCredentialModal } from '@/components/credentials/ShareCredentialModal';
@@ -20,7 +28,7 @@ const CATEGORIES = [
   'Development Tools',
   'Infrastructure',
   'Third-party Services',
-  'Other'
+  'Other',
 ];
 
 type ViewMode = 'list' | 'detail';
@@ -30,14 +38,15 @@ export const CredentialsPage: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
-  const [selectedCredential, setSelectedCredential] = useState<Credential | null>(null);
-  
+  const [selectedCredential, setSelectedCredential] =
+    useState<Credential | null>(null);
+
   // Alert hooks
   const { showSuccess, showError } = useAlertActions();
   const { handleApiError } = useApiErrorHandler();
   const { confirm, confirmState, handleClose, handleConfirm } = useConfirm();
   const { userPermissions, getCredentialPermissions } = usePermissions();
-  
+
   // Filters and search
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -48,7 +57,9 @@ export const CredentialsPage: React.FC = () => {
   const [isFormLoading, setIsFormLoading] = useState(false);
   const [isCredentialFormOpen, setIsCredentialFormOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [credentialToShare, setCredentialToShare] = useState<Credential | null>(null);
+  const [credentialToShare, setCredentialToShare] = useState<Credential | null>(
+    null
+  );
 
   useEffect(() => {
     loadCredentials();
@@ -70,30 +81,33 @@ export const CredentialsPage: React.FC = () => {
   const loadCredentials = async () => {
     try {
       setLoading(true);
-      
+
       const params: GetCredentialsParams = {};
       if (searchTerm) params.search = searchTerm;
       if (selectedCategory) params.category = selectedCategory;
       if (selectedTeam) params.teamId = selectedTeam;
-      
+
       const response = await credentialService.getCredentials(params);
-      
+
       if (response.success && response.data) {
         let filteredCredentials = response.data.credentials;
-        
+
         // Client-side risk level filtering
         if (selectedRiskLevel) {
           filteredCredentials = filteredCredentials.filter(
             cred => cred.riskLevel === selectedRiskLevel
           );
         }
-        
+
         setCredentials(filteredCredentials);
       } else {
         handleApiError(response, 'Failed to load credentials');
       }
     } catch (err) {
-      handleApiError(err, 'An unexpected error occurred while loading credentials');
+      handleApiError(
+        err,
+        'An unexpected error occurred while loading credentials'
+      );
       console.error('Load credentials error:', err);
     } finally {
       setLoading(false);
@@ -103,7 +117,7 @@ export const CredentialsPage: React.FC = () => {
   const handleCreateCredential = async (formData: CredentialFormData) => {
     try {
       setIsFormLoading(true);
-      
+
       const createData: CreateCredentialRequest = {
         name: formData.name,
         username: formData.username || undefined,
@@ -117,17 +131,23 @@ export const CredentialsPage: React.FC = () => {
       };
 
       const response = await credentialService.createCredential(createData);
-      
+
       if (response.success) {
         await loadCredentials(); // Reload the list
         setIsCredentialFormOpen(false);
         setSelectedCredential(null);
-        showSuccess('Credential Created', 'The credential has been created successfully');
+        showSuccess(
+          'Credential Created',
+          'The credential has been created successfully'
+        );
       } else {
         handleApiError(response, 'Failed to create credential');
       }
     } catch (err) {
-      handleApiError(err, 'An unexpected error occurred while creating the credential');
+      handleApiError(
+        err,
+        'An unexpected error occurred while creating the credential'
+      );
       console.error('Create credential error:', err);
     } finally {
       setIsFormLoading(false);
@@ -136,10 +156,10 @@ export const CredentialsPage: React.FC = () => {
 
   const handleUpdateCredential = async (formData: CredentialFormData) => {
     if (!selectedCredential) return;
-    
+
     try {
       setIsFormLoading(true);
-      
+
       const updateData: UpdateCredentialRequest = {
         name: formData.name,
         username: formData.username || undefined,
@@ -152,18 +172,27 @@ export const CredentialsPage: React.FC = () => {
         riskLevel: formData.riskLevel,
       };
 
-      const response = await credentialService.updateCredential(selectedCredential.id, updateData);
-      
+      const response = await credentialService.updateCredential(
+        selectedCredential.id,
+        updateData
+      );
+
       if (response.success) {
         await loadCredentials(); // Reload the list
         setIsCredentialFormOpen(false);
         setSelectedCredential(null);
-        showSuccess('Credential Updated', 'The credential has been updated successfully');
+        showSuccess(
+          'Credential Updated',
+          'The credential has been updated successfully'
+        );
       } else {
         handleApiError(response, 'Failed to update credential');
       }
     } catch (err) {
-      handleApiError(err, 'An unexpected error occurred while updating the credential');
+      handleApiError(
+        err,
+        'An unexpected error occurred while updating the credential'
+      );
       console.error('Update credential error:', err);
     } finally {
       setIsFormLoading(false);
@@ -173,14 +202,17 @@ export const CredentialsPage: React.FC = () => {
   const handleViewCredential = async (credential: Credential) => {
     const permissions = getCredentialPermissions(credential);
     if (!permissions.canView) {
-      showError('Access Denied', 'You do not have permission to view this credential');
+      showError(
+        'Access Denied',
+        'You do not have permission to view this credential'
+      );
       return;
     }
 
     try {
       // Fetch the full credential with decrypted secret
       const response = await credentialService.getCredentialById(credential.id);
-      
+
       if (response.success && response.data) {
         setSelectedCredential(response.data.credential);
         setViewMode('detail');
@@ -188,7 +220,10 @@ export const CredentialsPage: React.FC = () => {
         handleApiError(response, 'Failed to load credential details');
       }
     } catch (err) {
-      handleApiError(err, 'An unexpected error occurred while loading credential details');
+      handleApiError(
+        err,
+        'An unexpected error occurred while loading credential details'
+      );
       console.error('View credential error:', err);
     }
   };
@@ -196,14 +231,17 @@ export const CredentialsPage: React.FC = () => {
   const handleEditCredential = async (credential: Credential) => {
     const permissions = getCredentialPermissions(credential);
     if (!permissions.canEdit) {
-      showError('Access Denied', 'You do not have permission to edit this credential');
+      showError(
+        'Access Denied',
+        'You do not have permission to edit this credential'
+      );
       return;
     }
 
     try {
       // Fetch the full credential with decrypted secret for editing
       const response = await credentialService.getCredentialById(credential.id);
-      
+
       if (response.success && response.data) {
         setSelectedCredential(response.data.credential);
         setIsCredentialFormOpen(true);
@@ -211,7 +249,10 @@ export const CredentialsPage: React.FC = () => {
         handleApiError(response, 'Failed to load credential for editing');
       }
     } catch (err) {
-      handleApiError(err, 'An unexpected error occurred while loading credential for editing');
+      handleApiError(
+        err,
+        'An unexpected error occurred while loading credential for editing'
+      );
       console.error('Edit credential error:', err);
     }
   };
@@ -219,7 +260,10 @@ export const CredentialsPage: React.FC = () => {
   const handleDeleteCredential = async (credential: Credential) => {
     const permissions = getCredentialPermissions(credential);
     if (!permissions.canDelete) {
-      showError('Access Denied', 'You do not have permission to delete this credential');
+      showError(
+        'Access Denied',
+        'You do not have permission to delete this credential'
+      );
       return;
     }
 
@@ -228,7 +272,7 @@ export const CredentialsPage: React.FC = () => {
       message: `Are you sure you want to delete "${credential.name}"? This action cannot be undone and will permanently remove all credential data.`,
       confirmText: 'Delete Credential',
       cancelText: 'Cancel',
-      variant: 'danger'
+      variant: 'danger',
     });
 
     if (!confirmed) {
@@ -237,19 +281,25 @@ export const CredentialsPage: React.FC = () => {
 
     try {
       const response = await credentialService.deleteCredential(credential.id);
-      
+
       if (response.success) {
         await loadCredentials(); // Reload the list
         if (selectedCredential?.id === credential.id) {
           setSelectedCredential(null);
           setViewMode('list');
         }
-        showSuccess('Credential Deleted', 'The credential has been deleted successfully');
+        showSuccess(
+          'Credential Deleted',
+          'The credential has been deleted successfully'
+        );
       } else {
         handleApiError(response, 'Failed to delete credential');
       }
     } catch (err) {
-      handleApiError(err, 'An unexpected error occurred while deleting the credential');
+      handleApiError(
+        err,
+        'An unexpected error occurred while deleting the credential'
+      );
       console.error('Delete credential error:', err);
     }
   };
@@ -257,7 +307,10 @@ export const CredentialsPage: React.FC = () => {
   const handleShareCredential = (credential: Credential) => {
     const permissions = getCredentialPermissions(credential);
     if (!permissions.canShare) {
-      showError('Access Denied', 'You do not have permission to share this credential');
+      showError(
+        'Access Denied',
+        'You do not have permission to share this credential'
+      );
       return;
     }
 
@@ -286,10 +339,14 @@ export const CredentialsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Credentials</h1>
-          <p className="text-gray-600 dark:text-gray-300">Manage your team's secure credentials</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Credentials
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300">
+            Manage your team's secure credentials
+          </p>
         </div>
         {userPermissions.canCreateCredentials && (
           <button
@@ -297,7 +354,7 @@ export const CredentialsPage: React.FC = () => {
               setSelectedCredential(null);
               setIsCredentialFormOpen(true);
             }}
-            className="bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px] w-full sm:w-auto font-medium"
+            className="min-h-[44px] w-full rounded-md bg-blue-600 px-4 py-3 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-auto"
           >
             Add Credential
           </button>
@@ -305,69 +362,85 @@ export const CredentialsPage: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow dark:border-gray-700 dark:bg-gray-800">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {/* Search */}
           <div>
-            <label htmlFor="search" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="search"
+              className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Search
             </label>
             <input
               type="text"
               id="search"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               placeholder="Search credentials..."
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
             />
           </div>
 
           {/* Category Filter */}
           <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="category"
+              className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Category
             </label>
             <select
               id="category"
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              onChange={e => setSelectedCategory(e.target.value)}
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             >
               <option value="">All Categories</option>
               {CATEGORIES.map(category => (
-                <option key={category} value={category}>{category}</option>
+                <option key={category} value={category}>
+                  {category}
+                </option>
               ))}
             </select>
           </div>
 
           {/* Team Filter */}
           <div>
-            <label htmlFor="team" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="team"
+              className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Team
             </label>
             <select
               id="team"
               value={selectedTeam}
-              onChange={(e) => setSelectedTeam(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              onChange={e => setSelectedTeam(e.target.value)}
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             >
               <option value="">All Teams</option>
               {teams.map(team => (
-                <option key={team.id} value={team.id}>{team.name}</option>
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
               ))}
             </select>
           </div>
 
           {/* Risk Level Filter */}
           <div>
-            <label htmlFor="riskLevel" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="riskLevel"
+              className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Risk Level
             </label>
             <select
               id="riskLevel"
               value={selectedRiskLevel}
-              onChange={(e) => setSelectedRiskLevel(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              onChange={e => setSelectedRiskLevel(e.target.value)}
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             >
               <option value="">All Risk Levels</option>
               <option value={RiskLevel.LOW}>Low</option>
@@ -381,7 +454,7 @@ export const CredentialsPage: React.FC = () => {
           <div className="flex items-end">
             <button
               onClick={clearFilters}
-              className="w-full px-3 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="w-full rounded-md bg-gray-200 px-3 py-2 text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
             >
               Clear Filters
             </button>
@@ -391,24 +464,30 @@ export const CredentialsPage: React.FC = () => {
 
       {/* Loading State */}
       {loading ? (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">Loading credentials...</p>
+        <div className="py-8 text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600 dark:border-blue-400"></div>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
+            Loading credentials...
+          </p>
         </div>
       ) : credentials.length === 0 ? (
         /* Empty State */
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-8 text-center">
-          <div className="text-gray-400 mb-4 flex justify-center">
+        <div className="rounded-lg border border-gray-200 bg-white p-8 text-center shadow dark:border-gray-700 dark:bg-gray-800">
+          <div className="mb-4 flex justify-center text-gray-400">
             <Shield className="h-16 w-16" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No credentials found</h3>
-          <p className="text-gray-600 mb-4">
+          <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
+            No credentials found
+          </h3>
+          <p className="mb-4 text-gray-600">
             {searchTerm || selectedCategory || selectedRiskLevel || selectedTeam
               ? 'No credentials match your current filters. Try adjusting your search criteria.'
-              : 'Start by adding your first credential to securely store your team\'s sensitive information.'
-            }
+              : "Start by adding your first credential to securely store your team's sensitive information."}
           </p>
-          {(searchTerm || selectedCategory || selectedRiskLevel || selectedTeam) ? (
+          {searchTerm ||
+          selectedCategory ||
+          selectedRiskLevel ||
+          selectedTeam ? (
             <button
               onClick={clearFilters}
               className="text-blue-600 hover:text-blue-800"
@@ -421,7 +500,7 @@ export const CredentialsPage: React.FC = () => {
                 setSelectedCredential(null);
                 setIsCredentialFormOpen(true);
               }}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             >
               Add Your First Credential
             </button>
@@ -429,7 +508,7 @@ export const CredentialsPage: React.FC = () => {
         </div>
       ) : (
         /* Credentials Grid */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
           {credentials.map(credential => (
             <CredentialCard
               key={credential.id}
@@ -473,7 +552,9 @@ export const CredentialsPage: React.FC = () => {
       <CredentialForm
         credential={selectedCredential || undefined}
         isOpen={isCredentialFormOpen}
-        onSubmit={selectedCredential ? handleUpdateCredential : handleCreateCredential}
+        onSubmit={
+          selectedCredential ? handleUpdateCredential : handleCreateCredential
+        }
         onCancel={() => {
           setIsCredentialFormOpen(false);
           setSelectedCredential(null);

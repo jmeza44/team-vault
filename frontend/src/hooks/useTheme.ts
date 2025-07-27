@@ -16,7 +16,7 @@ export const useIsDarkMode = (): boolean => {
  */
 export const useThemeClasses = () => {
   const { theme } = useTheme();
-  
+
   return {
     // Background classes
     bg: {
@@ -37,9 +37,10 @@ export const useThemeClasses = () => {
     },
     // Button classes
     button: {
-      ghost: theme === 'dark' 
-        ? 'hover:bg-gray-700 text-gray-300 hover:text-gray-100' 
-        : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900',
-    }
+      ghost:
+        theme === 'dark'
+          ? 'hover:bg-gray-700 text-gray-300 hover:text-gray-100'
+          : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900',
+    },
   };
 };

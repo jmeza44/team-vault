@@ -18,7 +18,9 @@ export const useMobile = () => {
   return context;
 };
 
-export const MobileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const MobileProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -80,8 +82,6 @@ export const MobileProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   return (
-    <MobileContext.Provider value={value}>
-      {children}
-    </MobileContext.Provider>
+    <MobileContext.Provider value={value}>{children}</MobileContext.Provider>
   );
 };
