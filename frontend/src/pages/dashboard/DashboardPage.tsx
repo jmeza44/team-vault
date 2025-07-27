@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { AlertDemo } from '@/components/common/AlertDemo';
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -45,6 +46,9 @@ export const DashboardPage: React.FC = () => {
           <p className="text-gray-500">No recent activity to display.</p>
         </div>
       </div>
+
+      {/* Alert System Demo */}
+      <AlertDemo />
     </div>
   );
 };

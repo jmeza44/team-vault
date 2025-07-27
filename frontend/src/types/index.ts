@@ -152,3 +152,6 @@ export interface AuthResponse {
 export interface RefreshTokenRequest {
   refreshToken: string;
 }
+
+// Re-export alert types
+export type { Alert, AlertType, AlertContextType } from './alert';

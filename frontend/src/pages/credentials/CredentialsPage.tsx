@@ -6,6 +6,7 @@ import { CredentialForm, CredentialFormData } from '@/components/credentials/Cre
 import { CredentialCard } from '@/components/credentials/CredentialCard';
 import { CredentialDetailModal } from '@/components/credentials/CredentialDetailModal';
 import { ShareCredentialModal } from '@/components/credentials/ShareCredentialModal';
+import { useAlertActions, useApiErrorHandler } from '@/hooks/useAlerts';
 import { Shield, ArrowLeft } from 'lucide-react';
 
 const CATEGORIES = [
@@ -25,9 +26,12 @@ export const CredentialsPage: React.FC = () => {
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [selectedCredential, setSelectedCredential] = useState<Credential | null>(null);
+  
+  // Alert hooks
+  const { showSuccess, showError, showWarning } = useAlertActions();
+  const { handleApiError } = useApiErrorHandler();
   
   // Filters and search
   const [searchTerm, setSearchTerm] = useState('');
@@ -53,13 +57,13 @@ export const CredentialsPage: React.FC = () => {
       }
     } catch (err) {
       console.error('Failed to load teams:', err);
+      showError('Failed to load teams', 'Unable to fetch team information');
     }
   };
 
   const loadCredentials = async () => {
     try {
       setLoading(true);
-      setError(null);
       
       const params: GetCredentialsParams = {};
       if (searchTerm) params.search = searchTerm;
@@ -80,10 +84,10 @@ export const CredentialsPage: React.FC = () => {
         
         setCredentials(filteredCredentials);
       } else {
-        setError(response.error?.message || 'Failed to load credentials');
+        handleApiError(response, 'Failed to load credentials');
       }
     } catch (err) {
-      setError('An unexpected error occurred while loading credentials');
+      handleApiError(err, 'An unexpected error occurred while loading credentials');
       console.error('Load credentials error:', err);
     } finally {
       setLoading(false);
@@ -112,11 +116,12 @@ export const CredentialsPage: React.FC = () => {
         await loadCredentials(); // Reload the list
         setViewMode('list');
         setSelectedCredential(null);
+        showSuccess('Credential Created', 'The credential has been created successfully');
       } else {
-        setError(response.error?.message || 'Failed to create credential');
+        handleApiError(response, 'Failed to create credential');
       }
     } catch (err) {
-      setError('An unexpected error occurred while creating the credential');
+      handleApiError(err, 'An unexpected error occurred while creating the credential');
       console.error('Create credential error:', err);
     } finally {
       setIsFormLoading(false);
@@ -147,11 +152,12 @@ export const CredentialsPage: React.FC = () => {
         await loadCredentials(); // Reload the list
         setViewMode('list');
         setSelectedCredential(null);
+        showSuccess('Credential Updated', 'The credential has been updated successfully');
       } else {
-        setError(response.error?.message || 'Failed to update credential');
+        handleApiError(response, 'Failed to update credential');
       }
     } catch (err) {
-      setError('An unexpected error occurred while updating the credential');
+      handleApiError(err, 'An unexpected error occurred while updating the credential');
       console.error('Update credential error:', err);
     } finally {
       setIsFormLoading(false);
@@ -167,10 +173,10 @@ export const CredentialsPage: React.FC = () => {
         setSelectedCredential(response.data.credential);
         setViewMode('detail');
       } else {
-        setError(response.error?.message || 'Failed to load credential details');
+        handleApiError(response, 'Failed to load credential details');
       }
     } catch (err) {
-      setError('An unexpected error occurred while loading credential details');
+      handleApiError(err, 'An unexpected error occurred while loading credential details');
       console.error('View credential error:', err);
     }
   };
@@ -184,10 +190,10 @@ export const CredentialsPage: React.FC = () => {
         setSelectedCredential(response.data.credential);
         setViewMode('form');
       } else {
-        setError(response.error?.message || 'Failed to load credential for editing');
+        handleApiError(response, 'Failed to load credential for editing');
       }
     } catch (err) {
-      setError('An unexpected error occurred while loading credential for editing');
+      handleApiError(err, 'An unexpected error occurred while loading credential for editing');
       console.error('Edit credential error:', err);
     }
   };
@@ -206,11 +212,12 @@ export const CredentialsPage: React.FC = () => {
           setSelectedCredential(null);
           setViewMode('list');
         }
+        showSuccess('Credential Deleted', 'The credential has been deleted successfully');
       } else {
-        setError(response.error?.message || 'Failed to delete credential');
+        handleApiError(response, 'Failed to delete credential');
       }
     } catch (err) {
-      setError('An unexpected error occurred while deleting the credential');
+      handleApiError(err, 'An unexpected error occurred while deleting the credential');
       console.error('Delete credential error:', err);
     }
   };
@@ -259,12 +266,6 @@ export const CredentialsPage: React.FC = () => {
           }}
           isLoading={isFormLoading}
         />
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-            {error}
-          </div>
-        )}
       </div>
     );
   }
@@ -372,19 +373,6 @@ export const CredentialsPage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Error Message */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          {error}
-          <button
-            onClick={() => setError(null)}
-            className="ml-2 text-red-500 hover:text-red-700"
-          >
-            ×
-          </button>
-        </div>
-      )}
 
       {/* Loading State */}
       {loading ? (

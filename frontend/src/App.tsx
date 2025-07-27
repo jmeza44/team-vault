@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { AlertProvider } from '@/contexts/AlertContext'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { Layout } from '@/components/layout/Layout'
 import { LoginPage } from '@/pages/auth/LoginPage'
@@ -9,10 +10,12 @@ import { CredentialsPage } from '@/pages/credentials/CredentialsPage'
 import { TeamsPage } from '@/pages/teams/TeamsPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { ProfilePage } from '@/pages/profile/ProfilePage'
+import AlertContainer from '@/components/common/AlertContainer'
 
 function App() {
   return (
     <AuthProvider>
+      <AlertProvider>
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
@@ -35,7 +38,11 @@ function App() {
         {/* Catch all route */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
-    </AuthProvider>
+      
+      {/* Alert container for global alerts */}
+      <AlertContainer />
+    </AlertProvider>
+  </AuthProvider>
   )
 }
 
