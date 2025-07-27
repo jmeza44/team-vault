@@ -1,29 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { ApiResponse, User } from '@/types';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-
-// Create axios instance
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Request interceptor to add auth token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+import { apiClient } from './apiClient';
 
 export interface UpdateProfileRequest {
   name?: string;
@@ -69,7 +46,7 @@ export interface UpdateSettingsRequest {
 export class UserService {
   async getProfile(): Promise<ApiResponse<{ user: User }>> {
     try {
-      const response: AxiosResponse<ApiResponse<{ user: User }>> = await api.get('/users/profile');
+      const response: AxiosResponse<ApiResponse<{ user: User }>> = await apiClient.get('/users/profile');
       return response.data;
     } catch (error: any) {
       return error.response?.data || { success: false, error: { message: 'Failed to get profile' } };
@@ -78,7 +55,7 @@ export class UserService {
 
   async updateProfile(data: UpdateProfileRequest): Promise<ApiResponse<{ user: User; message: string }>> {
     try {
-      const response: AxiosResponse<ApiResponse<{ user: User; message: string }>> = await api.patch('/users/profile', data);
+      const response: AxiosResponse<ApiResponse<{ user: User; message: string }>> = await apiClient.patch('/users/profile', data);
       return response.data;
     } catch (error: any) {
       return error.response?.data || { success: false, error: { message: 'Failed to update profile' } };
@@ -87,7 +64,7 @@ export class UserService {
 
   async changePassword(data: ChangePasswordRequest): Promise<ApiResponse<{ message: string }>> {
     try {
-      const response: AxiosResponse<ApiResponse<{ message: string }>> = await api.patch('/users/password', data);
+      const response: AxiosResponse<ApiResponse<{ message: string }>> = await apiClient.patch('/users/password', data);
       return response.data;
     } catch (error: any) {
       return error.response?.data || { success: false, error: { message: 'Failed to change password' } };
@@ -96,7 +73,7 @@ export class UserService {
 
   async getSettings(): Promise<ApiResponse<{ settings: UserSettings }>> {
     try {
-      const response: AxiosResponse<ApiResponse<{ settings: UserSettings }>> = await api.get('/users/settings');
+      const response: AxiosResponse<ApiResponse<{ settings: UserSettings }>> = await apiClient.get('/users/settings');
       return response.data;
     } catch (error: any) {
       return error.response?.data || { success: false, error: { message: 'Failed to get settings' } };
@@ -105,7 +82,7 @@ export class UserService {
 
   async updateSettings(data: UpdateSettingsRequest): Promise<ApiResponse<{ message: string; settings: UserSettings }>> {
     try {
-      const response: AxiosResponse<ApiResponse<{ message: string; settings: UserSettings }>> = await api.patch('/users/settings', data);
+      const response: AxiosResponse<ApiResponse<{ message: string; settings: UserSettings }>> = await apiClient.patch('/users/settings', data);
       return response.data;
     } catch (error: any) {
       return error.response?.data || { success: false, error: { message: 'Failed to update settings' } };

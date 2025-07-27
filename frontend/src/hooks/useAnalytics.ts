@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { analyticsService } from '@/services/analyticsService';
 import { DashboardMetrics, CredentialStatistics, TeamActivityMetrics, SecurityMetrics, AnalyticsFilters, RecentActivity } from '@/types';
 import { useAlertActions } from './useAlerts';
@@ -50,6 +50,9 @@ export const useAnalytics = (initialFilters: AnalyticsFilters = {}): UseAnalytic
   
   // Filters
   const [filters, setFilters] = useState<AnalyticsFilters>(initialFilters);
+  
+  // Prevent concurrent refreshAll calls
+  const refreshingRef = useRef(false);
 
   // Refresh functions - without filters in dependencies to avoid loops
   const refreshDashboard = useCallback(async (currentFilters?: AnalyticsFilters) => {
@@ -120,19 +123,42 @@ export const useAnalytics = (initialFilters: AnalyticsFilters = {}): UseAnalytic
   }, [showError]);
 
   const refreshAll = useCallback(async () => {
-    await Promise.all([
-      refreshDashboard(filters),
-      refreshCredentials(filters),
-      refreshTeamActivity(filters),
-      refreshSecurity(filters)
-    ]);
-  }, [filters, refreshDashboard, refreshCredentials, refreshTeamActivity, refreshSecurity]);
+    // Prevent concurrent calls
+    if (refreshingRef.current) {
+      return;
+    }
+    
+    try {
+      refreshingRef.current = true;
+      // Pass current filters directly to avoid dependency issues
+      const currentFilters = filtersRef.current;
+      await Promise.all([
+        refreshDashboard(currentFilters),
+        refreshCredentials(currentFilters),
+        refreshTeamActivity(currentFilters),
+        refreshSecurity(currentFilters)
+      ]);
+    } finally {
+      refreshingRef.current = false;
+    }
+  }, []); // Remove dependencies to break the cycle
 
-  // Load data when filters change - use JSON.stringify to compare deep equality
+  // Load data when filters change - use a ref to prevent unnecessary re-renders
+  const filtersRef = useRef(filters);
+  const hasMountedRef = useRef(false);
+  
   useEffect(() => {
-    refreshAll();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(filters)]);
+    filtersRef.current = filters;
+    
+    // Only refresh if component has mounted (prevent initial double call)
+    if (hasMountedRef.current) {
+      refreshAll();
+    } else {
+      hasMountedRef.current = true;
+      // Initial load
+      refreshAll();
+    }
+  }, [filters.timeRange, filters.teamId, filters.startDate, filters.endDate]); // Remove refreshAll from dependencies
 
   // Custom setFilters that triggers refresh
   const updateFilters = useCallback((newFilters: AnalyticsFilters) => {

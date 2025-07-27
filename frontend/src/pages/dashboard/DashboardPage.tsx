@@ -4,7 +4,7 @@ import { useAnalytics } from '@/hooks/useAnalytics';
 import { MetricCard } from '@/components/common/MetricCard';
 import { RecentActivityList } from '@/components/common/RecentActivityList';
 import { TimeRangeSelector } from '@/components/common/TimeRangeSelector';
-import { AlertDemo } from '@/components/common/AlertDemo';
+// import { AlertDemo } from '@/components/common/AlertDemo';
 import { 
   KeyRound, 
   Clock, 

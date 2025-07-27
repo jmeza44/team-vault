@@ -1,67 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { ApiResponse, DashboardMetrics, CredentialStatistics, TeamActivityMetrics, SecurityMetrics, AnalyticsFilters, AnalyticsSummary } from '@/types';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-
-// Create axios instance
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Request interceptor to add auth token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Response interceptor to handle token refresh
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (refreshToken) {
-          const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-            refreshToken,
-          });
-
-          if (response.data.success) {
-            const newAccessToken = response.data.data.accessToken;
-            localStorage.setItem('accessToken', newAccessToken);
-            
-            // Retry the original request with new token
-            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-            return api(originalRequest);
-          }
-        }
-      } catch (refreshError) {
-        // Refresh failed, redirect to login
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        window.location.href = '/auth/login';
-        return Promise.reject(refreshError);
-      }
-    }
-
-    return Promise.reject(error);
-  }
-);
+import { apiClient } from './apiClient';
 
 export const analyticsService = {
   // Helper function to map action strings to activity types
@@ -99,7 +38,7 @@ export const analyticsService = {
       if (filters?.startDate) params.append('startDate', filters.startDate);
       if (filters?.endDate) params.append('endDate', filters.endDate);
 
-      const response: AxiosResponse<ApiResponse<{dashboard: DashboardMetrics}>> = await api.get(
+      const response: AxiosResponse<ApiResponse<{dashboard: DashboardMetrics}>> = await apiClient.get(
         `/analytics/dashboard${params.toString() ? `?${params.toString()}` : ''}`
       );
       
@@ -123,7 +62,7 @@ export const analyticsService = {
       if (filters?.startDate) params.append('startDate', filters.startDate);
       if (filters?.endDate) params.append('endDate', filters.endDate);
 
-      const response: AxiosResponse<ApiResponse<{credentials: CredentialStatistics}>> = await api.get(
+      const response: AxiosResponse<ApiResponse<{credentials: CredentialStatistics}>> = await apiClient.get(
         `/analytics/credentials/usage${params.toString() ? `?${params.toString()}` : ''}`
       );
       
@@ -147,7 +86,7 @@ export const analyticsService = {
       if (filters?.startDate) params.append('startDate', filters.startDate);
       if (filters?.endDate) params.append('endDate', filters.endDate);
 
-      const response: AxiosResponse<ApiResponse<{teams: TeamActivityMetrics}>> = await api.get(
+      const response: AxiosResponse<ApiResponse<{teams: TeamActivityMetrics}>> = await apiClient.get(
         `/analytics/teams/activity${params.toString() ? `?${params.toString()}` : ''}`
       );
       
@@ -177,7 +116,7 @@ export const analyticsService = {
       if (filters?.startDate) params.append('startDate', filters.startDate);
       if (filters?.endDate) params.append('endDate', filters.endDate);
 
-      const response: AxiosResponse<ApiResponse<{security: SecurityMetrics}>> = await api.get(
+      const response: AxiosResponse<ApiResponse<{security: SecurityMetrics}>> = await apiClient.get(
         `/analytics/security/events${params.toString() ? `?${params.toString()}` : ''}`
       );
       
@@ -201,7 +140,7 @@ export const analyticsService = {
       if (filters?.startDate) params.append('startDate', filters.startDate);
       if (filters?.endDate) params.append('endDate', filters.endDate);
 
-      const response: AxiosResponse<ApiResponse<AnalyticsSummary>> = await api.get(
+      const response: AxiosResponse<ApiResponse<AnalyticsSummary>> = await apiClient.get(
         `/analytics/summary${params.toString() ? `?${params.toString()}` : ''}`
       );
       
@@ -226,7 +165,7 @@ export const analyticsService = {
       if (filters?.startDate) params.append('startDate', filters.startDate);
       if (filters?.endDate) params.append('endDate', filters.endDate);
 
-      const response: AxiosResponse<ApiResponse<any[]>> = await api.get(
+      const response: AxiosResponse<ApiResponse<any[]>> = await apiClient.get(
         `/analytics/audit/logs${params.toString() ? `?${params.toString()}` : ''}`
       );
       
