@@ -130,6 +130,19 @@ export class CredentialService {
                 },
               },
             },
+            {
+              sharedWith: {
+                some: {
+                  sharedWithTeam: {
+                    memberships: {
+                      some: {
+                        userId: userId,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           ],
         },
         include: {
@@ -140,6 +153,13 @@ export class CredentialService {
                   id: true,
                   email: true,
                   name: true,
+                },
+              },
+              sharedWithTeam: {
+                select: {
+                  id: true,
+                  name: true,
+                  description: true,
                 },
               },
             },
