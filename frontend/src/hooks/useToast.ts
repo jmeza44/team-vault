@@ -1,4 +1,4 @@
-import { useAlertActions } from '@/hooks/useAlerts';
+import { useAlertActions } from '@/hooks';
 
 interface UseToastReturn {
   showCopySuccess: (label: string) => void;

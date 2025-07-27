@@ -5,7 +5,7 @@ import {
   LoginRequest,
   RegisterRequest,
 } from '@/types';
-import { apiClient } from './apiClient';
+import { apiClient } from '@/services';
 
 export const authService = {
   async login(credentials: LoginRequest): Promise<ApiResponse<AuthResponse>> {
@@ -97,5 +97,3 @@ export const authService = {
     }
   },
 };
-
-export default apiClient;

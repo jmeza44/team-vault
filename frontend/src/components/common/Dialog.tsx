@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { useMobile } from '@/contexts/MobileContext';
+import { useMobile } from '@/contexts';
 
 interface DialogProps {
   isOpen: boolean;
@@ -44,11 +44,7 @@ export const Dialog: React.FC<DialogProps> = ({
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     // Only close on backdrop click for desktop (md and above)
-    if (
-      closeOnBackdrop &&
-      e.target === e.currentTarget &&
-      !isMobile
-    ) {
+    if (closeOnBackdrop && e.target === e.currentTarget && !isMobile) {
       onClose();
     }
   };
@@ -58,9 +54,7 @@ export const Dialog: React.FC<DialogProps> = ({
   return createPortal(
     <div
       className={`fixed inset-0 z-[9998] ${
-        isMobile 
-          ? 'flex' 
-          : 'flex items-center justify-center p-4'
+        isMobile ? 'flex' : 'flex items-center justify-center p-4'
       }`}
       role="dialog"
       aria-modal="true"
@@ -76,14 +70,11 @@ export const Dialog: React.FC<DialogProps> = ({
 
       {/* Dialog Content */}
       <div
-        className={`
-          relative bg-white shadow-2xl dark:bg-gray-800 overflow-y-auto
-          ${isMobile 
-            ? 'h-full w-full' 
+        className={`relative overflow-y-auto bg-white shadow-2xl dark:bg-gray-800 ${
+          isMobile
+            ? 'h-full w-full'
             : 'max-h-[95vh] w-full max-w-[95vw] rounded-lg sm:max-w-2xl md:max-w-3xl lg:max-w-4xl'
-          }
-          ${className}
-        `}
+        } ${className} `}
       >
         {children}
       </div>

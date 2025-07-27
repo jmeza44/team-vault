@@ -1,10 +1,8 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { Sidebar } from './Sidebar';
-import { Header } from './Header';
-import { useMobile } from '@/contexts/MobileContext';
-import { usePatternContext } from '@/contexts/PatternContext';
-import { BackgroundPattern } from '@/components/common/BackgroundPattern';
+import { useMobile, usePatternContext } from '@/contexts';
+import { Sidebar, Header } from '@/components/layout';
+import { BackgroundPattern } from '@/components/common';
 
 export const Layout: React.FC = () => {
   const { isMobile, isSidebarOpen, closeSidebar } = useMobile();

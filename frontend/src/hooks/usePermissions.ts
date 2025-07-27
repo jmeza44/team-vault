@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts';
 import { Credential, UserRole, TeamRole, AccessLevel } from '@/types';
 
 export interface CredentialPermissions {

@@ -8,7 +8,7 @@ import {
   AnalyticsFilters,
   RecentActivity,
 } from '@/types';
-import { useAlertActions } from './useAlerts';
+import { useAlertActions } from '@/hooks';
 
 interface UseAnalyticsResult {
   // Data

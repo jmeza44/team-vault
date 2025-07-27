@@ -1,6 +1,6 @@
 import React from 'react';
-import { useAlertActions } from '@/hooks/useAlerts';
 import { CheckCircle, XCircle, AlertTriangle, Info, Zap } from 'lucide-react';
+import { useAlertActions } from '@/hooks';
 
 export const AlertDemo: React.FC = () => {
   const { showSuccess, showError, showWarning, showInfo } = useAlertActions();

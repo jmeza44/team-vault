@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Team, TeamRole } from '@/types';
-import { TeamWithMembers } from '@/services/teamService';
 import { Eye, Users, Edit, Trash2, Lock } from 'lucide-react';
+import { Team, TeamRole, TeamWithMembers } from '@/types';
+import { getUserRole, isTeamAdmin, formatDate } from '@/utils';
 
 interface TeamCardProps {
   team: Team | TeamWithMembers;
@@ -10,28 +10,6 @@ interface TeamCardProps {
   onDelete: (team: Team | TeamWithMembers) => void;
   currentUserId?: string;
 }
-
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-};
-
-const getUserRole = (
-  team: TeamWithMembers,
-  userId: string
-): TeamRole | null => {
-  if (!('memberships' in team) || !team.memberships) return null;
-  const membership = team.memberships.find(m => m.userId === userId);
-  return membership?.role || null;
-};
-
-const isTeamAdmin = (team: TeamWithMembers, userId: string): boolean => {
-  const role = getUserRole(team, userId);
-  return role === TeamRole.ADMIN;
-};
 
 export const TeamCard: React.FC<TeamCardProps> = ({
   team,

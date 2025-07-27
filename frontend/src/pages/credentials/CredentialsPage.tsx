@@ -1,35 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { Credential, RiskLevel, Team } from '@/types';
-import {
-  credentialService,
-  CreateCredentialRequest,
-  UpdateCredentialRequest,
-  GetCredentialsParams,
-} from '@/services/credentialService';
-import teamService from '@/services/teamService';
-import {
-  CredentialForm,
-  CredentialFormData,
-} from '@/components/credentials/CredentialForm';
-import { CredentialCard } from '@/components/credentials/CredentialCard';
-import { CredentialDetailModal } from '@/components/credentials/CredentialDetailModal';
-import { ShareCredentialModal } from '@/components/credentials/ShareCredentialModal';
-import { ConfirmDialog } from '@/components/common/ConfirmDialog';
-import { useAlertActions, useApiErrorHandler } from '@/hooks/useAlerts';
-import { useConfirm } from '@/hooks/useConfirm';
-import { usePermissions } from '@/hooks/usePermissions';
 import { Shield } from 'lucide-react';
-
-const CATEGORIES = [
-  'Database',
-  'API Keys',
-  'Cloud Services',
-  'Social Media',
-  'Development Tools',
-  'Infrastructure',
-  'Third-party Services',
-  'Other',
-];
+import { ConfirmDialog } from '@/components/common';
+import { CATEGORIES } from '@/constants';
+import {
+  CredentialCard,
+  CredentialDetailModal,
+  ShareCredentialModal,
+  CredentialForm,
+} from '@/components/credentials';
+import {
+  useAlertActions,
+  useApiErrorHandler,
+  useConfirm,
+  usePermissions,
+} from '@/hooks';
+import { teamService, credentialService } from '@/services';
+import {
+  Credential,
+  Team,
+  CredentialFormData,
+  RiskLevel,
+  CreateCredentialRequest,
+  GetCredentialsParams,
+  UpdateCredentialRequest,
+} from '@/types';
 
 type ViewMode = 'list' | 'detail';
 
@@ -332,10 +326,6 @@ export const CredentialsPage: React.FC = () => {
     setSelectedTeam('');
   };
 
-  if (viewMode === 'detail') {
-    // Handle detail view if needed
-  }
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -467,25 +457,28 @@ export const CredentialsPage: React.FC = () => {
         <div className="space-y-4">
           {/* Skeleton loader for credential cards */}
           {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow dark:border-gray-700 dark:bg-gray-800">
+            <div
+              key={index}
+              className="rounded-lg border border-gray-200 bg-white p-6 shadow dark:border-gray-700 dark:bg-gray-800"
+            >
               <div className="animate-pulse">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="h-5 bg-gray-200 rounded w-3/4 mb-3 dark:bg-gray-700"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2 dark:bg-gray-700"></div>
-                    <div className="flex space-x-2 mb-3">
-                      <div className="h-6 bg-gray-200 rounded-full w-16 dark:bg-gray-700"></div>
-                      <div className="h-6 bg-gray-200 rounded-full w-20 dark:bg-gray-700"></div>
+                    <div className="mb-3 h-5 w-3/4 rounded bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="mb-2 h-4 w-1/2 rounded bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="mb-3 flex space-x-2">
+                      <div className="h-6 w-16 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                      <div className="h-6 w-20 rounded-full bg-gray-200 dark:bg-gray-700"></div>
                     </div>
                   </div>
                   <div className="flex space-x-2">
-                    <div className="h-8 w-8 bg-gray-200 rounded dark:bg-gray-700"></div>
-                    <div className="h-8 w-8 bg-gray-200 rounded dark:bg-gray-700"></div>
-                    <div className="h-8 w-8 bg-gray-200 rounded dark:bg-gray-700"></div>
+                    <div className="h-8 w-8 rounded bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="h-8 w-8 rounded bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="h-8 w-8 rounded bg-gray-200 dark:bg-gray-700"></div>
                   </div>
                 </div>
-                <div className="h-4 bg-gray-200 rounded w-full mb-2 dark:bg-gray-700"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3 dark:bg-gray-700"></div>
+                <div className="mb-2 h-4 w-full rounded bg-gray-200 dark:bg-gray-700"></div>
+                <div className="h-4 w-2/3 rounded bg-gray-200 dark:bg-gray-700"></div>
               </div>
             </div>
           ))}

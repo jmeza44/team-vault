@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Team } from '@/types';
-import { useAuth } from '@/contexts/AuthContext';
-import teamService, {
-  TeamWithMembers,
-  CreateTeamRequest,
-  UpdateTeamRequest,
-  AddMemberRequest,
-  UpdateMemberRequest,
-} from '@/services/teamService';
-import { TeamForm, TeamFormData } from '@/components/teams/TeamForm';
-import { TeamCard } from '@/components/teams/TeamCard';
-import { TeamDetailModal } from '@/components/teams/TeamDetailModal';
-import { ConfirmDialog } from '@/components/common/ConfirmDialog';
-import { useConfirm } from '@/hooks/useConfirm';
 import { Users } from 'lucide-react';
+import { ConfirmDialog } from '@/components/common';
+import { TeamCard, TeamForm, TeamDetailModal } from '@/components/teams';
+import { useAuth } from '@/contexts';
+import { useConfirm } from '@/hooks';
+import { teamService } from '@/services';
+import {
+  AddMemberRequest,
+  CreateTeamRequest,
+  Team,
+  TeamFormData,
+  TeamWithMembers,
+  UpdateMemberRequest,
+  UpdateTeamRequest,
+} from '@/types';
 
 type ViewMode = 'list' | 'form' | 'detail';
 
@@ -293,30 +293,33 @@ export const TeamsPage: React.FC = () => {
               Manage your teams and members
             </p>
           </div>
-          <div className="h-11 w-32 bg-gray-200 rounded-md animate-pulse dark:bg-gray-700"></div>
+          <div className="h-11 w-32 animate-pulse rounded-md bg-gray-200 dark:bg-gray-700"></div>
         </div>
-        
+
         {/* Search skeleton */}
-        <div className="h-11 bg-gray-200 rounded-md animate-pulse dark:bg-gray-700"></div>
-        
+        <div className="h-11 animate-pulse rounded-md bg-gray-200 dark:bg-gray-700"></div>
+
         {/* Team cards skeleton */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow dark:border-gray-700 dark:bg-gray-800">
+            <div
+              key={index}
+              className="rounded-lg border border-gray-200 bg-white p-6 shadow dark:border-gray-700 dark:bg-gray-800"
+            >
               <div className="animate-pulse">
-                <div className="flex items-start justify-between mb-4">
+                <div className="mb-4 flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-2 dark:bg-gray-700"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2 dark:bg-gray-700"></div>
+                    <div className="mb-2 h-6 w-3/4 rounded bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="h-4 w-1/2 rounded bg-gray-200 dark:bg-gray-700"></div>
                   </div>
-                  <div className="h-8 w-8 bg-gray-200 rounded dark:bg-gray-700"></div>
+                  <div className="h-8 w-8 rounded bg-gray-200 dark:bg-gray-700"></div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <div className="h-6 w-6 bg-gray-200 rounded-full dark:bg-gray-700"></div>
-                    <div className="h-4 bg-gray-200 rounded w-16 dark:bg-gray-700"></div>
+                    <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="h-4 w-16 rounded bg-gray-200 dark:bg-gray-700"></div>
                   </div>
-                  <div className="h-4 bg-gray-200 rounded w-20 dark:bg-gray-700"></div>
+                  <div className="h-4 w-20 rounded bg-gray-200 dark:bg-gray-700"></div>
                 </div>
               </div>
             </div>

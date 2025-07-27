@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Credential, RiskLevel, AccessLevel } from '@/types';
 import {
   Copy,
   Eye,
@@ -9,7 +8,14 @@ import {
   AlertTriangle,
   Clock,
 } from 'lucide-react';
-import { usePermissions } from '@/hooks/usePermissions';
+import { usePermissions } from '@/hooks';
+import { Credential, AccessLevel } from '@/types';
+import {
+  getRiskLevelColor,
+  isExpired,
+  formatDateTime,
+  isExpiringSoon,
+} from '@/utils';
 
 interface CredentialCardProps {
   credential: Credential;
@@ -18,44 +24,6 @@ interface CredentialCardProps {
   onDelete: (credential: Credential) => void;
   onShare: (credential: Credential) => void;
 }
-
-const getRiskLevelColor = (riskLevel: RiskLevel) => {
-  switch (riskLevel) {
-    case RiskLevel.LOW:
-      return 'bg-success-100 text-success-800 dark:bg-success-800/20 dark:text-success-100';
-    case RiskLevel.MEDIUM:
-      return 'bg-warning-100 text-warning-800 dark:bg-warning-800/20 dark:text-warning-100';
-    case RiskLevel.HIGH:
-      return 'bg-warning-200 text-warning-900 dark:bg-warning-700/20 dark:text-warning-200';
-    case RiskLevel.CRITICAL:
-      return 'bg-danger-100 text-danger-800 dark:bg-danger-800/20 dark:text-danger-100';
-    default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100';
-  }
-};
-
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-};
-
-const isExpiringSoon = (expirationDate?: string) => {
-  if (!expirationDate) return false;
-  const expiry = new Date(expirationDate);
-  const now = new Date();
-  const daysUntilExpiry = Math.ceil(
-    (expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
-  );
-  return daysUntilExpiry <= 30 && daysUntilExpiry > 0;
-};
-
-const isExpired = (expirationDate?: string) => {
-  if (!expirationDate) return false;
-  return new Date(expirationDate) < new Date();
-};
 
 export const CredentialCard: React.FC<CredentialCardProps> = ({
   credential,
@@ -182,16 +150,16 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
             {isExpired(credential.expirationDate) ? (
               <span className="flex items-center font-medium text-red-600 dark:text-red-400">
                 <AlertTriangle className="mr-1 h-4 w-4" />
-                Expired on {formatDate(credential.expirationDate)}
+                Expired on {formatDateTime(credential.expirationDate)}
               </span>
             ) : isExpiringSoon(credential.expirationDate) ? (
               <span className="flex items-center font-medium text-orange-600 dark:text-orange-400">
                 <Clock className="mr-1 h-4 w-4" />
-                Expires {formatDate(credential.expirationDate)}
+                Expires {formatDateTime(credential.expirationDate)}
               </span>
             ) : (
               <span className="text-gray-600 dark:text-gray-400">
-                Expires {formatDate(credential.expirationDate)}
+                Expires {formatDateTime(credential.expirationDate)}
               </span>
             )}
           </div>
@@ -200,9 +168,9 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
 
       {/* Footer */}
       <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3 text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400">
-        <span>Updated {formatDate(credential.updatedAt)}</span>
+        <span>Updated {formatDateTime(credential.updatedAt)}</span>
         {credential.lastRotated && (
-          <span>Last rotated {formatDate(credential.lastRotated)}</span>
+          <span>Last rotated {formatDateTime(credential.lastRotated)}</span>
         )}
       </div>
 

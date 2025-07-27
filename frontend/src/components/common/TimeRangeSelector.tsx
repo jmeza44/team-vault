@@ -1,19 +1,12 @@
 import React from 'react';
 import { AnalyticsFilters } from '@/types';
+import { TIME_RANGE_OPTIONS } from '@/constants';
 
 interface TimeRangeSelectorProps {
   filters: AnalyticsFilters;
   onFiltersChange: (filters: AnalyticsFilters) => void;
   className?: string;
 }
-
-const timeRangeOptions = [
-  { value: 'last24h', label: 'Last 24 Hours' },
-  { value: 'last7d', label: 'Last 7 Days' },
-  { value: 'last30d', label: 'Last 30 Days' },
-  { value: 'last90d', label: 'Last 90 Days' },
-  { value: 'last1y', label: 'Last Year' },
-] as const;
 
 export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
   filters,
@@ -47,7 +40,7 @@ export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
           Time Range
         </label>
         <div className="flex flex-wrap gap-2">
-          {timeRangeOptions.map(option => (
+          {TIME_RANGE_OPTIONS.map(option => (
             <button
               key={option.value}
               onClick={() => handleTimeRangeChange(option.value)}

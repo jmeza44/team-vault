@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Team } from '@/types';
-import { Dialog } from '@/components/common/Dialog';
 import { Loader2 } from 'lucide-react';
+import { Dialog } from '@/components/common';
+import { Team, TeamFormData } from '@/types';
 
 interface TeamFormProps {
   team?: Team;
@@ -9,11 +9,6 @@ interface TeamFormProps {
   onSubmit: (data: TeamFormData) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
-}
-
-export interface TeamFormData {
-  name: string;
-  description: string;
 }
 
 export const TeamForm: React.FC<TeamFormProps> = ({
@@ -131,7 +126,9 @@ export const TeamForm: React.FC<TeamFormProps> = ({
             disabled={isLoading}
           />
           {errors.name && (
-            <p className="mt-1 text-sm text-danger-600 dark:text-danger-400">{errors.name}</p>
+            <p className="mt-1 text-sm text-danger-600 dark:text-danger-400">
+              {errors.name}
+            </p>
           )}
         </div>
 
@@ -158,7 +155,9 @@ export const TeamForm: React.FC<TeamFormProps> = ({
             disabled={isLoading}
           />
           {errors.description && (
-            <p className="mt-1 text-sm text-danger-600 dark:text-danger-400">{errors.description}</p>
+            <p className="mt-1 text-sm text-danger-600 dark:text-danger-400">
+              {errors.description}
+            </p>
           )}
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {formData.description.length}/500 characters
@@ -185,8 +184,10 @@ export const TeamForm: React.FC<TeamFormProps> = ({
                 <Loader2 className="-ml-1 mr-2 h-4 w-4 animate-spin text-white" />
                 {team ? 'Updating...' : 'Creating...'}
               </>
+            ) : team ? (
+              'Update Team'
             ) : (
-              team ? 'Update Team' : 'Create Team'
+              'Create Team'
             )}
           </button>
         </div>

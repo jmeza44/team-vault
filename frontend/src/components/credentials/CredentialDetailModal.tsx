@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Credential, RiskLevel, AccessLevel } from '@/types';
 import { Copy, Eye, EyeOff, ExternalLink, X } from 'lucide-react';
-import { Dialog } from '@/components/common/Dialog';
-import { useToast } from '@/hooks/useToast';
-import { usePermissions } from '@/hooks/usePermissions';
+import { Dialog } from '@/components/common';
+import { useToast, usePermissions } from '@/hooks';
+import { AccessLevel, Credential } from '@/types';
+import { getRiskLevelColor, formatDate } from '@/utils';
 
 interface CredentialDetailModalProps {
   credential: Credential | null;
@@ -13,31 +13,6 @@ interface CredentialDetailModalProps {
   onDelete: (credential: Credential) => void;
   onShare: (credential: Credential) => void;
 }
-
-const getRiskLevelColor = (riskLevel: RiskLevel) => {
-  switch (riskLevel) {
-    case RiskLevel.LOW:
-      return 'bg-success-100 text-success-800 dark:bg-success-800/20 dark:text-success-100';
-    case RiskLevel.MEDIUM:
-      return 'bg-warning-100 text-warning-800 dark:bg-warning-800/20 dark:text-warning-100';
-    case RiskLevel.HIGH:
-      return 'bg-warning-200 text-warning-900 dark:bg-warning-700/20 dark:text-warning-200';
-    case RiskLevel.CRITICAL:
-      return 'bg-danger-100 text-danger-800 dark:bg-danger-800/20 dark:text-danger-100';
-    default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100';
-  }
-};
-
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-};
 
 export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
   credential,

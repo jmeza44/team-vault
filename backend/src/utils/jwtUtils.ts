@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { logger } from './logger';
+import { logger } from '@/utils/logger';
 
 // Helper function to validate JWT expiration values
 function validateJwtExpiration(value: string | undefined, fallback: string): string {

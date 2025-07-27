@@ -1,16 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { useMobile } from '@/contexts/MobileContext';
-import { BarChart3, Shield, Users, User } from 'lucide-react';
-import { Logo } from '@/components/common/Logo';
-
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
-  { name: 'Credentials', href: '/credentials', icon: Shield },
-  { name: 'Teams', href: '/teams', icon: Users },
-  { name: 'Profile', href: '/profile', icon: User },
-];
+import { useAuth, useMobile } from '@/contexts';
+import { Logo } from '@/components/common';
+import { NAVIGATION } from '@/constants';
 
 export const Sidebar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -30,7 +22,7 @@ export const Sidebar: React.FC = () => {
       </div>
 
       <nav className="flex-1 space-y-2 px-4">
-        {navigation.map(item => {
+        {NAVIGATION.map(item => {
           const IconComponent = item.icon;
           return (
             <NavLink

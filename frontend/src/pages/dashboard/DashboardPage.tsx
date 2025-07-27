@@ -1,10 +1,4 @@
 import React, { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useAnalytics } from '@/hooks/useAnalytics';
-import { MetricCard } from '@/components/common/MetricCard';
-import { RecentActivityList } from '@/components/common/RecentActivityList';
-import { TimeRangeSelector } from '@/components/common/TimeRangeSelector';
-// import { AlertDemo } from '@/components/common/AlertDemo';
 import {
   KeyRound,
   Clock,
@@ -16,6 +10,13 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react';
+import {
+  TimeRangeSelector,
+  MetricCard,
+  RecentActivityList,
+} from '@/components/common';
+import { useAuth } from '@/contexts';
+import { useAnalytics } from '@/hooks';
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();

@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Eye, EyeOff, Circle, CheckCircle } from 'lucide-react';
-import { userService, ChangePasswordRequest } from '@/services/userService';
-import { useAlertActions } from '@/hooks/useAlerts';
+import { userService } from '@/services';
+import { useAlertActions } from '@/hooks';
+import { ChangePasswordRequest } from '@/types';
 
 interface ChangePasswordFormProps {
   onSuccess: () => void;

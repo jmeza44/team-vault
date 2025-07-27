@@ -1,13 +1,13 @@
 import React from 'react';
 import { X, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
-import { Alert as AlertType } from '@/types/alert';
-import { useAlert } from '@/contexts/AlertContext';
+import { Alert as AlertType } from '@/types';
+import { useAlert } from '@/contexts';
 
 interface AlertItemProps {
   alert: AlertType;
 }
 
-const AlertItem: React.FC<AlertItemProps> = ({ alert }) => {
+export const AlertItem: React.FC<AlertItemProps> = ({ alert }) => {
   const { dismissAlert } = useAlert();
 
   const getAlertConfig = (type: AlertType['type']) => {
@@ -144,5 +144,3 @@ const AlertItem: React.FC<AlertItemProps> = ({ alert }) => {
     </div>
   );
 };
-
-export default AlertItem;

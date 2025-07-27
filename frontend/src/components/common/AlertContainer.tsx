@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { useAlert } from '@/contexts/AlertContext';
-import AlertItem from './AlertItem';
+import { useAlert } from '@/contexts';
+import { AlertItem } from '@/components/common';
 
 const AlertContainer: React.FC = () => {
   const { alerts } = useAlert();

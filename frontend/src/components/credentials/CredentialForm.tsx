@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Credential, RiskLevel } from '@/types';
-import { Dialog } from '@/components/common/Dialog';
 import { Eye, EyeOff, RefreshCw, Circle, CheckCircle } from 'lucide-react';
+import { CATEGORIES } from '@/constants';
+import { Dialog } from '@/components/common';
+import { Credential, CredentialFormData, RiskLevel } from '@/types';
 
 interface CredentialFormProps {
   credential?: Credential;
@@ -10,29 +11,6 @@ interface CredentialFormProps {
   onCancel: () => void;
   isLoading?: boolean;
 }
-
-export interface CredentialFormData {
-  name: string;
-  username: string;
-  secret: string;
-  description: string;
-  category: string;
-  url: string;
-  tags: string[];
-  expirationDate: string;
-  riskLevel: RiskLevel;
-}
-
-const CATEGORIES = [
-  'Database',
-  'API Keys',
-  'Cloud Services',
-  'Social Media',
-  'Development Tools',
-  'Infrastructure',
-  'Third-party Services',
-  'Other',
-];
 
 export const CredentialForm: React.FC<CredentialFormProps> = ({
   credential,
@@ -459,7 +437,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="min-h-[44px] rounded-md border border-gray-300 px-4 py-3 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-[44px] rounded-md border border-gray-300 px-4 py-3 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
             disabled={isLoading}
           >
             Cancel
@@ -474,8 +452,10 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                 {credential ? 'Updating...' : 'Creating...'}
               </div>
+            ) : credential ? (
+              'Update Credential'
             ) : (
-              credential ? 'Update Credential' : 'Create Credential'
+              'Create Credential'
             )}
           </button>
         </div>

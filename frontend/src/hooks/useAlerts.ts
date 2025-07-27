@@ -1,6 +1,5 @@
-import { useAlert } from '@/contexts/AlertContext';
+import { useAlert } from '@/contexts';
 
-// Custom hooks for different alert types
 export const useAlertActions = () => {
   const { showAlert } = useAlert();
 
@@ -9,7 +8,7 @@ export const useAlertActions = () => {
     message?: string,
     options?: {
       duration?: number;
-      action?: { label: string; onClick: () => void };
+      action?: { label: string; onClick: () => void; };
     }
   ) => {
     showAlert({
@@ -25,7 +24,7 @@ export const useAlertActions = () => {
     message?: string,
     options?: {
       duration?: number;
-      action?: { label: string; onClick: () => void };
+      action?: { label: string; onClick: () => void; };
     }
   ) => {
     showAlert({
@@ -42,7 +41,7 @@ export const useAlertActions = () => {
     message?: string,
     options?: {
       duration?: number;
-      action?: { label: string; onClick: () => void };
+      action?: { label: string; onClick: () => void; };
     }
   ) => {
     showAlert({
@@ -59,7 +58,7 @@ export const useAlertActions = () => {
     message?: string,
     options?: {
       duration?: number;
-      action?: { label: string; onClick: () => void };
+      action?: { label: string; onClick: () => void; };
     }
   ) => {
     showAlert({

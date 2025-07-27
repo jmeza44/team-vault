@@ -8,7 +8,7 @@ import {
   AnalyticsFilters,
   AnalyticsSummary,
 } from '@/types';
-import { apiClient } from './apiClient';
+import { apiClient } from '@/services';
 
 export const analyticsService = {
   // Helper function to map action strings to activity types

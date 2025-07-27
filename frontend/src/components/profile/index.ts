@@ -1,3 +1,3 @@
-export { ProfileForm } from './ProfileForm';
-export { ChangePasswordForm } from './ChangePasswordForm';
-export { SettingsForm } from './SettingsForm';
+export * from './ProfileForm';
+export * from './ChangePasswordForm';
+export * from './SettingsForm';

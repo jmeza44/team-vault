@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { User } from '@/types';
-import { userService, UpdateProfileRequest } from '@/services/userService';
-import { useAlertActions } from '@/hooks/useAlerts';
+import { UpdateProfileRequest, User } from '@/types';
+import { userService } from '@/services';
+import { useAlertActions } from '@/hooks';
 
 interface ProfileFormProps {
   user: User;
@@ -101,9 +101,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
       </div>
 
       <div className="flex gap-3">
-        <button 
-          type="submit" 
-          className="btn-primary disabled:cursor-not-allowed disabled:opacity-50" 
+        <button
+          type="submit"
+          className="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isLoading}
         >
           {isLoading ? (

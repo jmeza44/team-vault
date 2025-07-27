@@ -5,7 +5,7 @@ import React, {
   useCallback,
   ReactNode,
 } from 'react';
-import { Alert, AlertContextType } from '@/types/alert';
+import { Alert } from '@/types';
 
 // Actions for the reducer
 type AlertAction =
@@ -26,6 +26,13 @@ const alertReducer = (state: Alert[], action: AlertAction): Alert[] => {
       return state;
   }
 };
+
+interface AlertContextType {
+  alerts: Alert[];
+  showAlert: (alert: Omit<Alert, 'id'>) => void;
+  dismissAlert: (id: string) => void;
+  clearAlerts: () => void;
+}
 
 // Create context
 const AlertContext = createContext<AlertContextType | undefined>(undefined);

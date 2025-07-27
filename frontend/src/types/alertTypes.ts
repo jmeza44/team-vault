@@ -12,10 +12,3 @@ export interface Alert {
     onClick: () => void;
   };
 }
-
-export interface AlertContextType {
-  alerts: Alert[];
-  showAlert: (alert: Omit<Alert, 'id'>) => void;
-  dismissAlert: (id: string) => void;
-  clearAlerts: () => void;
-}

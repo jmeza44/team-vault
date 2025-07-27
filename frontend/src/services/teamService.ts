@@ -1,46 +1,25 @@
-import { ApiResponse, Team, TeamMembership, User } from '@/types';
-import { apiClient } from './apiClient';
+import { AddMemberRequest, ApiResponse, CreateTeamRequest, GetTeamResponse, GetTeamsResponse, Team, UpdateMemberRequest, UpdateTeamRequest } from '@/types';
+import { apiClient } from '@/services';
 
-export interface CreateTeamRequest {
-  name: string;
-  description?: string;
+function handleError(error: any): Error {
+  if (error.response?.data?.error) {
+    return new Error(
+      error.response.data.error.message || 'Team operation failed'
+    );
+  }
+  return new Error(error.message || 'An unexpected error occurred');
 }
 
-export interface UpdateTeamRequest extends Partial<CreateTeamRequest> {}
-
-export interface AddMemberRequest {
-  email: string;
-  role?: 'MEMBER' | 'ADMIN';
-}
-
-export interface UpdateMemberRequest {
-  role: 'MEMBER' | 'ADMIN';
-}
-
-export interface GetTeamsResponse {
-  teams: Team[];
-  count: number;
-}
-
-export interface TeamWithMembers extends Team {
-  memberships: (TeamMembership & { user: User })[];
-  memberCount?: number;
-}
-
-export interface GetTeamResponse {
-  team: TeamWithMembers;
-}
-
-class TeamService {
+export const teamService = {
   // Get user's teams
   async getTeams(): Promise<ApiResponse<GetTeamsResponse>> {
     try {
       const response = await apiClient.get('/teams');
       return response.data;
     } catch (error: any) {
-      throw this.handleError(error);
+      throw handleError(error);
     }
-  }
+  },
 
   // Get team details with members
   async getTeam(teamId: string): Promise<ApiResponse<GetTeamResponse>> {
@@ -48,9 +27,9 @@ class TeamService {
       const response = await apiClient.get(`/teams/${teamId}`);
       return response.data;
     } catch (error: any) {
-      throw this.handleError(error);
+      throw handleError(error);
     }
-  }
+  },
 
   // Create new team
   async createTeam(data: CreateTeamRequest): Promise<ApiResponse<Team>> {
@@ -58,9 +37,9 @@ class TeamService {
       const response = await apiClient.post('/teams', data);
       return response.data;
     } catch (error: any) {
-      throw this.handleError(error);
+      throw handleError(error);
     }
-  }
+  },
 
   // Update team
   async updateTeam(
@@ -71,9 +50,9 @@ class TeamService {
       const response = await apiClient.patch(`/teams/${teamId}`, data);
       return response.data;
     } catch (error: any) {
-      throw this.handleError(error);
+      throw handleError(error);
     }
-  }
+  },
 
   // Delete team
   async deleteTeam(teamId: string): Promise<ApiResponse<void>> {
@@ -81,9 +60,9 @@ class TeamService {
       const response = await apiClient.delete(`/teams/${teamId}`);
       return response.data;
     } catch (error: any) {
-      throw this.handleError(error);
+      throw handleError(error);
     }
-  }
+  },
 
   // Add team member
   async addMember(
@@ -94,9 +73,9 @@ class TeamService {
       const response = await apiClient.post(`/teams/${teamId}/members`, data);
       return response.data;
     } catch (error: any) {
-      throw this.handleError(error);
+      throw handleError(error);
     }
-  }
+  },
 
   // Update member role
   async updateMember(
@@ -111,9 +90,9 @@ class TeamService {
       );
       return response.data;
     } catch (error: any) {
-      throw this.handleError(error);
+      throw handleError(error);
     }
-  }
+  },
 
   // Remove team member
   async removeMember(
@@ -126,19 +105,9 @@ class TeamService {
       );
       return response.data;
     } catch (error: any) {
-      throw this.handleError(error);
+      throw handleError(error);
     }
-  }
+  },
 
   // Error handling helper
-  private handleError(error: any): Error {
-    if (error.response?.data?.error) {
-      return new Error(
-        error.response.data.error.message || 'Team operation failed'
-      );
-    }
-    return new Error(error.message || 'An unexpected error occurred');
-  }
-}
-
-export default new TeamService();
+};

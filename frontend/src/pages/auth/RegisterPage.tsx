@@ -1,12 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Circle, CheckCircle } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { ThemeSwitch } from '@/components/common/ThemeSwitch';
-import { useAlertActions } from '@/hooks/useAlerts';
-import { usePatternContext } from '@/contexts/PatternContext';
-import { BackgroundPattern } from '@/components/common/BackgroundPattern';
-import { Logo } from '@/components/common/Logo';
+import { BackgroundPattern, ThemeSwitch, Logo } from '@/components/common';
+import { useAuth, usePatternContext } from '@/contexts';
+import { useAlertActions } from '@/hooks';
 
 export const RegisterPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -166,7 +163,7 @@ export const RegisterPage: React.FC = () => {
 
       <div className="relative z-10 w-full max-w-md space-y-8">
         <div>
-          <div className="flex justify-center mb-6">
+          <div className="mb-6 flex justify-center">
             <Logo size={96} showText={false} />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">

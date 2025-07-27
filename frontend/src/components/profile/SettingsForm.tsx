@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {
-  userService,
-  UserSettings,
-  UpdateSettingsRequest,
-} from '@/services/userService';
-import { useAlertActions } from '@/hooks/useAlerts';
+import { userService } from '@/services';
+import { useAlertActions } from '@/hooks';
+import { UserSettings, UpdateSettingsRequest } from '@/types';
 
 interface SettingsFormProps {
   onCancel: () => void;
@@ -115,15 +112,18 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ onCancel }) => {
         {/* Settings sections skeleton */}
         {Array.from({ length: 4 }).map((_, sectionIndex) => (
           <div key={sectionIndex} className="space-y-4">
-            <div className="h-6 w-32 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></div>
+            <div className="h-6 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
             <div className="space-y-3">
               {Array.from({ length: 3 }).map((_, itemIndex) => (
-                <div key={itemIndex} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg dark:border-gray-700">
+                <div
+                  key={itemIndex}
+                  className="flex items-center justify-between rounded-lg border border-gray-200 p-4 dark:border-gray-700"
+                >
                   <div className="space-y-2">
-                    <div className="h-4 w-24 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></div>
-                    <div className="h-3 w-40 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></div>
+                    <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="h-3 w-40 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
                   </div>
-                  <div className="h-6 w-12 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></div>
+                  <div className="h-6 w-12 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
                 </div>
               ))}
             </div>
@@ -131,7 +131,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ onCancel }) => {
         ))}
         {/* Save button skeleton */}
         <div className="flex justify-end pt-4">
-          <div className="h-11 w-32 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></div>
+          <div className="h-11 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
         </div>
       </div>
     );
@@ -306,9 +306,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ onCancel }) => {
       </div>
 
       <div className="flex gap-3">
-        <button 
-          type="submit" 
-          className="btn-primary disabled:cursor-not-allowed disabled:opacity-50" 
+        <button
+          type="submit"
+          className="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isLoading}
         >
           {isLoading ? (

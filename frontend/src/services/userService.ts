@@ -1,52 +1,11 @@
 import { AxiosResponse } from 'axios';
-import { ApiResponse, User } from '@/types';
-import { apiClient } from './apiClient';
+import { ApiResponse, ChangePasswordRequest, UpdateProfileRequest, UpdateSettingsRequest, User, UserSettings } from '@/types';
+import { apiClient } from '@/services';
 
-export interface UpdateProfileRequest {
-  name?: string;
-  email?: string;
-}
-
-export interface ChangePasswordRequest {
-  currentPassword: string;
-  newPassword: string;
-}
-
-export interface UserSettings {
-  theme: 'light' | 'dark' | 'system';
-  notifications: {
-    email: boolean;
-    credentialExpiry: boolean;
-    securityAlerts: boolean;
-  };
-  security: {
-    twoFactorEnabled: boolean;
-    sessionTimeout: number;
-  };
-  privacy: {
-    shareUsageData: boolean;
-  };
-}
-
-export interface UpdateSettingsRequest {
-  theme?: 'light' | 'dark' | 'system';
-  notifications?: {
-    email?: boolean;
-    credentialExpiry?: boolean;
-    securityAlerts?: boolean;
-  };
-  security?: {
-    sessionTimeout?: number;
-  };
-  privacy?: {
-    shareUsageData?: boolean;
-  };
-}
-
-export class UserService {
-  async getProfile(): Promise<ApiResponse<{ user: User }>> {
+export const userService = {
+  async getProfile(): Promise<ApiResponse<{ user: User; }>> {
     try {
-      const response: AxiosResponse<ApiResponse<{ user: User }>> =
+      const response: AxiosResponse<ApiResponse<{ user: User; }>> =
         await apiClient.get('/users/profile');
       return response.data;
     } catch (error: any) {
@@ -57,14 +16,14 @@ export class UserService {
         }
       );
     }
-  }
+  },
 
   async updateProfile(
     data: UpdateProfileRequest
-  ): Promise<ApiResponse<{ user: User; message: string }>> {
+  ): Promise<ApiResponse<{ user: User; message: string; }>> {
     try {
       const response: AxiosResponse<
-        ApiResponse<{ user: User; message: string }>
+        ApiResponse<{ user: User; message: string; }>
       > = await apiClient.patch('/users/profile', data);
       return response.data;
     } catch (error: any) {
@@ -75,13 +34,13 @@ export class UserService {
         }
       );
     }
-  }
+  },
 
   async changePassword(
     data: ChangePasswordRequest
-  ): Promise<ApiResponse<{ message: string }>> {
+  ): Promise<ApiResponse<{ message: string; }>> {
     try {
-      const response: AxiosResponse<ApiResponse<{ message: string }>> =
+      const response: AxiosResponse<ApiResponse<{ message: string; }>> =
         await apiClient.patch('/users/password', data);
       return response.data;
     } catch (error: any) {
@@ -92,11 +51,11 @@ export class UserService {
         }
       );
     }
-  }
+  },
 
-  async getSettings(): Promise<ApiResponse<{ settings: UserSettings }>> {
+  async getSettings(): Promise<ApiResponse<{ settings: UserSettings; }>> {
     try {
-      const response: AxiosResponse<ApiResponse<{ settings: UserSettings }>> =
+      const response: AxiosResponse<ApiResponse<{ settings: UserSettings; }>> =
         await apiClient.get('/users/settings');
       return response.data;
     } catch (error: any) {
@@ -107,14 +66,14 @@ export class UserService {
         }
       );
     }
-  }
+  },
 
   async updateSettings(
     data: UpdateSettingsRequest
-  ): Promise<ApiResponse<{ message: string; settings: UserSettings }>> {
+  ): Promise<ApiResponse<{ message: string; settings: UserSettings; }>> {
     try {
       const response: AxiosResponse<
-        ApiResponse<{ message: string; settings: UserSettings }>
+        ApiResponse<{ message: string; settings: UserSettings; }>
       > = await apiClient.patch('/users/settings', data);
       return response.data;
     } catch (error: any) {
@@ -126,6 +85,4 @@ export class UserService {
       );
     }
   }
-}
-
-export const userService = new UserService();
+};

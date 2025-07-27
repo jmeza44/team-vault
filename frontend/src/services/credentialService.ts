@@ -1,46 +1,11 @@
-import { ApiResponse, Credential } from '@/types';
-import { apiClient } from './apiClient';
-
-export interface CreateCredentialRequest {
-  name: string;
-  username?: string;
-  secret: string;
-  description?: string;
-  category?: string;
-  url?: string;
-  tags?: string[];
-  expirationDate?: string;
-  riskLevel?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-}
-
-export interface UpdateCredentialRequest
-  extends Partial<CreateCredentialRequest> {}
-
-export interface GetCredentialsParams {
-  category?: string;
-  search?: string;
-  teamId?: string;
-  limit?: number;
-  offset?: number;
-}
-
-export interface ShareCredentialRequest {
-  userIds?: string[];
-  teamIds?: string[];
-  accessLevel?: 'READ' | 'WRITE';
-  expiresAt?: string;
-}
-
-export interface CreateOneTimeLinkRequest {
-  accessLevel?: 'READ' | 'WRITE';
-  expiresAt?: string;
-}
+import { ApiResponse, CreateCredentialRequest, CreateOneTimeLinkRequest, Credential, GetCredentialsParams, ShareCredentialRequest, UpdateCredentialRequest } from '@/types';
+import { apiClient } from '@/services';
 
 export const credentialService = {
   // Get all credentials
   async getCredentials(
     params?: GetCredentialsParams
-  ): Promise<ApiResponse<{ credentials: Credential[]; pagination: any }>> {
+  ): Promise<ApiResponse<{ credentials: Credential[]; pagination: any; }>> {
     const response = await apiClient.get('/credentials', { params });
     return response.data;
   },
@@ -48,7 +13,7 @@ export const credentialService = {
   // Get credential by ID
   async getCredentialById(
     id: string
-  ): Promise<ApiResponse<{ credential: Credential & { secret: string } }>> {
+  ): Promise<ApiResponse<{ credential: Credential & { secret: string; }; }>> {
     const response = await apiClient.get(`/credentials/${id}`);
     return response.data;
   },
@@ -56,7 +21,7 @@ export const credentialService = {
   // Create new credential
   async createCredential(
     data: CreateCredentialRequest
-  ): Promise<ApiResponse<{ credential: Credential; message: string }>> {
+  ): Promise<ApiResponse<{ credential: Credential; message: string; }>> {
     const response = await apiClient.post('/credentials', data);
     return response.data;
   },
@@ -65,7 +30,7 @@ export const credentialService = {
   async updateCredential(
     id: string,
     data: UpdateCredentialRequest
-  ): Promise<ApiResponse<{ credential: Credential; message: string }>> {
+  ): Promise<ApiResponse<{ credential: Credential; message: string; }>> {
     const response = await apiClient.patch(`/credentials/${id}`, data);
     return response.data;
   },
@@ -73,7 +38,7 @@ export const credentialService = {
   // Delete credential
   async deleteCredential(
     id: string
-  ): Promise<ApiResponse<{ message: string }>> {
+  ): Promise<ApiResponse<{ message: string; }>> {
     const response = await apiClient.delete(`/credentials/${id}`);
     return response.data;
   },
@@ -82,7 +47,7 @@ export const credentialService = {
   async shareCredential(
     id: string,
     data: ShareCredentialRequest
-  ): Promise<ApiResponse<{ message: string }>> {
+  ): Promise<ApiResponse<{ message: string; }>> {
     const response = await apiClient.post(`/credentials/${id}/share`, data);
     return response.data;
   },
@@ -90,7 +55,7 @@ export const credentialService = {
   // Get credential shares
   async getCredentialShares(
     id: string
-  ): Promise<ApiResponse<{ shares: any[] }>> {
+  ): Promise<ApiResponse<{ shares: any[]; }>> {
     const response = await apiClient.get(`/credentials/${id}/shares`);
     return response.data;
   },
@@ -99,7 +64,7 @@ export const credentialService = {
   async removeCredentialShare(
     id: string,
     shareId: string
-  ): Promise<ApiResponse<{ message: string }>> {
+  ): Promise<ApiResponse<{ message: string; }>> {
     const response = await apiClient.delete(
       `/credentials/${id}/shares/${shareId}`
     );
@@ -110,7 +75,7 @@ export const credentialService = {
   async createOneTimeLink(
     id: string,
     data: CreateOneTimeLinkRequest
-  ): Promise<ApiResponse<{ link: any; message: string }>> {
+  ): Promise<ApiResponse<{ link: any; message: string; }>> {
     const response = await apiClient.post(
       `/credentials/${id}/one-time-link`,
       data

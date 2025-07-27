@@ -1,6 +1,6 @@
 import React from 'react';
-import { Dialog } from '@/components/common/Dialog';
 import { AlertTriangle, Trash2 } from 'lucide-react';
+import { Dialog } from '@/components/common';
 
 interface ConfirmDialogProps {
   isOpen: boolean;

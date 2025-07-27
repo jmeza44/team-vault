@@ -1,46 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Credential, Team } from '@/types';
+import { X, Users, User as UserIcon } from 'lucide-react';
+import { Dialog, ConfirmDialog } from '@/components/common';
+import { useAlertActions, useConfirm, usePermissions } from '@/hooks';
 import {
   credentialService,
-  ShareCredentialRequest,
-} from '@/services/credentialService';
-import teamService from '@/services/teamService';
-import { useAlertActions } from '@/hooks/useAlerts';
-import { useConfirm } from '@/hooks/useConfirm';
-import { usePermissions } from '@/hooks/usePermissions';
-import { Dialog } from '@/components/common/Dialog';
-import { ConfirmDialog } from '@/components/common/ConfirmDialog';
-import { X, Users, User as UserIcon } from 'lucide-react';
+  teamService,
+} from '@/services';
+import { Credential, Team, ShareData, ShareCredentialRequest } from '@/types';
 
 interface ShareCredentialModalProps {
   credential: Credential;
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-}
-
-interface ShareData {
-  shares: Array<{
-    id: string;
-    accessLevel: 'READ' | 'WRITE';
-    expiresAt?: string;
-    sharedWithUser?: {
-      id: string;
-      name: string;
-      email: string;
-    };
-    sharedWithTeam?: {
-      id: string;
-      name: string;
-      description?: string;
-    };
-    createdBy: {
-      id: string;
-      name: string;
-      email: string;
-    };
-    createdAt: string;
-  }>;
 }
 
 export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
@@ -214,16 +186,16 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
               {Array.from({ length: 3 }).map((_, index) => (
                 <div
                   key={index}
-                  className="animate-pulse flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-700"
+                  className="flex animate-pulse items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-700"
                 >
-                  <div className="flex items-center space-x-3 flex-1">
-                    <div className="h-8 w-8 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                  <div className="flex flex-1 items-center space-x-3">
+                    <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700"></div>
                     <div className="flex-1">
-                      <div className="h-4 bg-gray-200 rounded w-1/3 mb-1 dark:bg-gray-700"></div>
-                      <div className="h-3 bg-gray-200 rounded w-1/2 dark:bg-gray-700"></div>
+                      <div className="mb-1 h-4 w-1/3 rounded bg-gray-200 dark:bg-gray-700"></div>
+                      <div className="h-3 w-1/2 rounded bg-gray-200 dark:bg-gray-700"></div>
                     </div>
                   </div>
-                  <div className="h-8 w-8 bg-gray-200 rounded dark:bg-gray-700"></div>
+                  <div className="h-8 w-8 rounded bg-gray-200 dark:bg-gray-700"></div>
                 </div>
               ))}
             </div>

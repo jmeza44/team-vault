@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { User, Lock, Settings, Palette } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { PatternSelector } from '@/components/common';
+import {
+  ProfileForm,
+  ChangePasswordForm,
+  SettingsForm,
+} from '@/components/profile';
+import { useAuth } from '@/contexts';
 import { User as UserType } from '@/types';
-import { ProfileForm } from '@/components/profile/ProfileForm';
-import { ChangePasswordForm } from '@/components/profile/ChangePasswordForm';
-import { SettingsForm } from '@/components/profile/SettingsForm';
-import { PatternSelector } from '@/components/common/PatternSelector';
 
 type ProfileTab = 'profile' | 'password' | 'settings' | 'appearance';
 
@@ -197,10 +199,12 @@ export const ProfilePage: React.FC = () => {
               </p>
             </div>
             <div className="card-body">
-              <PatternSelector onPatternChange={() => {
-                // Pattern change is handled automatically by the component
-                // Could add analytics or notifications here if needed
-              }} />
+              <PatternSelector
+                onPatternChange={() => {
+                  // Pattern change is handled automatically by the component
+                  // Could add analytics or notifications here if needed
+                }}
+              />
             </div>
           </div>
         )}

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Team, TeamRole } from '@/types';
-import {
-  TeamWithMembers,
-  AddMemberRequest,
-  UpdateMemberRequest,
-} from '@/services/teamService';
-import { useConfirm } from '@/hooks/useConfirm';
-import { Dialog } from '@/components/common/Dialog';
-import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { Edit, X, Trash2 } from 'lucide-react';
+import {
+  AddMemberRequest,
+  Team,
+  TeamRole,
+  TeamWithMembers,
+  UpdateMemberRequest,
+} from '@/types';
+import { useConfirm } from '@/hooks';
+import { ConfirmDialog, Dialog } from '@/components/common';
+import { formatDateTime, getUserRole, isTeamAdmin } from '@/utils';
 
 interface TeamDetailModalProps {
   team: TeamWithMembers;
@@ -25,29 +26,6 @@ interface TeamDetailModalProps {
   onRemoveMember: (teamId: string, userId: string) => Promise<void>;
   isLoading?: boolean;
 }
-
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-};
-
-const getUserRole = (
-  team: TeamWithMembers,
-  userId: string
-): TeamRole | null => {
-  const membership = team.memberships?.find(m => m.userId === userId);
-  return membership?.role || null;
-};
-
-const isTeamAdmin = (team: TeamWithMembers, userId: string): boolean => {
-  const role = getUserRole(team, userId);
-  return role === TeamRole.ADMIN;
-};
 
 export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
   team,
@@ -182,7 +160,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                 Created:
               </span>
               <span className="ml-1 text-gray-600 dark:text-gray-400">
-                {formatDate(team.createdAt)}
+                {formatDateTime(team.createdAt)}
               </span>
             </div>
             <div>

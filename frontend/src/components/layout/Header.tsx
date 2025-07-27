@@ -1,8 +1,7 @@
 import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useMobile } from '@/contexts/MobileContext';
-import { ThemeSwitch } from '@/components/common/ThemeSwitch';
 import { Bell, Menu, X } from 'lucide-react';
+import { useAuth, useMobile } from '@/contexts';
+import { ThemeSwitch } from '@/components/common';
 
 export const Header: React.FC = () => {
   const { user } = useAuth();
