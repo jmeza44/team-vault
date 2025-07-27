@@ -1,13 +1,52 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '@/middleware/authMiddleware';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export class UserController {
-  async getProfile(req: AuthenticatedRequest, res: Response) {
+  async getProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
+      if (!req.user) {
+        res.status(401).json({
+          success: false,
+          error: {
+            message: 'User not authenticated',
+          },
+        });
+        return;
+      }
+
+      // Fetch complete user data from database
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.id },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          isActive: true,
+          emailVerified: true,
+          lastLoginAt: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      if (!user) {
+        res.status(404).json({
+          success: false,
+          error: {
+            message: 'User not found',
+          },
+        });
+        return;
+      }
+
       res.json({
         success: true,
         data: {
-          user: req.user,
+          user,
         },
       });
     } catch (error) {

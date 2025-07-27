@@ -6,7 +6,7 @@ import { CredentialForm, CredentialFormData } from '@/components/credentials/Cre
 import { CredentialCard } from '@/components/credentials/CredentialCard';
 import { CredentialDetailModal } from '@/components/credentials/CredentialDetailModal';
 import { ShareCredentialModal } from '@/components/credentials/ShareCredentialModal';
-import { Shield } from 'lucide-react';
+import { Shield, ArrowLeft } from 'lucide-react';
 
 const CATEGORIES = [
   'Database',
@@ -243,9 +243,10 @@ export const CredentialsPage: React.FC = () => {
               setViewMode('list');
               setSelectedCredential(null);
             }}
-            className="text-blue-600 hover:text-blue-800 flex items-center"
+            className="text-blue-600 hover:text-blue-800 flex items-center gap-2 font-medium transition-colors"
           >
-            ← Back to Credentials
+            <ArrowLeft className="h-4 w-4" />
+            Back to Credentials
           </button>
         </div>
 
