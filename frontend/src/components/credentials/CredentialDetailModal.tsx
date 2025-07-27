@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Credential, RiskLevel } from '@/types';
+import { Credential, RiskLevel, AccessLevel } from '@/types';
 import { Copy, Eye, EyeOff, ExternalLink, X } from 'lucide-react';
 import { Dialog } from '@/components/common/Dialog';
 import { useToast } from '@/hooks/useToast';
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface CredentialDetailModalProps {
-  credential: Credential;
+  credential: Credential | null;
   isOpen: boolean;
   onClose: () => void;
   onEdit: (credential: Credential) => void;
@@ -48,6 +49,12 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
 }) => {
   const [showSecret, setShowSecret] = useState(false);
   const { showCopySuccess, showCopyError } = useToast();
+  const { getCredentialPermissions } = usePermissions();
+  
+  // Don't render if credential is not provided or modal is not open
+  if (!isOpen || !credential) return null;
+  
+  const permissions = getCredentialPermissions(credential);
 
   const handleCopy = async (text: string, label: string) => {
     try {
@@ -63,8 +70,6 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
       window.open(credential.url, '_blank', 'noopener,noreferrer');
     }
   };
-
-  if (!isOpen) return null;
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
@@ -82,6 +87,16 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                 {credential.category && (
                   <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
                     {credential.category}
+                  </span>
+                )}
+                {permissions.isOwner && (
+                  <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                    Owner
+                  </span>
+                )}
+                {!permissions.isOwner && permissions.accessLevel && (
+                  <span className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full">
+                    {permissions.accessLevel === AccessLevel.WRITE ? 'Read & Write Access' : 'Read Only Access'}
                   </span>
                 )}
               </div>
@@ -131,22 +146,26 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                   readOnly
                   className="w-full p-3 bg-gray-100 rounded-md text-sm font-mono pr-12"
                 />
-                <button
-                  onClick={() => setShowSecret(!showSecret)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-600"
-                  title={showSecret ? 'Hide secret' : 'Show secret'}
-                >
-                  {showSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+                {permissions.canCopySecret && (
+                  <button
+                    onClick={() => setShowSecret(!showSecret)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-600"
+                    title={showSecret ? 'Hide secret' : 'Show secret'}
+                  >
+                    {showSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                )}
               </div>
-              <button
-                onClick={() => handleCopy(credential.secret || '', 'Secret')}
-                className="p-2 text-gray-600 hover:text-blue-600"
-                title="Copy secret"
-                disabled={!credential.secret}
-              >
-                <Copy className="h-4 w-4" />
-              </button>
+              {permissions.canCopySecret && (
+                <button
+                  onClick={() => handleCopy(credential.secret || '', 'Secret')}
+                  className="p-2 text-gray-600 hover:text-blue-600"
+                  title="Copy secret"
+                  disabled={!credential.secret}
+                >
+                  <Copy className="h-4 w-4" />
+                </button>
+              )}
             </div>
           </div>
 
@@ -274,26 +293,32 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
         {/* Footer */}
         <div className="p-6 border-t border-gray-200 flex justify-between">
           <div className="flex space-x-3">
-            <button
-              onClick={() => onShare(credential)}
-              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              Share
-            </button>
+            {permissions.canShare && (
+              <button
+                onClick={() => onShare(credential)}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                Share
+              </button>
+            )}
           </div>
           <div className="flex space-x-3">
-            <button
-              onClick={() => onEdit(credential)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => onDelete(credential)}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-            >
-              Delete
-            </button>
+            {permissions.canEdit && (
+              <button
+                onClick={() => onEdit(credential)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Edit
+              </button>
+            )}
+            {permissions.canDelete && (
+              <button
+                onClick={() => onDelete(credential)}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                Delete
+              </button>
+            )}
           </div>
         </div>
     </Dialog>

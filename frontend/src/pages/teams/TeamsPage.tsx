@@ -350,7 +350,6 @@ export const TeamsPage: React.FC = () => {
                 onView={handleViewTeam}
                 onEdit={handleEditTeam}
                 onDelete={handleDeleteTeam}
-                onManageMembers={handleViewTeam}
                 currentUserId={user?.id}
               />
             );

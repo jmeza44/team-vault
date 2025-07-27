@@ -9,6 +9,7 @@ import { ShareCredentialModal } from '@/components/credentials/ShareCredentialMo
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { useAlertActions, useApiErrorHandler } from '@/hooks/useAlerts';
 import { useConfirm } from '@/hooks/useConfirm';
+import { usePermissions } from '@/hooks/usePermissions';
 import { Shield, ArrowLeft } from 'lucide-react';
 
 const CATEGORIES = [
@@ -35,6 +36,7 @@ export const CredentialsPage: React.FC = () => {
   const { showSuccess, showError } = useAlertActions();
   const { handleApiError } = useApiErrorHandler();
   const { confirm, confirmState, handleClose, handleConfirm } = useConfirm();
+  const { userPermissions, getCredentialPermissions } = usePermissions();
   
   // Filters and search
   const [searchTerm, setSearchTerm] = useState('');
@@ -168,6 +170,12 @@ export const CredentialsPage: React.FC = () => {
   };
 
   const handleViewCredential = async (credential: Credential) => {
+    const permissions = getCredentialPermissions(credential);
+    if (!permissions.canView) {
+      showError('Access Denied', 'You do not have permission to view this credential');
+      return;
+    }
+
     try {
       // Fetch the full credential with decrypted secret
       const response = await credentialService.getCredentialById(credential.id);
@@ -185,6 +193,12 @@ export const CredentialsPage: React.FC = () => {
   };
 
   const handleEditCredential = async (credential: Credential) => {
+    const permissions = getCredentialPermissions(credential);
+    if (!permissions.canEdit) {
+      showError('Access Denied', 'You do not have permission to edit this credential');
+      return;
+    }
+
     try {
       // Fetch the full credential with decrypted secret for editing
       const response = await credentialService.getCredentialById(credential.id);
@@ -202,6 +216,12 @@ export const CredentialsPage: React.FC = () => {
   };
 
   const handleDeleteCredential = async (credential: Credential) => {
+    const permissions = getCredentialPermissions(credential);
+    if (!permissions.canDelete) {
+      showError('Access Denied', 'You do not have permission to delete this credential');
+      return;
+    }
+
     const confirmed = await confirm({
       title: 'Delete Credential',
       message: `Are you sure you want to delete "${credential.name}"? This action cannot be undone and will permanently remove all credential data.`,
@@ -234,6 +254,12 @@ export const CredentialsPage: React.FC = () => {
   };
 
   const handleShareCredential = (credential: Credential) => {
+    const permissions = getCredentialPermissions(credential);
+    if (!permissions.canShare) {
+      showError('Access Denied', 'You do not have permission to share this credential');
+      return;
+    }
+
     setCredentialToShare(credential);
     setIsShareModalOpen(true);
   };
@@ -289,15 +315,17 @@ export const CredentialsPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">Credentials</h1>
           <p className="text-gray-600">Manage your team's secure credentials</p>
         </div>
-        <button
-          onClick={() => {
-            setSelectedCredential(null);
-            setViewMode('form');
-          }}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Add Credential
-        </button>
+        {userPermissions.canCreateCredentials && (
+          <button
+            onClick={() => {
+              setSelectedCredential(null);
+              setViewMode('form');
+            }}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Add Credential
+          </button>
+        )}
       </div>
 
       {/* Filters */}
@@ -441,7 +469,7 @@ export const CredentialsPage: React.FC = () => {
 
       {/* Credential Detail Modal */}
       <CredentialDetailModal
-        credential={selectedCredential!}
+        credential={selectedCredential}
         isOpen={viewMode === 'detail' && !!selectedCredential}
         onClose={() => {
           setViewMode('list');

@@ -8,7 +8,6 @@ interface TeamCardProps {
   onView: (team: Team | TeamWithMembers) => void;
   onEdit: (team: Team | TeamWithMembers) => void;
   onDelete: (team: Team | TeamWithMembers) => void;
-  onManageMembers: (team: Team | TeamWithMembers) => void;
   currentUserId?: string;
 }
 
@@ -36,7 +35,6 @@ export const TeamCard: React.FC<TeamCardProps> = ({
   onView,
   onEdit,
   onDelete,
-  onManageMembers,
   currentUserId
 }) => {
   const [showActions, setShowActions] = useState(false);
@@ -109,17 +107,6 @@ export const TeamCard: React.FC<TeamCardProps> = ({
             title="View Details"
           >
             <Eye className="w-4 h-4" />
-          </button>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onManageMembers(team);
-            }}
-            className="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition-colors"
-            title="Manage Members"
-          >
-            <Users className="w-4 h-4" />
           </button>
 
           {isAdmin && (

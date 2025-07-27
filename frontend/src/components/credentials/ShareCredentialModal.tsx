@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Credential, Team } from '@/types';
 import { credentialService, ShareCredentialRequest } from '@/services/credentialService';
 import teamService from '@/services/teamService';
-import { useAuth } from '@/contexts/AuthContext';
 import { useAlertActions } from '@/hooks/useAlerts';
 import { useConfirm } from '@/hooks/useConfirm';
+import { usePermissions } from '@/hooks/usePermissions';
 import { Dialog } from '@/components/common/Dialog';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { X, Users, User as UserIcon } from 'lucide-react';
@@ -46,9 +46,10 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const { user } = useAuth();
   const { showError, showSuccess } = useAlertActions();
   const { confirm, confirmState, handleClose, handleConfirm } = useConfirm();
+  const { getCredentialPermissions } = usePermissions();
+  const permissions = getCredentialPermissions(credential);
   const [teams, setTeams] = useState<Team[]>([]);
   const [shares, setShares] = useState<ShareData['shares']>([]);
   const [loading, setLoading] = useState(false);
@@ -161,8 +162,6 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
     }
   };
 
-  const isOwner = credential.ownerId === user?.id;
-
   if (!isOpen) return null;
 
   return (
@@ -188,7 +187,7 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
           )}
 
           {/* Share with Teams Form */}
-          {isOwner && (
+          {permissions.canShare && (
             <div className="mb-8">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Share with Teams</h3>
               <form onSubmit={handleShare} className="space-y-4">
@@ -289,7 +288,7 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
                         </div>
                       </div>
                     </div>
-                    {isOwner && (
+                    {permissions.canShare && (
                       <button
                         onClick={() => handleRemoveShare(share.id)}
                         className="text-red-600 hover:text-red-800 text-sm"

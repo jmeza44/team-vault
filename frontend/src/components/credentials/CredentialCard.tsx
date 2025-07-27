@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Credential, RiskLevel } from '@/types';
+import { Credential, RiskLevel, AccessLevel } from '@/types';
 import { Copy, Eye, Edit, Share, Trash2, AlertTriangle, Clock } from 'lucide-react';
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface CredentialCardProps {
   credential: Credential;
@@ -54,6 +55,8 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
   onShare
 }) => {
   const [showActions, setShowActions] = useState(false);
+  const { getCredentialPermissions } = usePermissions();
+  const permissions = getCredentialPermissions(credential);
 
   const handleCopyUsername = async () => {
     if (credential.username) {
@@ -95,9 +98,21 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
         </div>
 
         {/* Risk Level Badge */}
-        <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRiskLevelColor(credential.riskLevel)}`}>
-          {credential.riskLevel}
-        </span>
+        <div className="flex items-center space-x-2">
+          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRiskLevelColor(credential.riskLevel)}`}>
+            {credential.riskLevel}
+          </span>
+          {permissions.isOwner && (
+            <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+              Owner
+            </span>
+          )}
+          {!permissions.isOwner && permissions.accessLevel && (
+            <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
+              {permissions.accessLevel === AccessLevel.WRITE ? 'Read & Write' : 'Read Only'}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Content */}
@@ -180,34 +195,42 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
       {/* Action Buttons */}
       {showActions && (
         <div className="absolute top-2 right-2 bg-white rounded-lg shadow-lg border border-gray-200 p-1 flex space-x-1">
-          <button
-            onClick={() => onView(credential)}
-            className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded"
-            title="View details"
-          >
-            <Eye className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => onEdit(credential)}
-            className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded"
-            title="Edit"
-          >
-            <Edit className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => onShare(credential)}
-            className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded"
-            title="Share"
-          >
-            <Share className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => onDelete(credential)}
-            className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded"
-            title="Delete"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+          {permissions.canView && (
+            <button
+              onClick={() => onView(credential)}
+              className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded"
+              title="View details"
+            >
+              <Eye className="h-4 w-4" />
+            </button>
+          )}
+          {permissions.canEdit && (
+            <button
+              onClick={() => onEdit(credential)}
+              className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded"
+              title="Edit"
+            >
+              <Edit className="h-4 w-4" />
+            </button>
+          )}
+          {permissions.canShare && (
+            <button
+              onClick={() => onShare(credential)}
+              className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded"
+              title="Share"
+            >
+              <Share className="h-4 w-4" />
+            </button>
+          )}
+          {permissions.canDelete && (
+            <button
+              onClick={() => onDelete(credential)}
+              className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded"
+              title="Delete"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          )}
         </div>
       )}
     </div>
