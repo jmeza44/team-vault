@@ -1,13 +1,8 @@
 import { Router } from 'express';
-import { 
-  CredentialController,
-  createCredentialValidation,
-  updateCredentialValidation,
-  credentialIdValidation
-} from '@/controllers/CredentialController';
-import { authenticateToken } from '@/middleware/authMiddleware';
-import { validateRequest } from '@/middleware/validationMiddleware';
 import { body, param } from 'express-validator';
+import { CredentialController } from '@/controllers';
+import { authenticateToken, validateRequest } from '@/middleware';
+import { createCredentialValidation, credentialIdValidation, updateCredentialValidation } from '@/validations';
 
 const router = Router();
 const credentialController = new CredentialController();

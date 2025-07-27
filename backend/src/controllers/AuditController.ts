@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { AuthenticatedRequest } from '@/middleware/authMiddleware';
+import { AuthenticatedRequest } from '@/models';
 
 export class AuditController {
   async getAuditLogs(_req: AuthenticatedRequest, res: Response) {

@@ -1,8 +1,8 @@
 import { Response } from 'express';
-import { AuthenticatedRequest } from '@/middleware/authMiddleware';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { validationResult } from 'express-validator';
+import { PrismaClient } from '@prisma/client';
+import { AuthenticatedRequest } from '@/models';
 
 const prisma = new PrismaClient();
 

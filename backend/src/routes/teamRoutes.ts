@@ -1,8 +1,7 @@
 import { Router } from 'express';
-import { TeamController } from '@/controllers/TeamController';
-import { authenticateToken } from '@/middleware/authMiddleware';
-import { validateRequest } from '@/middleware/validationMiddleware';
 import { body, param } from 'express-validator';
+import { TeamController } from '@/controllers/TeamController';
+import { authenticateToken, validateRequest } from '@/middleware';
 
 const router = Router();
 const teamController = new TeamController();

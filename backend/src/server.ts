@@ -3,14 +3,10 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
-import { errorHandler, notFound } from '@/middleware/errorMiddleware';
-import { logger } from '@/utils/logger';
-import authRoutes from '@/routes/authRoutes';
-import userRoutes from '@/routes/userRoutes';
-import credentialRoutes from '@/routes/credentialRoutes';
-import teamRoutes from '@/routes/teamRoutes';
-import auditRoutes from '@/routes/auditRoutes';
-import analyticsRoutes from '@/routes/analyticsRoutes';
+import { notFound, errorHandler } from './middleware';
+import { authRoutes, userRoutes, credentialRoutes, teamRoutes, auditRoutes, analyticsRoutes } from './routes';
+import { logger } from './utils';
+
 
 // Load environment variables
 dotenv.config();

@@ -1,17 +1,16 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
+import { AuthenticatedRequest } from '@/models';
 
 const prisma = new PrismaClient();
 
-export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    role: string;
-  };
-}
-
+/**
+ * Middleware to authenticate JWT token and set user in request
+ * @param req - Express request object
+ * @param res - Express response object
+ * @param next - Next middleware function
+ */
 export const authenticateToken = async (
   req: AuthenticatedRequest,
   res: Response,
@@ -31,7 +30,7 @@ export const authenticateToken = async (
 
   try {
     const decoded = jwt.verify(token, process.env['JWT_SECRET']!) as any;
-    
+
     // Verify user still exists and is active
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
@@ -70,6 +69,10 @@ export const authenticateToken = async (
   }
 };
 
+/**
+ * Middleware to require specific user roles
+ * @param roles - Array of roles that are allowed
+ */
 export const requireRole = (roles: string[]) => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     if (!req.user) {

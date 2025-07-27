@@ -1,8 +1,7 @@
 import { Router } from 'express';
-import { AnalyticsController } from '@/controllers/AnalyticsController';
-import { authenticateToken } from '@/middleware/authMiddleware';
-import { validateRequest } from '@/middleware/validationMiddleware';
 import { query } from 'express-validator';
+import { AnalyticsController } from '@/controllers';
+import { authenticateToken, validateRequest } from '@/middleware';
 
 const router = Router();
 const analyticsController = new AnalyticsController();

@@ -1,10 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '@/utils';
-
-export interface ApiError extends Error {
-  statusCode?: number;
-  isOperational?: boolean;
-}
+import { ApiError } from '@/models';
 
 export const notFound = (req: Request, _res: Response, next: NextFunction) => {
   const error = new Error(`Not Found - ${req.originalUrl}`) as ApiError;

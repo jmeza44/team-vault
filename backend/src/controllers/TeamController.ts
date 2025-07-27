@@ -1,8 +1,7 @@
 import { Response } from 'express';
-import { AuthenticatedRequest } from '@/middleware/authMiddleware';
+import { TeamFilters, CreateTeamData, UpdateTeamData, AddTeamMemberData, UpdateTeamMemberRoleData, AuthenticatedRequest } from '@/models';
+import { TeamService } from '@/services';
 import { ResponseUtil } from '@/utils';
-import { TeamService } from '@/services/teamService';
-import { CreateTeamData, UpdateTeamData, AddTeamMemberData, UpdateTeamMemberRoleData, TeamFilters } from '@/models/TeamModels';
 
 export class TeamController {
   async getTeams(req: AuthenticatedRequest, res: Response) {

@@ -1,3 +1,14 @@
+import { Request } from 'express';
+
+// Authenticated request interface
+export interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+    role: string;
+  };
+}
+
 // User creation data interface
 export interface CreateUserData {
   email: string;

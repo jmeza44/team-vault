@@ -1,7 +1,7 @@
 import { PrismaClient, RiskLevel, AccessLevel } from '@prisma/client';
 import { encryptSensitiveData, decryptSensitiveData } from '../utils/encryption';
 import { logger } from '../utils/logger';
-import { CredentialFilters, CreateCredentialData, UpdateCredentialData } from '@/models/CredentialModels';
+import { CredentialFilters, CreateCredentialData, UpdateCredentialData } from '@/models';
 
 const prisma = new PrismaClient();
 

@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import { UserController } from '@/controllers/UserController';
-import { authenticateToken } from '@/middleware/authMiddleware';
-import { validateRequest } from '@/middleware/validationMiddleware';
+import { authenticateToken, validateRequest } from '@/middleware';
 import {
   validateUpdateProfile,
   validateChangePassword,
   validateUpdateSettings,
-} from '@/middleware/userValidation';
+} from '@/validations/userValidation';
 
 const router = Router();
 const userController = new UserController();

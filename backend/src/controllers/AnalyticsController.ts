@@ -1,9 +1,8 @@
 import { Response } from 'express';
-import { AuthenticatedRequest } from '@/middleware/authMiddleware';
-import { AnalyticsService } from '@/services/analyticsService';
-import { ResponseUtil } from '@/utils';
-import { AnalyticsFilters } from '@/models/AnalyticsModels';
 import { UserRole } from '@prisma/client';
+import { AnalyticsFilters, AuthenticatedRequest } from '@/models';
+import { AnalyticsService } from '@/services';
+import { ResponseUtil } from '@/utils';
 
 export class AnalyticsController {
   /**
@@ -11,27 +10,27 @@ export class AnalyticsController {
    */
   private buildFilters(query: any): AnalyticsFilters {
     const filters: AnalyticsFilters = {};
-    
+
     if (query['timeRange']) {
       filters.timeRange = query['timeRange'] as any;
     }
-    
+
     if (query['teamId']) {
       filters.teamId = query['teamId'] as string;
     }
-    
+
     if (query['userId']) {
       filters.userId = query['userId'] as string;
     }
-    
+
     if (query['startDate']) {
       filters.startDate = new Date(query['startDate'] as string);
     }
-    
+
     if (query['endDate']) {
       filters.endDate = new Date(query['endDate'] as string);
     }
-    
+
     return filters;
   }
 
@@ -42,7 +41,7 @@ export class AnalyticsController {
     try {
       const userId = req.user!.id;
       const userRole = req.user!.role as UserRole;
-      
+
       const filters = this.buildFilters(req.query);
       if (!filters.timeRange) {
         filters.timeRange = 'last30d';
@@ -66,7 +65,7 @@ export class AnalyticsController {
     try {
       const userId = req.user!.id;
       const userRole = req.user!.role as UserRole;
-      
+
       const filters = this.buildFilters(req.query);
       if (!filters.timeRange) {
         filters.timeRange = 'last30d';
@@ -90,7 +89,7 @@ export class AnalyticsController {
     try {
       const userId = req.user!.id;
       const userRole = req.user!.role as UserRole;
-      
+
       const filters = this.buildFilters(req.query);
       if (!filters.timeRange) {
         filters.timeRange = 'last30d';
@@ -114,7 +113,7 @@ export class AnalyticsController {
     try {
       const userId = req.user!.id;
       const userRole = req.user!.role as UserRole;
-      
+
       const filters = this.buildFilters(req.query);
       if (!filters.timeRange) {
         filters.timeRange = 'last30d';
@@ -138,7 +137,7 @@ export class AnalyticsController {
     try {
       const userId = req.user!.id;
       const userRole = req.user!.role as UserRole;
-      
+
       const filters = this.buildFilters(req.query);
       if (!filters.timeRange) {
         filters.timeRange = 'last30d';
@@ -159,7 +158,7 @@ export class AnalyticsController {
     try {
       const userId = req.user!.id;
       const userRole = req.user!.role as UserRole;
-      
+
       const filters = this.buildFilters(req.query);
       if (!filters.timeRange) {
         filters.timeRange = 'last7d';

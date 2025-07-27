@@ -1,14 +1,6 @@
 import { PrismaClient, UserRole } from '@prisma/client';
 import { logger } from '@/utils';
-import {
-  DashboardMetrics,
-  CredentialStatistics,
-  TeamActivityMetrics,
-  SecurityMetrics,
-  RecentActivity,
-  AnalyticsFilters,
-  AnalyticsSummary
-} from '@/models/AnalyticsModels';
+import { AnalyticsFilters, DashboardMetrics, CredentialStatistics, TeamActivityMetrics, SecurityMetrics, AnalyticsSummary, RecentActivity } from '@/models';
 
 const prisma = new PrismaClient();
 
@@ -19,10 +11,10 @@ export class AnalyticsService {
   static async getDashboardMetrics(userId: string, userRole: UserRole, filters: AnalyticsFilters = {}): Promise<DashboardMetrics> {
     try {
       const timeRange = AnalyticsService.getTimeRangeFilter(filters.timeRange || 'last30d');
-      
+
       // Get user's team IDs for filtering
       const userTeamIds = await AnalyticsService.getUserTeamIds(userId);
-      
+
       const [
         credentialStats,
         teamStats,
@@ -71,7 +63,7 @@ export class AnalyticsService {
       const timeRange = AnalyticsService.getTimeRangeFilter(filters.timeRange || 'last30d');
 
       const teamStats = await AnalyticsService.getTeamMetrics(userId, userRole, userTeamIds);
-      const recentActivity = await AnalyticsService.getRecentActivity(userId, userRole, userTeamIds, timeRange, 20);      return {
+      const recentActivity = await AnalyticsService.getRecentActivity(userId, userRole, userTeamIds, timeRange, 20); return {
         ...teamStats,
         recentActivity
       };
@@ -132,7 +124,7 @@ export class AnalyticsService {
     return memberships.map(m => m.teamId);
   }
 
-  private static getTimeRangeFilter(timeRange: string): { gte: Date } {
+  private static getTimeRangeFilter(timeRange: string): { gte: Date; } {
     const now = new Date();
     const ranges = {
       'last24h': 24 * 60 * 60 * 1000,
@@ -141,24 +133,24 @@ export class AnalyticsService {
       'last90d': 90 * 24 * 60 * 60 * 1000,
       'last1y': 365 * 24 * 60 * 60 * 1000
     };
-    
+
     const milliseconds = ranges[timeRange as keyof typeof ranges] || ranges['last30d'];
     return { gte: new Date(now.getTime() - milliseconds) };
   }
 
   private static async getCredentialMetrics(
-    userId: string, 
-    userRole: UserRole, 
-    userTeamIds: string[], 
-    _timeRange: { gte: Date }
+    userId: string,
+    userRole: UserRole,
+    userTeamIds: string[],
+    _timeRange: { gte: Date; }
   ): Promise<CredentialStatistics> {
     const isGlobalAdmin = userRole === UserRole.GLOBAL_ADMIN;
-    
+
     // Build credential access filter
     const credentialFilter = isGlobalAdmin ? {} : {
       OR: [
         { ownerId: userId }, // Own credentials
-        { 
+        {
           sharedWith: {
             some: {
               OR: [
@@ -324,14 +316,14 @@ export class AnalyticsService {
   }
 
   private static async getTeamMetrics(
-    userId: string, 
-    userRole: UserRole, 
+    userId: string,
+    userRole: UserRole,
     userTeamIds: string[]
   ): Promise<Omit<TeamActivityMetrics, 'recentActivity'>> {
     const isGlobalAdmin = userRole === UserRole.GLOBAL_ADMIN;
-    
+
     const teamFilter = isGlobalAdmin ? {} : { id: { in: userTeamIds } };
-    
+
     const [totalTeams, teamMemberships, teamCredentials, sharedCredentials] = await Promise.all([
       prisma.team.count({ where: teamFilter }),
       prisma.teamMembership.count({
@@ -367,11 +359,11 @@ export class AnalyticsService {
     userId: string,
     userRole: UserRole,
     _userTeamIds: string[],
-    timeRange: { gte: Date },
+    timeRange: { gte: Date; },
     limit: number = 20
   ): Promise<RecentActivity[]> {
     const isGlobalAdmin = userRole === UserRole.GLOBAL_ADMIN;
-    
+
     // For now, we'll get audit logs - this would be expanded with proper audit logging
     const auditLogs = await prisma.auditLog.findMany({
       where: isGlobalAdmin ? {
@@ -405,10 +397,10 @@ export class AnalyticsService {
   private static async getSecurityMetrics(
     userId: string,
     userRole: UserRole,
-    timeRange: { gte: Date }
+    timeRange: { gte: Date; }
   ): Promise<SecurityMetrics> {
     const isGlobalAdmin = userRole === UserRole.GLOBAL_ADMIN;
-    
+
     // This would be expanded with proper security event logging
     const auditFilter = isGlobalAdmin ? {
       createdAt: timeRange
@@ -486,10 +478,10 @@ export class AnalyticsService {
     const baseScore = 0;
     const loginWeight = 0.3;
     const activityWeight = 0.7;
-    
+
     const loginScore = Math.min(failedLogins * 10, 50);
     const activityScore = Math.min(suspiciousActivities * 20, 50);
-    
+
     return Math.min(baseScore + (loginScore * loginWeight) + (activityScore * activityWeight), 100);
   }
 }

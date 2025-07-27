@@ -1,14 +1,6 @@
 import { PrismaClient, TeamRole } from '@prisma/client';
-import { logger } from '../utils/logger';
-import { 
-  CreateTeamData, 
-  UpdateTeamData, 
-  AddTeamMemberData, 
-  UpdateTeamMemberRoleData,
-  TeamWithMembers,
-  TeamSummary,
-  TeamFilters 
-} from '../models/TeamModels';
+import { TeamFilters, TeamSummary, TeamWithMembers, CreateTeamData, UpdateTeamData, AddTeamMemberData, UpdateTeamMemberRoleData } from '@/models';
+import { logger } from '@/utils';
 
 const prisma = new PrismaClient();
 
@@ -67,8 +59,8 @@ export class TeamService {
         createdById: string;
         createdAt: Date;
         updatedAt: Date;
-        memberships: Array<{ role: TeamRole }>;
-        _count: { memberships: number };
+        memberships: Array<{ role: TeamRole; }>;
+        _count: { memberships: number; };
       }>;
 
       return teams.map(team => ({
@@ -247,7 +239,7 @@ export class TeamService {
       });
 
       logger.info('Team updated successfully', { teamId, userId });
-      
+
       return {
         id: updatedTeam.id,
         name: updatedTeam.name,
@@ -373,9 +365,9 @@ export class TeamService {
    * Update a team member's role
    */
   static async updateTeamMemberRole(
-    teamId: string, 
-    adminUserId: string, 
-    memberUserId: string, 
+    teamId: string,
+    adminUserId: string,
+    memberUserId: string,
     roleData: UpdateTeamMemberRoleData
   ): Promise<void> {
     try {
@@ -412,11 +404,11 @@ export class TeamService {
         throw new Error('User is not a member of this team');
       }
 
-      logger.info('Team member role updated successfully', { 
-        teamId, 
-        adminUserId, 
-        memberId: memberUserId, 
-        newRole: roleData.role 
+      logger.info('Team member role updated successfully', {
+        teamId,
+        adminUserId,
+        memberId: memberUserId,
+        newRole: roleData.role
       });
     } catch (error) {
       logger.error('Error updating team member role:', error);

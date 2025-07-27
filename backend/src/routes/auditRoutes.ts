@@ -1,8 +1,7 @@
 import { Router } from 'express';
-import { AuditController } from '@/controllers/AuditController';
-import { authenticateToken } from '@/middleware/authMiddleware';
-import { validateRequest } from '@/middleware/validationMiddleware';
 import { query } from 'express-validator';
+import { AuditController } from '@/controllers';
+import { authenticateToken, validateRequest } from '@/middleware';
 
 const router = Router();
 const auditController = new AuditController();
