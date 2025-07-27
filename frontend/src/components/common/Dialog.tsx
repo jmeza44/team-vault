@@ -1,5 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import { useMobile } from '@/contexts/MobileContext';
 
 interface DialogProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export const Dialog: React.FC<DialogProps> = ({
   closeOnBackdrop = true,
   closeOnEscape = true,
 }) => {
+  const { isMobile } = useMobile();
   React.useEffect(() => {
     if (!isOpen) return;
 
@@ -45,7 +47,7 @@ export const Dialog: React.FC<DialogProps> = ({
     if (
       closeOnBackdrop &&
       e.target === e.currentTarget &&
-      window.innerWidth >= 768
+      !isMobile
     ) {
       onClose();
     }
@@ -55,20 +57,33 @@ export const Dialog: React.FC<DialogProps> = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9998] flex items-center justify-center md:p-4"
+      className={`fixed inset-0 z-[9998] ${
+        isMobile 
+          ? 'flex' 
+          : 'flex items-center justify-center p-4'
+      }`}
       role="dialog"
       aria-modal="true"
     >
       {/* Backdrop - only visible on desktop */}
       <div
-        className="absolute inset-0 hidden bg-black/50 backdrop-blur-sm md:block"
+        className={`absolute inset-0 bg-black/50 backdrop-blur-sm ${
+          isMobile ? 'hidden' : 'block'
+        }`}
         onClick={handleBackdropClick}
         aria-hidden="true"
       />
 
       {/* Dialog Content */}
       <div
-        className={`/* Mobile: Full screen */ /* Desktop: Modal with constraints */ relative h-full w-full overflow-y-auto bg-white shadow-2xl dark:bg-gray-800 md:sm:max-w-2xl md:max-h-[90vh] md:w-full md:max-w-[95vw] md:md:max-w-3xl md:rounded-lg md:lg:max-w-4xl ${className} `}
+        className={`
+          relative bg-white shadow-2xl dark:bg-gray-800 overflow-y-auto
+          ${isMobile 
+            ? 'h-full w-full' 
+            : 'max-h-[95vh] w-full max-w-[95vw] rounded-lg sm:max-w-2xl md:max-w-3xl lg:max-w-4xl'
+          }
+          ${className}
+        `}
       >
         {children}
       </div>
