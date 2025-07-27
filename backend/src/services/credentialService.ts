@@ -18,8 +18,51 @@ export class CredentialService {
               },
             },
           },
+          {
+            sharedWith: {
+              some: {
+                sharedWithTeam: {
+                  memberships: {
+                    some: {
+                      userId: userId,
+                    },
+                  },
+                },
+              },
+            },
+          },
         ],
       };
+
+      // Apply team filter if specified
+      if (filters.teamId) {
+        where.OR = [
+          {
+            // Credentials owned by user and shared with specific team
+            ownerId: userId,
+            sharedWith: {
+              some: {
+                sharedWithTeamId: filters.teamId,
+              },
+            },
+          },
+          {
+            // Credentials shared with specific team where user is member
+            sharedWith: {
+              some: {
+                sharedWithTeamId: filters.teamId,
+                sharedWithTeam: {
+                  memberships: {
+                    some: {
+                      userId: userId,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ];
+      }
 
       // Apply filters
       if (filters.search) {
@@ -290,13 +333,43 @@ export class CredentialService {
     }
   }
 
-  static async shareCredential(credentialId: string, userId: string, targetUserIds: string[]) {
+  static async shareCredential(credentialId: string, userId: string, shareData: {
+    userIds?: string[];
+    teamIds?: string[];
+    accessLevel?: AccessLevel;
+    expiresAt?: Date;
+  }) {
     try {
-      // Check if user owns this credential
+      // Check if user owns this credential or has write access
       const credential = await prisma.credential.findFirst({
         where: {
           id: credentialId,
-          ownerId: userId,
+          OR: [
+            { ownerId: userId },
+            {
+              sharedWith: {
+                some: {
+                  sharedWithUserId: userId,
+                  accessLevel: AccessLevel.WRITE,
+                },
+              },
+            },
+            {
+              sharedWith: {
+                some: {
+                  sharedWithTeam: {
+                    memberships: {
+                      some: {
+                        userId: userId,
+                        role: 'ADMIN',
+                      },
+                    },
+                  },
+                  accessLevel: AccessLevel.WRITE,
+                },
+              },
+            },
+          ],
         },
       });
 
@@ -304,34 +377,130 @@ export class CredentialService {
         return false;
       }
 
-      // Remove existing shares not in the new list
-      await prisma.sharedCredential.deleteMany({
-        where: {
-          credentialId,
-          sharedWithUserId: { notIn: targetUserIds },
-        },
-      });
+      const accessLevel = shareData.accessLevel || AccessLevel.READ;
+      const expiresAt = shareData.expiresAt;
 
-      // Add new shares
-      const sharePromises = targetUserIds.map(async (targetUserId) => {
-        try {
-          return await prisma.sharedCredential.create({
-            data: {
+      // Share with individual users
+      if (shareData.userIds && shareData.userIds.length > 0) {
+        // Remove existing user shares not in the new list
+        await prisma.sharedCredential.deleteMany({
+          where: {
+            credentialId,
+            sharedWithUserId: { notIn: shareData.userIds },
+            sharedWithTeamId: null, // Only remove individual user shares
+          },
+        });
+
+        // Add new user shares
+        const userSharePromises = shareData.userIds.map(async (targetUserId) => {
+          try {
+            const shareData: any = {
               credentialId,
               sharedWithUserId: targetUserId,
               createdById: userId,
-              accessLevel: AccessLevel.READ,
+              accessLevel,
+            };
+
+            if (expiresAt) {
+              shareData.expiresAt = expiresAt;
+            }
+
+            return await prisma.sharedCredential.create({
+              data: shareData,
+            });
+          } catch (error) {
+            // Check if it's a unique constraint violation, try to update
+            try {
+              const updateData: any = { accessLevel };
+              if (expiresAt !== undefined) {
+                updateData.expiresAt = expiresAt;
+              }
+
+              return await prisma.sharedCredential.updateMany({
+                where: {
+                  credentialId,
+                  sharedWithUserId: targetUserId,
+                },
+                data: updateData,
+              });
+            } catch (updateError) {
+              logger.warn(`Failed to share with user ${targetUserId}:`, error);
+              return null;
+            }
+          }
+        });
+
+        await Promise.all(userSharePromises);
+      }
+
+      // Share with teams
+      if (shareData.teamIds && shareData.teamIds.length > 0) {
+        // Verify user has access to share with these teams
+        const userTeams = await prisma.teamMembership.findMany({
+          where: {
+            userId,
+            teamId: { in: shareData.teamIds },
+          },
+          select: { teamId: true },
+        });
+
+        const validTeamIds = userTeams.map(membership => membership.teamId);
+
+        if (validTeamIds.length > 0) {
+          // Remove existing team shares not in the new list
+          await prisma.sharedCredential.deleteMany({
+            where: {
+              credentialId,
+              sharedWithTeamId: { notIn: validTeamIds },
+              sharedWithUserId: null, // Only remove team shares
             },
           });
-        } catch (error) {
-          // Ignore duplicates
-          return null;
+
+          // Add new team shares
+          const teamSharePromises = validTeamIds.map(async (teamId) => {
+            try {
+              const shareData: any = {
+                credentialId,
+                sharedWithTeamId: teamId,
+                createdById: userId,
+                accessLevel,
+              };
+
+              if (expiresAt) {
+                shareData.expiresAt = expiresAt;
+              }
+
+              return await prisma.sharedCredential.create({
+                data: shareData,
+              });
+            } catch (error) {
+              // Check if it's a unique constraint violation, try to update
+              try {
+                const updateData: any = { accessLevel };
+                if (expiresAt !== undefined) {
+                  updateData.expiresAt = expiresAt;
+                }
+
+                return await prisma.sharedCredential.updateMany({
+                  where: {
+                    credentialId,
+                    sharedWithTeamId: teamId,
+                  },
+                  data: updateData,
+                });
+              } catch (updateError) {
+                logger.warn(`Failed to share with team ${teamId}:`, error);
+                return null;
+              }
+            }
+          });
+
+          await Promise.all(teamSharePromises);
         }
-      });
+      }
 
-      await Promise.all(sharePromises);
-
-      logger.info(`Shared credential ${credentialId} with ${targetUserIds.length} users`);
+      const totalShared = (shareData.userIds?.length || 0) + (shareData.teamIds?.length || 0);
+      logger.info(`Shared credential ${credentialId} with ${totalShared} users/teams`);
 
       // Log audit entry
       await prisma.auditLog.create({
@@ -339,7 +508,9 @@ export class CredentialService {
           action: 'SHARE_CREDENTIAL',
           details: {
             credentialName: credential.name,
-            sharedWithCount: targetUserIds.length
+            userCount: shareData.userIds?.length || 0,
+            teamCount: shareData.teamIds?.length || 0,
+            accessLevel,
           },
           userId: userId,
           credentialId: credentialId,
@@ -349,6 +520,143 @@ export class CredentialService {
       return true;
     } catch (error) {
       logger.error('Error sharing credential:', error);
+      throw error;
+    }
+  }
+
+  static async getCredentialShares(credentialId: string, userId: string) {
+    try {
+      // Check if user has access to this credential
+      const credential = await prisma.credential.findFirst({
+        where: {
+          id: credentialId,
+          OR: [
+            { ownerId: userId },
+            {
+              sharedWith: {
+                some: {
+                  sharedWithUserId: userId,
+                },
+              },
+            },
+            {
+              sharedWith: {
+                some: {
+                  sharedWithTeam: {
+                    memberships: {
+                      some: {
+                        userId: userId,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        },
+      });
+
+      if (!credential) {
+        return null;
+      }
+
+      // Get all shares for this credential
+      const shares = await prisma.sharedCredential.findMany({
+        where: {
+          credentialId,
+        },
+        include: {
+          sharedWithUser: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          sharedWithTeam: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+            },
+          },
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      return shares;
+    } catch (error) {
+      logger.error('Error getting credential shares:', error);
+      throw error;
+    }
+  }
+
+  static async removeCredentialShare(credentialId: string, shareId: string, userId: string) {
+    try {
+      // Check if user owns this credential or is admin of the team
+      const credential = await prisma.credential.findFirst({
+        where: {
+          id: credentialId,
+          ownerId: userId,
+        },
+      });
+
+      if (!credential) {
+        // Check if user is admin of a team that has this share
+        const teamShare = await prisma.sharedCredential.findFirst({
+          where: {
+            id: shareId,
+            credentialId,
+            sharedWithTeam: {
+              memberships: {
+                some: {
+                  userId: userId,
+                  role: 'ADMIN',
+                },
+              },
+            },
+          },
+        });
+
+        if (!teamShare) {
+          return false;
+        }
+      }
+
+      // Remove the share
+      await prisma.sharedCredential.delete({
+        where: {
+          id: shareId,
+        },
+      });
+
+      logger.info(`Removed share ${shareId} for credential ${credentialId} by user ${userId}`);
+
+      // Log audit entry
+      await prisma.auditLog.create({
+        data: {
+          action: 'REMOVE_SHARE',
+          details: {
+            credentialName: credential?.name || 'Unknown',
+            shareId,
+          },
+          userId: userId,
+          credentialId: credentialId,
+        },
+      });
+
+      return true;
+    } catch (error) {
+      logger.error('Error removing credential share:', error);
       throw error;
     }
   }

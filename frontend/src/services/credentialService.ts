@@ -80,13 +80,14 @@ export interface UpdateCredentialRequest extends Partial<CreateCredentialRequest
 export interface GetCredentialsParams {
   category?: string;
   search?: string;
+  teamId?: string;
   limit?: number;
   offset?: number;
 }
 
 export interface ShareCredentialRequest {
-  sharedWithUserId?: string;
-  sharedWithTeamId?: string;
+  userIds?: string[];
+  teamIds?: string[];
   accessLevel?: 'READ' | 'WRITE';
   expiresAt?: string;
 }
@@ -128,8 +129,20 @@ export const credentialService = {
   },
 
   // Share credential
-  async shareCredential(id: string, data: ShareCredentialRequest): Promise<ApiResponse<{ share: any; message: string }>> {
+  async shareCredential(id: string, data: ShareCredentialRequest): Promise<ApiResponse<{ message: string }>> {
     const response = await api.post(`/credentials/${id}/share`, data);
+    return response.data;
+  },
+
+  // Get credential shares
+  async getCredentialShares(id: string): Promise<ApiResponse<{ shares: any[] }>> {
+    const response = await api.get(`/credentials/${id}/shares`);
+    return response.data;
+  },
+
+  // Remove credential share
+  async removeCredentialShare(id: string, shareId: string): Promise<ApiResponse<{ message: string }>> {
+    const response = await api.delete(`/credentials/${id}/shares/${shareId}`);
     return response.data;
   },
 

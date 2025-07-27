@@ -55,14 +55,22 @@ router.post(
   '/:id/share',
   [
     param('id').isUUID().withMessage('Invalid credential ID'),
-    body('sharedWithUserId')
+    body('userIds')
+      .optional()
+      .isArray()
+      .withMessage('userIds must be an array'),
+    body('userIds.*')
       .optional()
       .isUUID()
-      .withMessage('sharedWithUserId must be a valid UUID'),
-    body('sharedWithTeamId')
+      .withMessage('Each userId must be a valid UUID'),
+    body('teamIds')
+      .optional()
+      .isArray()
+      .withMessage('teamIds must be an array'),
+    body('teamIds.*')
       .optional()
       .isUUID()
-      .withMessage('sharedWithTeamId must be a valid UUID'),
+      .withMessage('Each teamId must be a valid UUID'),
     body('accessLevel')
       .optional()
       .isIn(['READ', 'WRITE'])
@@ -92,6 +100,27 @@ router.post(
   ],
   validateRequest,
   credentialController.createOneTimeLink
+);
+
+// Get credential shares
+router.get(
+  '/:id/shares',
+  [
+    param('id').isUUID().withMessage('Invalid credential ID'),
+  ],
+  validateRequest,
+  credentialController.getCredentialShares
+);
+
+// Remove credential share
+router.delete(
+  '/:id/shares/:shareId',
+  [
+    param('id').isUUID().withMessage('Invalid credential ID'),
+    param('shareId').isUUID().withMessage('Invalid share ID'),
+  ],
+  validateRequest,
+  credentialController.removeCredentialShare
 );
 
 export default router;

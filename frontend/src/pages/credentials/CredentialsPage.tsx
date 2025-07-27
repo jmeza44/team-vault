@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Credential, RiskLevel } from '@/types';
+import { Credential, RiskLevel, Team } from '@/types';
 import { credentialService, CreateCredentialRequest, UpdateCredentialRequest, GetCredentialsParams } from '@/services/credentialService';
+import teamService from '@/services/teamService';
 import { CredentialForm, CredentialFormData } from '@/components/credentials/CredentialForm';
 import { CredentialCard } from '@/components/credentials/CredentialCard';
 import { CredentialDetailModal } from '@/components/credentials/CredentialDetailModal';
+import { ShareCredentialModal } from '@/components/credentials/ShareCredentialModal';
 
 const CATEGORIES = [
   'Database',
@@ -20,6 +22,7 @@ type ViewMode = 'list' | 'form' | 'detail';
 
 export const CredentialsPage: React.FC = () => {
   const [credentials, setCredentials] = useState<Credential[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
@@ -29,13 +32,28 @@ export const CredentialsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedRiskLevel, setSelectedRiskLevel] = useState('');
+  const [selectedTeam, setSelectedTeam] = useState('');
 
-  // Form state
+  // Modal state
   const [isFormLoading, setIsFormLoading] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [credentialToShare, setCredentialToShare] = useState<Credential | null>(null);
 
   useEffect(() => {
     loadCredentials();
-  }, [searchTerm, selectedCategory, selectedRiskLevel]);
+    loadTeams();
+  }, [searchTerm, selectedCategory, selectedRiskLevel, selectedTeam]);
+
+  const loadTeams = async () => {
+    try {
+      const response = await teamService.getTeams();
+      if (response.success && response.data) {
+        setTeams(response.data.teams);
+      }
+    } catch (err) {
+      console.error('Failed to load teams:', err);
+    }
+  };
 
   const loadCredentials = async () => {
     try {
@@ -45,6 +63,7 @@ export const CredentialsPage: React.FC = () => {
       const params: GetCredentialsParams = {};
       if (searchTerm) params.search = searchTerm;
       if (selectedCategory) params.category = selectedCategory;
+      if (selectedTeam) params.teamId = selectedTeam;
       
       const response = await credentialService.getCredentials(params);
       
@@ -196,15 +215,22 @@ export const CredentialsPage: React.FC = () => {
   };
 
   const handleShareCredential = (credential: Credential) => {
-    // TODO: Implement sharing modal
-    console.log('Share credential:', credential);
-    alert('Sharing feature coming soon!');
+    setCredentialToShare(credential);
+    setIsShareModalOpen(true);
+  };
+
+  const handleShareSuccess = () => {
+    setIsShareModalOpen(false);
+    setCredentialToShare(null);
+    // Optionally reload credentials to reflect sharing status
+    loadCredentials();
   };
 
   const clearFilters = () => {
     setSearchTerm('');
     setSelectedCategory('');
     setSelectedRiskLevel('');
+    setSelectedTeam('');
   };
 
   if (viewMode === 'form') {
@@ -296,6 +322,24 @@ export const CredentialsPage: React.FC = () => {
             </select>
           </div>
 
+          {/* Team Filter */}
+          <div>
+            <label htmlFor="team" className="block text-sm font-medium text-gray-700 mb-1">
+              Team
+            </label>
+            <select
+              id="team"
+              value={selectedTeam}
+              onChange={(e) => setSelectedTeam(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">All Teams</option>
+              {teams.map(team => (
+                <option key={team.id} value={team.id}>{team.name}</option>
+              ))}
+            </select>
+          </div>
+
           {/* Risk Level Filter */}
           <div>
             <label htmlFor="riskLevel" className="block text-sm font-medium text-gray-700 mb-1">
@@ -352,12 +396,12 @@ export const CredentialsPage: React.FC = () => {
           <div className="text-gray-400 text-6xl mb-4">🔐</div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No credentials found</h3>
           <p className="text-gray-600 mb-4">
-            {searchTerm || selectedCategory || selectedRiskLevel
+            {searchTerm || selectedCategory || selectedRiskLevel || selectedTeam
               ? 'No credentials match your current filters. Try adjusting your search criteria.'
               : 'Start by adding your first credential to securely store your team\'s sensitive information.'
             }
           </p>
-          {(searchTerm || selectedCategory || selectedRiskLevel) ? (
+          {(searchTerm || selectedCategory || selectedRiskLevel || selectedTeam) ? (
             <button
               onClick={clearFilters}
               className="text-blue-600 hover:text-blue-800"
@@ -403,6 +447,19 @@ export const CredentialsPage: React.FC = () => {
           onEdit={handleEditCredential}
           onDelete={handleDeleteCredential}
           onShare={handleShareCredential}
+        />
+      )}
+
+      {/* Share Credential Modal */}
+      {isShareModalOpen && credentialToShare && (
+        <ShareCredentialModal
+          credential={credentialToShare}
+          isOpen={isShareModalOpen}
+          onClose={() => {
+            setIsShareModalOpen(false);
+            setCredentialToShare(null);
+          }}
+          onSuccess={handleShareSuccess}
         />
       )}
     </div>

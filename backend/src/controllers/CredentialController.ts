@@ -31,13 +31,14 @@ export class CredentialController {
   async getCredentials(req: AuthenticatedRequest, res: Response) {
     try {
       const userId = req.user!.id;
-      const { category, search, riskLevel, limit, offset } = req.query;
+      const { category, search, riskLevel, teamId, limit, offset } = req.query;
 
       const filters: CredentialFilters = {};
 
       if (search) filters.search = search as string;
       if (category) filters.category = category as string;
       if (riskLevel) filters.riskLevel = riskLevel as string;
+      if (teamId) filters.teamId = teamId as string;
       if (limit) filters.limit = parseInt(limit as string);
       if (offset) filters.offset = parseInt(offset as string);
 
@@ -129,9 +130,24 @@ export class CredentialController {
     try {
       const userId = req.user!.id;
       const { id } = req.params;
-      const { userIds = [] } = req.body;
+      const { userIds = [], teamIds = [], accessLevel = 'READ', expiresAt } = req.body;
 
-      const shared = await CredentialService.shareCredential(id, userId, userIds);
+      const shareData: {
+        userIds?: string[];
+        teamIds?: string[];
+        accessLevel?: any;
+        expiresAt?: Date;
+      } = {
+        userIds,
+        teamIds,
+        accessLevel,
+      };
+
+      if (expiresAt) {
+        shareData.expiresAt = new Date(expiresAt);
+      }
+
+      const shared = await CredentialService.shareCredential(id, userId, shareData);
 
       if (!shared) {
         return ResponseUtil.notFound(res, 'Credential not found or access denied');
@@ -162,6 +178,44 @@ export class CredentialController {
       });
     } catch (error) {
       ResponseUtil.handleError(res, error, 'Create one-time link');
+    }
+  }
+
+  async getCredentialShares(req: AuthenticatedRequest, res: Response) {
+    try {
+      const userId = req.user!.id;
+      const { id } = req.params;
+
+      const shares = await CredentialService.getCredentialShares(id, userId);
+
+      if (!shares) {
+        return ResponseUtil.notFound(res, 'Credential not found or access denied');
+      }
+
+      ResponseUtil.success(res, {
+        shares,
+      });
+    } catch (error) {
+      ResponseUtil.handleError(res, error, 'Get credential shares');
+    }
+  }
+
+  async removeCredentialShare(req: AuthenticatedRequest, res: Response) {
+    try {
+      const userId = req.user!.id;
+      const { id, shareId } = req.params;
+
+      const removed = await CredentialService.removeCredentialShare(id, shareId, userId);
+
+      if (!removed) {
+        return ResponseUtil.notFound(res, 'Share not found or access denied');
+      }
+
+      ResponseUtil.success(res, {
+        message: 'Share removed successfully',
+      });
+    } catch (error) {
+      ResponseUtil.handleError(res, error, 'Remove credential share');
     }
   }
 }

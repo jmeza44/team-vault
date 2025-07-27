@@ -27,6 +27,7 @@ export interface CredentialFilters {
   search?: string;
   category?: string;
   riskLevel?: string;
+  teamId?: string;
   limit?: number;
   offset?: number;
 }

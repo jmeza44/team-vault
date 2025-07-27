@@ -113,6 +113,8 @@ model SharedCredential {
   sharedWithTeam  Team?      @relation("SharedWithTeam", fields: [sharedWithTeamId], references: [id], onDelete: Cascade)
   createdBy       User       @relation("SharedByUser", fields: [createdById], references: [id], onDelete: Cascade)
 
+  @@unique([credentialId, sharedWithUserId], name: "credential_user_share")
+  @@unique([credentialId, sharedWithTeamId], name: "credential_team_share")
   @@map("shared_credentials")
 }
 
