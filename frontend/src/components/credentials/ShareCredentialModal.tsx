@@ -220,12 +220,12 @@ export const ShareCredentialModal: React.FC<ShareCredentialModalProps> = ({
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
                       {share.sharedWithTeam ? (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-300">
-                          <Users className="h-4 w-4 text-purple-600 dark:text-purple-800" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary-100 dark:bg-secondary-300">
+                          <Users className="h-4 w-4 text-secondary-600 dark:text-secondary-800" />
                         </div>
                       ) : (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-300">
-                          <UserIcon className="h-4 w-4 text-blue-600 dark:text-blue-800" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 dark:bg-primary-300">
+                          <UserIcon className="h-4 w-4 text-primary-600 dark:text-primary-800" />
                         </div>
                       )}
                       <div>

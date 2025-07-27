@@ -42,7 +42,7 @@ export const ProfilePage: React.FC = () => {
     return (
       <div className="flex min-h-96 items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-primary-600"></div>
           <p className="mt-2 text-gray-600 dark:text-gray-300">
             Loading profile...
           </p>
@@ -74,7 +74,7 @@ export const ProfilePage: React.FC = () => {
               }}
               className={`flex min-h-[44px] items-center whitespace-nowrap border-b-2 px-2 py-3 text-sm font-medium md:px-1 ${
                 activeTab === tab.id
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                  ? 'border-primary-500 text-primary-600 dark:text-primary-400'
                   : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >
@@ -117,7 +117,7 @@ export const ProfilePage: React.FC = () => {
                     <div className="font-medium text-gray-900 dark:text-gray-100">
                       {user.email}
                       {!user.emailVerified && (
-                        <span className="ml-2 inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                        <span className="ml-2 inline-flex items-center rounded-full bg-warning-100 px-2.5 py-0.5 text-xs font-medium text-warning-800 dark:bg-warning-900/20 dark:text-warning-200">
                           Unverified
                         </span>
                       )}

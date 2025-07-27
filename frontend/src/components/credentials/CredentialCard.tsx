@@ -22,13 +22,13 @@ interface CredentialCardProps {
 const getRiskLevelColor = (riskLevel: RiskLevel) => {
   switch (riskLevel) {
     case RiskLevel.LOW:
-      return 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100';
+      return 'bg-success-100 text-success-800 dark:bg-success-800/20 dark:text-success-100';
     case RiskLevel.MEDIUM:
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100';
+      return 'bg-warning-100 text-warning-800 dark:bg-warning-800/20 dark:text-warning-100';
     case RiskLevel.HIGH:
-      return 'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100';
+      return 'bg-warning-200 text-warning-900 dark:bg-warning-700/20 dark:text-warning-200';
     case RiskLevel.CRITICAL:
-      return 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100';
+      return 'bg-danger-100 text-danger-800 dark:bg-danger-800/20 dark:text-danger-100';
     default:
       return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100';
   }

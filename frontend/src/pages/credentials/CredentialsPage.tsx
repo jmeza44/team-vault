@@ -354,7 +354,7 @@ export const CredentialsPage: React.FC = () => {
               setSelectedCredential(null);
               setIsCredentialFormOpen(true);
             }}
-            className="min-h-[44px] w-full rounded-md bg-blue-600 px-4 py-3 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-auto"
+            className="min-h-[44px] w-full rounded-md bg-primary-600 px-4 py-3 font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-auto"
           >
             Add Credential
           </button>
@@ -378,7 +378,7 @@ export const CredentialsPage: React.FC = () => {
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               placeholder="Search credentials..."
-              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:border-primary-400 dark:focus:ring-primary-400"
             />
           </div>
 
@@ -394,7 +394,7 @@ export const CredentialsPage: React.FC = () => {
               id="category"
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-primary-400 dark:focus:ring-primary-400"
             >
               <option value="">All Categories</option>
               {CATEGORIES.map(category => (
@@ -417,7 +417,7 @@ export const CredentialsPage: React.FC = () => {
               id="team"
               value={selectedTeam}
               onChange={e => setSelectedTeam(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-primary-400 dark:focus:ring-primary-400"
             >
               <option value="">All Teams</option>
               {teams.map(team => (
@@ -440,7 +440,7 @@ export const CredentialsPage: React.FC = () => {
               id="riskLevel"
               value={selectedRiskLevel}
               onChange={e => setSelectedRiskLevel(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-primary-400 dark:focus:ring-primary-400"
             >
               <option value="">All Risk Levels</option>
               <option value={RiskLevel.LOW}>Low</option>
@@ -465,7 +465,7 @@ export const CredentialsPage: React.FC = () => {
       {/* Loading State */}
       {loading ? (
         <div className="py-8 text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600 dark:border-blue-400"></div>
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-primary-600 dark:border-primary-400"></div>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
             Loading credentials...
           </p>
@@ -490,7 +490,7 @@ export const CredentialsPage: React.FC = () => {
           selectedTeam ? (
             <button
               onClick={clearFilters}
-              className="text-blue-600 hover:text-blue-800"
+              className="text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300"
             >
               Clear filters
             </button>
@@ -500,7 +500,7 @@ export const CredentialsPage: React.FC = () => {
                 setSelectedCredential(null);
                 setIsCredentialFormOpen(true);
               }}
-              className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700"
             >
               Add Your First Credential
             </button>

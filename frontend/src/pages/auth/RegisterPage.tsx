@@ -234,7 +234,7 @@ export const RegisterPage: React.FC = () => {
                 <div className="mt-2">
                   <div className="text-sm">
                     {passwordRequirements.allMet ? (
-                      <div className="flex items-center text-green-600">
+                      <div className="flex items-center text-success-600 dark:text-success-400">
                         <CheckCircle className="mr-2 h-4 w-4" />
                         <span className="font-medium">Strong password</span>
                       </div>
@@ -285,12 +285,12 @@ export const RegisterPage: React.FC = () => {
                 formData.password && (
                   <div className="mt-2">
                     {formData.password === formData.confirmPassword ? (
-                      <p className="flex items-center text-sm text-green-600">
+                      <p className="flex items-center text-sm text-success-600 dark:text-success-400">
                         <CheckCircle className="mr-1 h-4 w-4" />
                         Passwords match
                       </p>
                     ) : (
-                      <p className="flex items-center text-sm text-red-600">
+                      <p className="flex items-center text-sm text-danger-600 dark:text-danger-400">
                         <Circle className="mr-1 h-4 w-4" />
                         Passwords do not match
                       </p>

@@ -146,7 +146,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
             {isAdmin && (
               <button
                 onClick={() => onEdit(team)}
-                className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-gray-500 transition-colors hover:bg-blue-50 hover:text-blue-600 dark:text-gray-400 dark:hover:bg-blue-800 dark:hover:text-blue-300"
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-gray-500 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-gray-400 dark:hover:bg-primary-800 dark:hover:text-primary-300"
                 title="Edit Team"
               >
                 <Edit className="h-5 w-5" />
@@ -192,8 +192,8 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
               <span
                 className={`ml-1 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                   userRole === TeamRole.ADMIN
-                    ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100'
-                    : 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100'
+                    ? 'bg-secondary-100 text-secondary-800 dark:bg-secondary-800 dark:text-secondary-100'
+                    : 'bg-primary-100 text-primary-800 dark:bg-primary-800 dark:text-primary-100'
                 }`}
               >
                 {userRole}
@@ -315,8 +315,8 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                       <span
                         className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
                           membership.role === TeamRole.ADMIN
-                            ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100'
-                            : 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100'
+                            ? 'bg-secondary-100 text-secondary-800 dark:bg-secondary-800/20 dark:text-secondary-100'
+                            : 'bg-primary-100 text-primary-800 dark:bg-primary-800/20 dark:text-primary-100'
                         }`}
                       >
                         {membership.role}

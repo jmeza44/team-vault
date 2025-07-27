@@ -295,7 +295,7 @@ export const TeamsPage: React.FC = () => {
           </div>
         </div>
         <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary-600"></div>
         </div>
       </div>
     );
@@ -318,7 +318,7 @@ export const TeamsPage: React.FC = () => {
             setSelectedTeam(null);
             setViewMode('form');
           }}
-          className="min-h-[44px] w-full rounded-md bg-blue-600 px-4 py-3 font-medium text-white transition-colors hover:bg-blue-700 sm:w-auto"
+          className="min-h-[44px] w-full rounded-md bg-primary-600 px-4 py-3 font-medium text-white transition-colors hover:bg-primary-700 sm:w-auto"
         >
           Create Team
         </button>
@@ -326,11 +326,11 @@ export const TeamsPage: React.FC = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+        <div className="rounded-md border border-danger-200 bg-danger-50 px-4 py-3 text-danger-700 dark:border-danger-800 dark:bg-danger-900/20 dark:text-danger-300">
           {error}
           <button
             onClick={() => setError(null)}
-            className="float-right text-red-400 hover:text-red-600"
+            className="float-right text-danger-400 hover:text-danger-600 dark:text-danger-500 dark:hover:text-danger-400"
           >
             ×
           </button>
@@ -359,7 +359,7 @@ export const TeamsPage: React.FC = () => {
               placeholder="Search teams..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-4 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+              className="w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-4 text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:border-primary-400 dark:focus:ring-primary-400"
             />
           </div>
         </div>
@@ -401,7 +401,7 @@ export const TeamsPage: React.FC = () => {
                 setSelectedTeam(null);
                 setViewMode('form');
               }}
-              className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
+              className="rounded-md bg-primary-600 px-4 py-2 font-medium text-white transition-colors hover:bg-primary-700"
             >
               Create Your First Team
             </button>

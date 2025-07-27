@@ -83,8 +83,8 @@ export const TeamCard: React.FC<TeamCardProps> = ({
             <span
               className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                 userRole === TeamRole.ADMIN
-                  ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100'
-                  : 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100'
+                  ? 'bg-secondary-100 text-secondary-800 dark:bg-secondary-800/20 dark:text-secondary-100'
+                  : 'bg-primary-100 text-primary-800 dark:bg-primary-800/20 dark:text-primary-100'
               }`}
             >
               {userRole}
