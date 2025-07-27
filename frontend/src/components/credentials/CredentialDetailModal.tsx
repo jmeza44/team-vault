@@ -17,15 +17,15 @@ interface CredentialDetailModalProps {
 const getRiskLevelColor = (riskLevel: RiskLevel) => {
   switch (riskLevel) {
     case RiskLevel.LOW:
-      return 'bg-green-100 text-green-800';
+      return 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100';
     case RiskLevel.MEDIUM:
-      return 'bg-yellow-100 text-yellow-800';
+      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100';
     case RiskLevel.HIGH:
-      return 'bg-orange-100 text-orange-800';
+      return 'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100';
     case RiskLevel.CRITICAL:
-      return 'bg-red-100 text-red-800';
+      return 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100';
     default:
-      return 'bg-gray-100 text-gray-800';
+      return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100';
   }
 };
 
@@ -74,10 +74,10 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
               {credential.name}
             </h2>
               <div className="flex items-center space-x-3">
@@ -85,17 +85,17 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                   {credential.riskLevel} Risk
                 </span>
                 {credential.category && (
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
+                  <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-full">
                     {credential.category}
                   </span>
                 )}
                 {permissions.isOwner && (
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                  <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full dark:bg-blue-800 dark:text-blue-100">
                     Owner
                   </span>
                 )}
                 {!permissions.isOwner && permissions.accessLevel && (
-                  <span className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full">
+                  <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm rounded-full">
                     {permissions.accessLevel === AccessLevel.WRITE ? 'Read & Write Access' : 'Read Only Access'}
                   </span>
                 )}
@@ -103,7 +103,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
             >
               <X className="h-6 w-6" />
             </button>
@@ -115,16 +115,16 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
           {/* Username */}
           {credential.username && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Username
               </label>
               <div className="flex items-center space-x-2">
-                <code className="flex-1 p-3 bg-gray-100 rounded-md text-sm font-mono">
+                <code className="flex-1 p-3 bg-gray-100 dark:bg-gray-700 rounded-md text-sm font-mono text-gray-900 dark:text-gray-100">
                   {credential.username}
                 </code>
                 <button
                   onClick={() => handleCopy(credential.username!, 'Username')}
-                  className="p-2 text-gray-600 hover:text-blue-600"
+                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
                   title="Copy username"
                 >
                   <Copy className="h-4 w-4" />
@@ -135,7 +135,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
 
           {/* Password/Secret */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Password/Secret
             </label>
             <div className="flex items-center space-x-2">
@@ -144,12 +144,12 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                   type={showSecret ? 'text' : 'password'}
                   value={credential.secret || '••••••••••••'}
                   readOnly
-                  className="w-full p-3 bg-gray-100 rounded-md text-sm font-mono pr-12"
+                  className="w-full p-3 bg-gray-100 dark:bg-gray-700 rounded-md text-sm font-mono pr-12 text-gray-900 dark:text-gray-100"
                 />
                 {permissions.canCopySecret && (
                   <button
                     onClick={() => setShowSecret(!showSecret)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-600"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
                     title={showSecret ? 'Hide secret' : 'Show secret'}
                   >
                     {showSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -159,7 +159,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
               {permissions.canCopySecret && (
                 <button
                   onClick={() => handleCopy(credential.secret || '', 'Secret')}
-                  className="p-2 text-gray-600 hover:text-blue-600"
+                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
                   title="Copy secret"
                   disabled={!credential.secret}
                 >
@@ -172,23 +172,23 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
           {/* URL */}
           {credential.url && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 URL
               </label>
               <div className="flex items-center space-x-2">
-                <code className="flex-1 p-3 bg-gray-100 rounded-md text-sm font-mono break-all">
+                <code className="flex-1 p-3 bg-gray-100 dark:bg-gray-700 rounded-md text-sm font-mono break-all text-gray-900 dark:text-gray-100">
                   {credential.url}
                 </code>
                 <button
                   onClick={() => handleCopy(credential.url!, 'URL')}
-                  className="p-2 text-gray-600 hover:text-blue-600"
+                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
                   title="Copy URL"
                 >
                   <Copy className="h-4 w-4" />
                 </button>
                 <button
                   onClick={handleOpenUrl}
-                  className="p-2 text-gray-600 hover:text-green-600"
+                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400"
                   title="Open URL"
                 >
                   <ExternalLink className="h-4 w-4" />
@@ -200,10 +200,10 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
           {/* Description */}
           {credential.description && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Description
               </label>
-              <p className="p-3 bg-gray-50 rounded-md text-sm">
+              <p className="p-3 bg-gray-50 dark:bg-gray-700 rounded-md text-sm text-gray-900 dark:text-gray-100">
                 {credential.description}
               </p>
             </div>
@@ -212,14 +212,14 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
           {/* Tags */}
           {credential.tags.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Tags
               </label>
               <div className="flex flex-wrap gap-2">
                 {credential.tags.map(tag => (
                   <span
                     key={tag}
-                    className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                    className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full dark:bg-blue-800 dark:text-blue-100"
                   >
                     {tag}
                   </span>
@@ -232,20 +232,20 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {credential.expirationDate && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Expires
                 </label>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {formatDate(credential.expirationDate)}
                 </p>
               </div>
             )}
             {credential.lastRotated && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Last Rotated
                 </label>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {formatDate(credential.lastRotated)}
                 </p>
               </div>
@@ -254,18 +254,18 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Created
               </label>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 {formatDate(credential.createdAt)}
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Updated
               </label>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 {formatDate(credential.updatedAt)}
               </p>
             </div>
@@ -274,7 +274,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
           {/* Owner */}
           {credential.owner && credential.owner.name && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Owner
               </label>
               <div className="flex items-center space-x-2">
@@ -282,8 +282,8 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                   {credential.owner.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{credential.owner.name}</p>
-                  <p className="text-xs text-gray-600">{credential.owner.email}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{credential.owner.name}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{credential.owner.email}</p>
                 </div>
               </div>
             </div>
@@ -291,7 +291,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200 flex justify-between">
+        <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-between">
           <div className="flex space-x-3">
             {permissions.canShare && (
               <button

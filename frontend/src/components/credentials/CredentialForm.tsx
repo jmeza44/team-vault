@@ -115,15 +115,15 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
         {credential ? 'Edit Credential' : 'Add New Credential'}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Name *
           </label>
           <input
@@ -131,7 +131,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
             id="name"
             value={formData.name}
             onChange={(e) => handleInputChange('name', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             placeholder="e.g., Production Database, GitHub API Key"
             required
           />
@@ -139,7 +139,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
 
         {/* Username */}
         <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Username
           </label>
           <input
@@ -147,14 +147,14 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
             id="username"
             value={formData.username}
             onChange={(e) => handleInputChange('username', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             placeholder="Username or email"
           />
         </div>
 
         {/* Secret/Password */}
         <div>
-          <label htmlFor="secret" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="secret" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Password/Secret *
           </label>
           <div className="relative">
@@ -163,7 +163,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
               id="secret"
               value={formData.secret}
               onChange={(e) => handleInputChange('secret', e.target.value)}
-              className="w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 pr-20 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
               placeholder="Enter password or secret"
               required
             />
@@ -171,7 +171,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="p-1 text-gray-400 hover:text-gray-600"
+                className="p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                 title={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -179,7 +179,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
               <button
                 type="button"
                 onClick={generatePassword}
-                className="p-1 text-gray-400 hover:text-gray-600"
+                className="p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                 title="Generate secure password"
               >
                 <RefreshCw className="h-4 w-4" />
@@ -191,14 +191,14 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
         {/* Category and Risk Level */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Category
             </label>
             <select
               id="category"
               value={formData.category}
               onChange={(e) => handleInputChange('category', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             >
               <option value="">Select category</option>
               {CATEGORIES.map(cat => (
@@ -208,14 +208,14 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
           </div>
 
           <div>
-            <label htmlFor="riskLevel" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="riskLevel" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Risk Level
             </label>
             <select
               id="riskLevel"
               value={formData.riskLevel}
               onChange={(e) => handleInputChange('riskLevel', e.target.value as RiskLevel)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             >
               <option value={RiskLevel.LOW}>Low</option>
               <option value={RiskLevel.MEDIUM}>Medium</option>
@@ -227,7 +227,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
 
         {/* URL */}
         <div>
-          <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="url" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             URL
           </label>
           <input
@@ -235,14 +235,14 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
             id="url"
             value={formData.url}
             onChange={(e) => handleInputChange('url', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             placeholder="https://example.com"
           />
         </div>
 
         {/* Tags */}
         <div>
-          <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Tags
           </label>
           <div className="space-y-2">
@@ -252,13 +252,13 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={handleTagInputKeyPress}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                 placeholder="Add a tag and press Enter"
               />
               <button
                 type="button"
                 onClick={addTag}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500"
               >
                 Add
               </button>
@@ -268,13 +268,13 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
                 {formData.tags.map(tag => (
                   <span
                     key={tag}
-                    className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                    className="inline-flex items-center px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm rounded-full"
                   >
                     {tag}
                     <button
                       type="button"
                       onClick={() => removeTag(tag)}
-                      className="ml-2 text-blue-600 hover:text-blue-800"
+                      className="ml-2 text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100"
                     >
                       ×
                     </button>
@@ -287,7 +287,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
 
         {/* Expiration Date */}
         <div>
-          <label htmlFor="expirationDate" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="expirationDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Expiration Date
           </label>
           <input
@@ -295,14 +295,14 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
             id="expirationDate"
             value={formData.expirationDate}
             onChange={(e) => handleInputChange('expirationDate', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             min={new Date().toISOString().split('T')[0]}
           />
         </div>
 
         {/* Description */}
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Description
           </label>
           <textarea
@@ -310,24 +310,24 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
             value={formData.description}
             onChange={(e) => handleInputChange('description', e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             placeholder="Additional notes or description"
           />
         </div>
 
         {/* Form Actions */}
-        <div className="flex justify-end space-x-3 pt-6 border-t">
+        <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
             disabled={isLoading}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            className="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
             disabled={isLoading}
           >
             {isLoading ? 'Saving...' : (credential ? 'Update' : 'Create')}

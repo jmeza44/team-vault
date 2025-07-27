@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { Team, TeamRole } from '@/types';
-import { TeamWithMembers, AddMemberRequest, UpdateMemberRequest } from '@/services/teamService';
-import { useConfirm } from '@/hooks/useConfirm';
-import { Dialog } from '@/components/common/Dialog';
-import { ConfirmDialog } from '@/components/common/ConfirmDialog';
-import { Edit, X, Trash2 } from 'lucide-react';
+import React, { useState } from "react";
+import { Team, TeamRole } from "@/types";
+import {
+  TeamWithMembers,
+  AddMemberRequest,
+  UpdateMemberRequest,
+} from "@/services/teamService";
+import { useConfirm } from "@/hooks/useConfirm";
+import { Dialog } from "@/components/common/Dialog";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { Edit, X, Trash2 } from "lucide-react";
 
 interface TeamDetailModalProps {
   team: TeamWithMembers;
@@ -13,23 +17,30 @@ interface TeamDetailModalProps {
   onClose: () => void;
   onEdit: (team: Team) => void;
   onAddMember: (teamId: string, data: AddMemberRequest) => Promise<void>;
-  onUpdateMember: (teamId: string, userId: string, data: UpdateMemberRequest) => Promise<void>;
+  onUpdateMember: (
+    teamId: string,
+    userId: string,
+    data: UpdateMemberRequest
+  ) => Promise<void>;
   onRemoveMember: (teamId: string, userId: string) => Promise<void>;
   isLoading?: boolean;
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+  return new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
-const getUserRole = (team: TeamWithMembers, userId: string): TeamRole | null => {
-  const membership = team.memberships?.find(m => m.userId === userId);
+const getUserRole = (
+  team: TeamWithMembers,
+  userId: string
+): TeamRole | null => {
+  const membership = team.memberships?.find((m) => m.userId === userId);
   return membership?.role || null;
 };
 
@@ -46,12 +57,14 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
   onEdit,
   onAddMember,
   onUpdateMember,
-  onRemoveMember
+  onRemoveMember,
 }) => {
   const [showAddMember, setShowAddMember] = useState(false);
-  const [newMemberEmail, setNewMemberEmail] = useState('');
+  const [newMemberEmail, setNewMemberEmail] = useState("");
   const [newMemberRole, setNewMemberRole] = useState<TeamRole>(TeamRole.MEMBER);
-  const [loadingActions, setLoadingActions] = useState<{ [key: string]: boolean }>({});
+  const [loadingActions, setLoadingActions] = useState<{
+    [key: string]: boolean;
+  }>({});
   const { confirm, confirmState, handleClose, handleConfirm } = useConfirm();
 
   const userRole = getUserRole(team, currentUserId);
@@ -61,52 +74,53 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
     e.preventDefault();
     if (!newMemberEmail.trim()) return;
 
-    setLoadingActions(prev => ({ ...prev, addMember: true }));
+    setLoadingActions((prev) => ({ ...prev, addMember: true }));
     try {
       await onAddMember(team.id, {
         email: newMemberEmail.trim(),
-        role: newMemberRole
+        role: newMemberRole,
       });
-      setNewMemberEmail('');
+      setNewMemberEmail("");
       setNewMemberRole(TeamRole.MEMBER);
       setShowAddMember(false);
     } catch (error) {
-      console.error('Error adding member:', error);
+      console.error("Error adding member:", error);
     } finally {
-      setLoadingActions(prev => ({ ...prev, addMember: false }));
+      setLoadingActions((prev) => ({ ...prev, addMember: false }));
     }
   };
 
   const handleUpdateMemberRole = async (userId: string, newRole: TeamRole) => {
-    setLoadingActions(prev => ({ ...prev, [`update-${userId}`]: true }));
+    setLoadingActions((prev) => ({ ...prev, [`update-${userId}`]: true }));
     try {
       await onUpdateMember(team.id, userId, { role: newRole });
     } catch (error) {
-      console.error('Error updating member role:', error);
+      console.error("Error updating member role:", error);
     } finally {
-      setLoadingActions(prev => ({ ...prev, [`update-${userId}`]: false }));
+      setLoadingActions((prev) => ({ ...prev, [`update-${userId}`]: false }));
     }
   };
 
   const handleRemoveMember = async (userId: string) => {
-    const member = team.memberships?.find(m => m.userId === userId);
-    const memberName = member?.user?.name || member?.user?.email || 'this member';
-    
+    const member = team.memberships?.find((m) => m.userId === userId);
+    const memberName =
+      member?.user?.name || member?.user?.email || "this member";
+
     const confirmed = await confirm({
-      title: 'Remove Team Member',
+      title: "Remove Team Member",
       message: `Are you sure you want to remove ${memberName} from the team? This action cannot be undone.`,
-      variant: 'danger'
+      variant: "danger",
     });
-    
+
     if (!confirmed) return;
 
-    setLoadingActions(prev => ({ ...prev, [`remove-${userId}`]: true }));
+    setLoadingActions((prev) => ({ ...prev, [`remove-${userId}`]: true }));
     try {
       await onRemoveMember(team.id, userId);
     } catch (error) {
-      console.error('Error removing member:', error);
+      console.error("Error removing member:", error);
     } finally {
-      setLoadingActions(prev => ({ ...prev, [`remove-${userId}`]: false }));
+      setLoadingActions((prev) => ({ ...prev, [`remove-${userId}`]: false }));
     }
   };
 
@@ -115,19 +129,24 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
   return (
     <>
       <Dialog isOpen={isOpen} onClose={onClose}>
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900">{team.name}</h2>
-          <p className="text-sm text-gray-500">
-              {team.memberCount || team.memberships?.length || 0} {(team.memberCount || team.memberships?.length || 0) === 1 ? 'member' : 'members'}
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              {team.name}
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {team.memberCount || team.memberships?.length || 0}{" "}
+              {(team.memberCount || team.memberships?.length || 0) === 1
+                ? "member"
+                : "members"}
             </p>
           </div>
           <div className="flex items-center space-x-2">
             {isAdmin && (
               <button
                 onClick={() => onEdit(team)}
-                className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors dark:text-gray-400 dark:hover:text-blue-300 dark:hover:bg-blue-800"
                 title="Edit Team"
               >
                 <Edit className="w-5 h-5" />
@@ -135,7 +154,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
             )}
             <button
               onClick={onClose}
-              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700"
             >
               <X className="w-5 h-5" />
             </button>
@@ -146,24 +165,36 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
           {/* Team Description */}
           {team.description && (
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-2">Description</h3>
-              <p className="text-sm text-gray-600">{team.description}</p>
+              <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                Description
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {team.description}
+              </p>
             </div>
           )}
 
           {/* Team Info */}
           <div className="mb-6 grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="font-medium text-gray-900">Created:</span>
-              <span className="text-gray-600 ml-1">{formatDate(team.createdAt)}</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">
+                Created:
+              </span>
+              <span className="text-gray-600 ml-1 dark:text-gray-400">
+                {formatDate(team.createdAt)}
+              </span>
             </div>
             <div>
-              <span className="font-medium text-gray-900">Your Role:</span>
-              <span className={`ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                userRole === TeamRole.ADMIN 
-                  ? 'bg-purple-100 text-purple-800' 
-                  : 'bg-blue-100 text-blue-800'
-              }`}>
+              <span className="font-medium text-gray-900 dark:text-gray-100">
+                Your Role:
+              </span>
+              <span
+                className={`ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                  userRole === TeamRole.ADMIN
+                    ? "bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100"
+                    : "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
+                }`}
+              >
                 {userRole}
               </span>
             </div>
@@ -172,11 +203,13 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
           {/* Members Section */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-gray-900">Team Members</h3>
+              <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                Team Members
+              </h3>
               {isAdmin && (
                 <button
                   onClick={() => setShowAddMember(!showAddMember)}
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  className="text-sm text-blue-600 hover:text-blue-800 font-medium dark:text-blue-400 dark:hover:text-blue-300"
                 >
                   + Add Member
                 </button>
@@ -185,20 +218,25 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
 
             {/* Add Member Form */}
             {showAddMember && (
-              <form onSubmit={handleAddMember} className="mb-4 p-4 bg-gray-50 rounded-md">
+              <form
+                onSubmit={handleAddMember}
+                className="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-md"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <input
                     type="email"
                     value={newMemberEmail}
                     onChange={(e) => setNewMemberEmail(e.target.value)}
                     placeholder="Enter email address"
-                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                     required
                   />
                   <select
                     value={newMemberRole}
-                    onChange={(e) => setNewMemberRole(e.target.value as TeamRole)}
-                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    onChange={(e) =>
+                      setNewMemberRole(e.target.value as TeamRole)
+                    }
+                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   >
                     <option value={TeamRole.MEMBER}>Member</option>
                     <option value={TeamRole.ADMIN}>Admin</option>
@@ -226,44 +264,62 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
             {/* Members List */}
             <div className="space-y-3">
               {team.memberships?.map((membership) => (
-                <div key={membership.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                <div
+                  key={membership.id}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-md dark:bg-gray-700"
+                >
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
                       {membership.user.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{membership.user.name}</p>
-                      <p className="text-xs text-gray-500">{membership.user.email}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {membership.user.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {membership.user.email}
+                      </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     {isAdmin && membership.userId !== currentUserId ? (
                       <>
                         <select
                           value={membership.role}
-                          onChange={(e) => handleUpdateMemberRole(membership.userId, e.target.value as TeamRole)}
-                          disabled={loadingActions[`update-${membership.userId}`]}
-                          className="text-xs px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          onChange={(e) =>
+                            handleUpdateMemberRole(
+                              membership.userId,
+                              e.target.value as TeamRole
+                            )
+                          }
+                          disabled={
+                            loadingActions[`update-${membership.userId}`]
+                          }
+                          className="text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                         >
                           <option value={TeamRole.MEMBER}>Member</option>
                           <option value={TeamRole.ADMIN}>Admin</option>
                         </select>
                         <button
                           onClick={() => handleRemoveMember(membership.userId)}
-                          disabled={loadingActions[`remove-${membership.userId}`]}
-                          className="text-red-600 hover:text-red-800 p-1"
+                          disabled={
+                            loadingActions[`remove-${membership.userId}`]
+                          }
+                          className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
                           title="Remove Member"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </>
                     ) : (
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        membership.role === TeamRole.ADMIN 
-                          ? 'bg-purple-100 text-purple-800' 
-                          : 'bg-blue-100 text-blue-800'
-                      }`}>
+                      <span
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          membership.role === TeamRole.ADMIN
+                            ? "bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100"
+                            : "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
+                        }`}
+                      >
                         {membership.role}
                       </span>
                     )}
@@ -273,13 +329,13 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
             </div>
           </div>
         </div>
-    </Dialog>
-    
-    <ConfirmDialog
-      {...confirmState}
-      onClose={handleClose}
-      onConfirm={handleConfirm}
-    />
+      </Dialog>
+
+      <ConfirmDialog
+        {...confirmState}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+      />
     </>
   );
 };

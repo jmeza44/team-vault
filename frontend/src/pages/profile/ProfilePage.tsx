@@ -7,13 +7,13 @@ export const ProfilePage: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
-        <p className="text-gray-600">Manage your account information</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Profile</h1>
+        <p className="text-gray-600 dark:text-gray-300">Manage your account information</p>
       </div>
 
       <div className="card">
         <div className="card-header">
-          <h2 className="text-lg font-medium text-gray-900">Personal Information</h2>
+          <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Personal Information</h2>
         </div>
         <div className="card-body space-y-4">
           <div>

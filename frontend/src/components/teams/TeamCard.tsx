@@ -46,7 +46,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
 
   return (
     <div 
-      className="bg-white rounded-lg shadow-md border border-gray-200 p-4 hover:shadow-lg transition-shadow relative cursor-pointer"
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow relative cursor-pointer"
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
       onClick={() => onView(team)}
@@ -54,11 +54,11 @@ export const TeamCard: React.FC<TeamCardProps> = ({
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
             {team.name}
           </h3>
           {team.description && (
-            <p className="text-sm text-gray-600 line-clamp-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
               {team.description}
             </p>
           )}
@@ -68,8 +68,8 @@ export const TeamCard: React.FC<TeamCardProps> = ({
         {userRole && (
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
             userRole === TeamRole.ADMIN 
-              ? 'bg-purple-100 text-purple-800' 
-              : 'bg-blue-100 text-blue-800'
+              ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' 
+              : 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100'
           }`}>
             {userRole}
           </span>
@@ -78,7 +78,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
 
       {/* Team Stats */}
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center space-x-4 text-sm text-gray-500">
+        <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
           <div className="flex items-center">
             <Users className="w-4 h-4 mr-1" />
             <span>{memberCount} {memberCount === 1 ? 'member' : 'members'}</span>
@@ -91,19 +91,19 @@ export const TeamCard: React.FC<TeamCardProps> = ({
       </div>
 
       {/* Created Date */}
-      <div className="text-xs text-gray-400">
+      <div className="text-xs text-gray-400 dark:text-gray-500">
         Created {formatDate(team.createdAt)}
       </div>
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="absolute top-2 right-2 flex space-x-1 bg-white rounded-md shadow-lg border border-gray-200 p-1">
+        <div className="absolute top-2 right-2 flex space-x-1 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 p-1">
           <button
             onClick={(e) => {
               e.stopPropagation();
               onView(team);
             }}
-            className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
             title="View Details"
           >
             <Eye className="w-4 h-4" />
@@ -116,7 +116,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
                   e.stopPropagation();
                   onEdit(team);
                 }}
-                className="p-1.5 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 rounded transition-colors"
+                className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded transition-colors"
                 title="Edit Team"
               >
                 <Edit className="w-4 h-4" />
@@ -127,7 +127,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
                   e.stopPropagation();
                   onDelete(team);
                 }}
-                className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
                 title="Delete Team"
               >
                 <Trash2 className="w-4 h-4" />

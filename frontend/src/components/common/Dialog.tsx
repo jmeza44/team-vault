@@ -64,7 +64,7 @@ export const Dialog: React.FC<DialogProps> = ({
       {/* Dialog Content */}
       <div 
         className={`
-          relative bg-white rounded-lg shadow-2xl 
+          relative bg-white dark:bg-gray-800 rounded-lg shadow-2xl 
           max-h-[90vh] overflow-y-auto
           m-4 w-full max-w-2xl
           ${className}

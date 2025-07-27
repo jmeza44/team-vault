@@ -312,8 +312,8 @@ export const CredentialsPage: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Credentials</h1>
-          <p className="text-gray-600">Manage your team's secure credentials</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Credentials</h1>
+          <p className="text-gray-600 dark:text-gray-300">Manage your team's secure credentials</p>
         </div>
         {userPermissions.canCreateCredentials && (
           <button
@@ -329,11 +329,11 @@ export const CredentialsPage: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search */}
           <div>
-            <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="search" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Search
             </label>
             <input
@@ -342,20 +342,20 @@ export const CredentialsPage: React.FC = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search credentials..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
 
           {/* Category Filter */}
           <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Category
             </label>
             <select
               id="category"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             >
               <option value="">All Categories</option>
               {CATEGORIES.map(category => (
@@ -366,14 +366,14 @@ export const CredentialsPage: React.FC = () => {
 
           {/* Team Filter */}
           <div>
-            <label htmlFor="team" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="team" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Team
             </label>
             <select
               id="team"
               value={selectedTeam}
               onChange={(e) => setSelectedTeam(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             >
               <option value="">All Teams</option>
               {teams.map(team => (
@@ -384,14 +384,14 @@ export const CredentialsPage: React.FC = () => {
 
           {/* Risk Level Filter */}
           <div>
-            <label htmlFor="riskLevel" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="riskLevel" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Risk Level
             </label>
             <select
               id="riskLevel"
               value={selectedRiskLevel}
               onChange={(e) => setSelectedRiskLevel(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             >
               <option value="">All Risk Levels</option>
               <option value={RiskLevel.LOW}>Low</option>
@@ -405,7 +405,7 @@ export const CredentialsPage: React.FC = () => {
           <div className="flex items-end">
             <button
               onClick={clearFilters}
-              className="w-full px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="w-full px-3 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
               Clear Filters
             </button>
@@ -416,16 +416,16 @@ export const CredentialsPage: React.FC = () => {
       {/* Loading State */}
       {loading ? (
         <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-2 text-gray-600">Loading credentials...</p>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">Loading credentials...</p>
         </div>
       ) : credentials.length === 0 ? (
         /* Empty State */
-        <div className="bg-white rounded-lg shadow border border-gray-200 p-8 text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-8 text-center">
           <div className="text-gray-400 mb-4 flex justify-center">
             <Shield className="h-16 w-16" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No credentials found</h3>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No credentials found</h3>
           <p className="text-gray-600 mb-4">
             {searchTerm || selectedCategory || selectedRiskLevel || selectedTeam
               ? 'No credentials match your current filters. Try adjusting your search criteria.'

@@ -14,15 +14,15 @@ interface CredentialCardProps {
 const getRiskLevelColor = (riskLevel: RiskLevel) => {
   switch (riskLevel) {
     case RiskLevel.LOW:
-      return 'bg-green-100 text-green-800';
+      return 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100';
     case RiskLevel.MEDIUM:
-      return 'bg-yellow-100 text-yellow-800';
+      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100';
     case RiskLevel.HIGH:
-      return 'bg-orange-100 text-orange-800';
+      return 'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100';
     case RiskLevel.CRITICAL:
-      return 'bg-red-100 text-red-800';
+      return 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100';
     default:
-      return 'bg-gray-100 text-gray-800';
+      return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100';
   }
 };
 
@@ -73,22 +73,22 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
 
   return (
     <div 
-      className="bg-white rounded-lg shadow-md border border-gray-200 p-4 hover:shadow-lg transition-shadow relative"
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow relative"
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
             {credential.name}
           </h3>
           {credential.username && (
-            <div className="flex items-center text-sm text-gray-600">
+            <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
               <span className="mr-2">{credential.username}</span>
               <button
                 onClick={handleCopyUsername}
-                className="text-blue-600 hover:text-blue-800"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                 title="Copy username"
               >
                 <Copy className="h-4 w-4" />
@@ -103,12 +103,12 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
             {credential.riskLevel}
           </span>
           {permissions.isOwner && (
-            <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+            <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
               Owner
             </span>
           )}
           {!permissions.isOwner && permissions.accessLevel && (
-            <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
+            <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
               {permissions.accessLevel === AccessLevel.WRITE ? 'Read & Write' : 'Read Only'}
             </span>
           )}
@@ -119,17 +119,17 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
       <div className="space-y-2">
         {/* Category */}
         {credential.category && (
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             <span className="font-medium">Category:</span> {credential.category}
           </div>
         )}
 
         {/* URL */}
         {credential.url && (
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             <button
               onClick={handleOpenUrl}
-              className="text-blue-600 hover:text-blue-800 underline"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
             >
               {credential.url}
             </button>
@@ -138,7 +138,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
 
         {/* Description */}
         {credential.description && (
-          <p className="text-sm text-gray-600 line-clamp-2">
+          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
             {credential.description}
           </p>
         )}
@@ -149,13 +149,13 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
             {credential.tags.slice(0, 3).map(tag => (
               <span
                 key={tag}
-                className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
+                className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded"
               >
                 {tag}
               </span>
             ))}
             {credential.tags.length > 3 && (
-              <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+              <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded">
                 +{credential.tags.length - 3} more
               </span>
             )}
@@ -166,17 +166,17 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
         {credential.expirationDate && (
           <div className="text-sm">
             {isExpired(credential.expirationDate) ? (
-              <span className="text-red-600 font-medium flex items-center">
+              <span className="text-red-600 dark:text-red-400 font-medium flex items-center">
                 <AlertTriangle className="h-4 w-4 mr-1" />
                 Expired on {formatDate(credential.expirationDate)}
               </span>
             ) : isExpiringSoon(credential.expirationDate) ? (
-              <span className="text-orange-600 font-medium flex items-center">
+              <span className="text-orange-600 dark:text-orange-400 font-medium flex items-center">
                 <Clock className="h-4 w-4 mr-1" />
                 Expires {formatDate(credential.expirationDate)}
               </span>
             ) : (
-              <span className="text-gray-600">
+              <span className="text-gray-600 dark:text-gray-400">
                 Expires {formatDate(credential.expirationDate)}
               </span>
             )}
@@ -185,7 +185,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
       </div>
 
       {/* Footer */}
-      <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+      <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
         <span>Updated {formatDate(credential.updatedAt)}</span>
         {credential.lastRotated && (
           <span>Last rotated {formatDate(credential.lastRotated)}</span>
@@ -194,11 +194,11 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="absolute top-2 right-2 bg-white rounded-lg shadow-lg border border-gray-200 p-1 flex space-x-1">
+        <div className="absolute top-2 right-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-1 flex space-x-1">
           {permissions.canView && (
             <button
               onClick={() => onView(credential)}
-              className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded"
+              className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
               title="View details"
             >
               <Eye className="h-4 w-4" />
@@ -207,7 +207,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
           {permissions.canEdit && (
             <button
               onClick={() => onEdit(credential)}
-              className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded"
+              className="p-2 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded"
               title="Edit"
             >
               <Edit className="h-4 w-4" />
@@ -216,7 +216,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
           {permissions.canShare && (
             <button
               onClick={() => onShare(credential)}
-              className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded"
+              className="p-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded"
               title="Share"
             >
               <Share className="h-4 w-4" />
@@ -225,7 +225,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
           {permissions.canDelete && (
             <button
               onClick={() => onDelete(credential)}
-              className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded"
+              className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
               title="Delete"
             >
               <Trash2 className="h-4 w-4" />

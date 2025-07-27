@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { AlertProvider } from '@/contexts/AlertContext'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { Layout } from '@/components/layout/Layout'
 import { LoginPage } from '@/pages/auth/LoginPage'
@@ -14,8 +15,9 @@ import AlertContainer from '@/components/common/AlertContainer'
 
 function App() {
   return (
-    <AuthProvider>
-      <AlertProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AlertProvider>
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
@@ -43,6 +45,7 @@ function App() {
       <AlertContainer />
     </AlertProvider>
   </AuthProvider>
+</ThemeProvider>
   )
 }
 

@@ -267,8 +267,8 @@ export const TeamsPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Teams</h1>
-            <p className="text-gray-600">Manage your teams and members</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Teams</h1>
+            <p className="text-gray-600 dark:text-gray-300">Manage your teams and members</p>
           </div>
         </div>
         <div className="flex justify-center items-center py-12">
@@ -283,8 +283,8 @@ export const TeamsPage: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Teams</h1>
-          <p className="text-gray-600">Manage your teams and members</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Teams</h1>
+          <p className="text-gray-600 dark:text-gray-300">Manage your teams and members</p>
         </div>
         <button
           onClick={() => {
@@ -332,7 +332,7 @@ export const TeamsPage: React.FC = () => {
               placeholder="Search teams..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
         </div>
@@ -356,11 +356,11 @@ export const TeamsPage: React.FC = () => {
           })}
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
           <div className="mx-auto mb-4 text-gray-400 flex justify-center">
             <Users className="h-12 w-12" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
             {searchTerm ? 'No teams found' : 'No teams yet'}
           </h3>
           <p className="text-gray-500 mb-4">

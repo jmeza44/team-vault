@@ -54,13 +54,13 @@ export const AlertDemo: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-        <Zap className="h-5 w-5 text-blue-500" />
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+        <Zap className="h-5 w-5 text-blue-500 dark:text-blue-400" />
         Alert System Demo
       </h3>
       
-      <p className="text-gray-600 mb-6">
+      <p className="text-gray-600 dark:text-gray-300 mb-6">
         Click the buttons below to test different types of alerts. Notice how they appear in the top-right corner 
         with proper z-index positioning over all other elements.
       </p>
@@ -107,9 +107,9 @@ export const AlertDemo: React.FC = () => {
         </button>
       </div>
 
-      <div className="mt-6 p-4 bg-gray-50 rounded-md">
-        <h4 className="font-medium text-gray-900 mb-2">Features Demonstrated:</h4>
-        <ul className="text-sm text-gray-600 space-y-1">
+      <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
+        <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Features Demonstrated:</h4>
+        <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
           <li>• <strong>Different alert types</strong> with appropriate colors and icons</li>
           <li>• <strong>Auto-dismiss</strong> with configurable timing</li>
           <li>• <strong>Manual dismiss</strong> with close button</li>
