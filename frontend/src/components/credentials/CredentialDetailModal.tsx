@@ -3,7 +3,7 @@ import { Copy, Eye, EyeOff, ExternalLink, X } from 'lucide-react';
 import { Dialog } from '@/components/common';
 import { useToast, usePermissions } from '@/hooks';
 import { AccessLevel, Credential } from '@/types';
-import { getRiskLevelColor, formatDate } from '@/utils';
+import { getRiskLevelColor, formatDateTime } from '@/utils';
 
 interface CredentialDetailModalProps {
   credential: Credential | null;
@@ -240,7 +240,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                 Expires
               </label>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {formatDate(credential.expirationDate)}
+                {formatDateTime(credential.expirationDate)}
               </p>
             </div>
           )}
@@ -250,7 +250,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                 Last Rotated
               </label>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {formatDate(credential.lastRotated)}
+                {formatDateTime(credential.lastRotated)}
               </p>
             </div>
           )}
@@ -262,7 +262,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
               Created
             </label>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {formatDate(credential.createdAt)}
+              {formatDateTime(credential.createdAt)}
             </p>
           </div>
           <div>
@@ -270,7 +270,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
               Updated
             </label>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {formatDate(credential.updatedAt)}
+              {formatDateTime(credential.updatedAt)}
             </p>
           </div>
         </div>
