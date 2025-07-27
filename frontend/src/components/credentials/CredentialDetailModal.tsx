@@ -74,13 +74,13 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
       {/* Header */}
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+      <div className="p-4 md:p-6 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 truncate">
               {credential.name}
             </h2>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className={`px-3 py-1 text-sm font-medium rounded-full ${getRiskLevelColor(credential.riskLevel)}`}>
                   {credential.riskLevel} Risk
                 </span>
@@ -100,18 +100,21 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                   </span>
                 )}
               </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-            >
-              <X className="h-6 w-6" />
-            </button>
           </div>
+          
+          {/* Close button - more prominent on mobile */}
+          <button
+            onClick={onClose}
+            className="ml-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label="Close dialog"
+          >
+            <X className="h-6 w-6" />
+          </button>
         </div>
+      </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-4 md:p-6 space-y-4 md:space-y-6">
           {/* Username */}
           {credential.username && (
             <div>
@@ -291,22 +294,22 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-between">
-          <div className="flex space-x-3">
+        <div className="p-4 md:p-6 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row gap-3 sm:justify-between">
+          <div className="flex flex-col sm:flex-row gap-3">
             {permissions.canShare && (
               <button
                 onClick={() => onShare(credential)}
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="px-4 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-[44px] font-medium"
               >
                 Share
               </button>
             )}
           </div>
-          <div className="flex space-x-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             {permissions.canEdit && (
               <button
                 onClick={() => onEdit(credential)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px] font-medium"
               >
                 Edit
               </button>
@@ -314,7 +317,7 @@ export const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
             {permissions.canDelete && (
               <button
                 onClick={() => onDelete(credential)}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="px-4 py-3 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 min-h-[44px] font-medium"
               >
                 Delete
               </button>

@@ -281,7 +281,7 @@ export const TeamsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Teams</h1>
           <p className="text-gray-600 dark:text-gray-300">Manage your teams and members</p>
@@ -291,7 +291,7 @@ export const TeamsPage: React.FC = () => {
             setSelectedTeam(null);
             setViewMode('form');
           }}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-md font-medium transition-colors min-h-[44px] w-full sm:w-auto"
         >
           Create Team
         </button>

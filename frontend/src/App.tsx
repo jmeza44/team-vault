@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { AlertProvider } from '@/contexts/AlertContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
+import { MobileProvider } from '@/contexts/MobileContext'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { Layout } from '@/components/layout/Layout'
 import { LoginPage } from '@/pages/auth/LoginPage'
@@ -17,6 +18,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <AlertProvider>
+          <MobileProvider>
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
@@ -41,9 +43,10 @@ function App() {
       
       {/* Alert container for global alerts */}
       <AlertContainer />
-    </AlertProvider>
-  </AuthProvider>
-</ThemeProvider>
+          </MobileProvider>
+        </AlertProvider>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 

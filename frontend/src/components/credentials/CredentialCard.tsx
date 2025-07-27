@@ -78,17 +78,17 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
       onMouseLeave={() => setShowActions(false)}
     >
       {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 truncate">
             {credential.name}
           </h3>
           {credential.username && (
             <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-              <span className="mr-2">{credential.username}</span>
+              <span className="mr-2 truncate">{credential.username}</span>
               <button
                 onClick={handleCopyUsername}
-                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex-shrink-0 p-1 min-h-[32px] min-w-[32px] flex items-center justify-center"
                 title="Copy username"
               >
                 <Copy className="h-4 w-4" />
@@ -98,7 +98,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
         </div>
 
         {/* Risk Level Badge */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRiskLevelColor(credential.riskLevel)}`}>
             {credential.riskLevel}
           </span>
@@ -126,10 +126,10 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
 
         {/* URL */}
         {credential.url && (
-          <div className="text-sm text-gray-600 dark:text-gray-400">
+          <div className="text-sm text-gray-600 dark:text-gray-400 overflow-hidden w-full">
             <button
               onClick={handleOpenUrl}
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline truncate w-full text-start"
             >
               {credential.url}
             </button>
@@ -194,11 +194,11 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="absolute top-2 right-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-1 flex space-x-1">
+        <div className="absolute top-2 right-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-1 flex gap-1">
           {permissions.canView && (
             <button
               onClick={() => onView(credential)}
-              className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
+              className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded min-h-[36px] min-w-[36px] flex items-center justify-center"
               title="View details"
             >
               <Eye className="h-4 w-4" />
@@ -207,7 +207,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
           {permissions.canEdit && (
             <button
               onClick={() => onEdit(credential)}
-              className="p-2 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded"
+              className="p-2 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded min-h-[36px] min-w-[36px] flex items-center justify-center"
               title="Edit"
             >
               <Edit className="h-4 w-4" />
@@ -216,7 +216,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
           {permissions.canShare && (
             <button
               onClick={() => onShare(credential)}
-              className="p-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded"
+              className="p-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded min-h-[36px] min-w-[36px] flex items-center justify-center"
               title="Share"
             >
               <Share className="h-4 w-4" />
@@ -225,7 +225,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
           {permissions.canDelete && (
             <button
               onClick={() => onDelete(credential)}
-              className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+              className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded min-h-[36px] min-w-[36px] flex items-center justify-center"
               title="Delete"
             >
               <Trash2 className="h-4 w-4" />

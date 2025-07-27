@@ -46,15 +46,15 @@ export const TeamCard: React.FC<TeamCardProps> = ({
 
   return (
     <div 
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow relative cursor-pointer"
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow relative cursor-pointer touch-manipulation"
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
       onClick={() => onView(team)}
     >
       {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 truncate">
             {team.name}
           </h3>
           {team.description && (
@@ -66,13 +66,15 @@ export const TeamCard: React.FC<TeamCardProps> = ({
         
         {/* User Role Badge */}
         {userRole && (
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            userRole === TeamRole.ADMIN 
-              ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' 
-              : 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100'
-          }`}>
-            {userRole}
-          </span>
+          <div className="flex-shrink-0">
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              userRole === TeamRole.ADMIN 
+                ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100' 
+                : 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100'
+            }`}>
+              {userRole}
+            </span>
+          </div>
         )}
       </div>
 
@@ -97,13 +99,13 @@ export const TeamCard: React.FC<TeamCardProps> = ({
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="absolute top-2 right-2 flex space-x-1 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 p-1">
+        <div className="absolute top-2 right-2 flex gap-1 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 p-1">
           <button
             onClick={(e) => {
               e.stopPropagation();
               onView(team);
             }}
-            className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
+            className="p-2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
             title="View Details"
           >
             <Eye className="w-4 h-4" />
@@ -116,7 +118,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
                   e.stopPropagation();
                   onEdit(team);
                 }}
-                className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded transition-colors"
+                className="p-2 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                 title="Edit Team"
               >
                 <Edit className="w-4 h-4" />
@@ -127,7 +129,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
                   e.stopPropagation();
                   onDelete(team);
                 }}
-                className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                className="p-2 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                 title="Delete Team"
               >
                 <Trash2 className="w-4 h-4" />

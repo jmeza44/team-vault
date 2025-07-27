@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Credential, RiskLevel } from '@/types';
+import { Dialog } from '@/components/common/Dialog';
 import { Eye, EyeOff, RefreshCw, Circle, CheckCircle } from 'lucide-react';
 
 interface CredentialFormProps {
   credential?: Credential;
+  isOpen: boolean;
   onSubmit: (data: CredentialFormData) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
@@ -34,6 +36,7 @@ const CATEGORIES = [
 
 export const CredentialForm: React.FC<CredentialFormProps> = ({
   credential,
+  isOpen,
   onSubmit,
   onCancel,
   isLoading = false
@@ -119,6 +122,19 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
         expirationDate: credential.expirationDate ? credential.expirationDate.split('T')[0] : '',
         riskLevel: credential.riskLevel
       });
+    } else {
+      // Reset form data when creating a new credential
+      setFormData({
+        name: '',
+        username: '',
+        secret: '',
+        description: '',
+        category: '',
+        url: '',
+        tags: [],
+        expirationDate: '',
+        riskLevel: RiskLevel.LOW
+      });
     }
   }, [credential]);
 
@@ -167,13 +183,17 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
     handleInputChange('secret', password);
   };
 
-  return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-        {credential ? 'Edit Credential' : 'Add New Credential'}
-      </h2>
+  if (!isOpen) return null;
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+  return (
+    <Dialog isOpen={isOpen} onClose={onCancel}>
+      <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+          {credential ? 'Edit Credential' : 'Add New Credential'}
+        </h2>
+      </div>
+
+      <form onSubmit={handleSubmit} className="px-4 sm:px-6 py-4 space-y-4 sm:space-y-6 custom-scrollbar overflow-y-auto">
         {/* Name */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -261,7 +281,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
         </div>
 
         {/* Category and Risk Level */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Category
@@ -330,13 +350,13 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
               <button
                 type="button"
                 onClick={addTag}
-                className="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500"
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 min-h-[44px]"
               >
                 Add
               </button>
             </div>
             {formData.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto custom-scrollbar">
                 {formData.tags.map(tag => (
                   <span
                     key={tag}
@@ -346,7 +366,7 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
                     <button
                       type="button"
                       onClick={() => removeTag(tag)}
-                      className="ml-2 text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100"
+                      className="ml-2 text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100 min-h-[24px] min-w-[24px] flex items-center justify-center"
                     >
                       ×
                     </button>
@@ -382,30 +402,30 @@ export const CredentialForm: React.FC<CredentialFormProps> = ({
             value={formData.description}
             onChange={(e) => handleInputChange('description', e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 custom-scrollbar resize-none"
             placeholder="Additional notes or description"
           />
         </div>
 
         {/* Form Actions */}
-        <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+            className="px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 font-medium min-h-[44px]"
             disabled={isLoading}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            className="px-4 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 font-medium min-h-[44px]"
             disabled={isLoading}
           >
             {isLoading ? 'Saving...' : (credential ? 'Update' : 'Create')}
           </button>
         </div>
       </form>
-    </div>
+    </Dialog>
   );
 };

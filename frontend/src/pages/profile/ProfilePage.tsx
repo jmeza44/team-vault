@@ -57,8 +57,8 @@ export const ProfilePage: React.FC = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="border-b border-gray-200 dark:border-gray-700">
-        <nav className="-mb-px flex space-x-8">
+      <div className="border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+        <nav className="-mb-px flex space-x-4 md:space-x-8 min-w-max px-1">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -66,14 +66,15 @@ export const ProfilePage: React.FC = () => {
                 setActiveTab(tab.id);
                 setIsEditing(false);
               }}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`py-3 px-2 md:px-1 border-b-2 font-medium text-sm whitespace-nowrap min-h-[44px] flex items-center ${
                 activeTab === tab.id
                   ? 'border-blue-500 text-blue-600 dark:text-blue-400'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >
-              <tab.icon className="inline h-4 w-4 mr-2" />
+              <tab.icon className="h-4 w-4 mr-2 flex-shrink-0" />
               <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden text-xs">{tab.label.split(' ')[0]}</span>
             </button>
           ))}
         </nav>

@@ -41,7 +41,8 @@ export const Dialog: React.FC<DialogProps> = ({
   }, [isOpen, onClose, closeOnEscape]);
 
   const handleBackdropClick = (e: React.MouseEvent) => {
-    if (closeOnBackdrop && e.target === e.currentTarget) {
+    // Only close on backdrop click for desktop (md and above)
+    if (closeOnBackdrop && e.target === e.currentTarget && window.innerWidth >= 768) {
       onClose();
     }
   };
@@ -50,13 +51,13 @@ export const Dialog: React.FC<DialogProps> = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9998] flex items-center justify-center"
+      className="fixed inset-0 z-[9998] flex items-center justify-center md:p-4"
       role="dialog"
       aria-modal="true"
     >
-      {/* Backdrop */}
+      {/* Backdrop - only visible on desktop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm hidden md:block"
         onClick={handleBackdropClick}
         aria-hidden="true"
       />
@@ -64,9 +65,12 @@ export const Dialog: React.FC<DialogProps> = ({
       {/* Dialog Content */}
       <div 
         className={`
-          relative bg-white dark:bg-gray-800 rounded-lg shadow-2xl 
-          max-h-[90vh] overflow-y-auto
-          m-4 w-full max-w-2xl
+          relative bg-white dark:bg-gray-800 shadow-2xl 
+          /* Mobile: Full screen */
+          h-full w-full md:rounded-lg
+          /* Desktop: Modal with constraints */
+          md:max-h-[90vh] md:max-w-[95vw] md:w-full overflow-y-auto
+          md:sm:max-w-2xl md:md:max-w-3xl md:lg:max-w-4xl
           ${className}
         `}
       >

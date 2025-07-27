@@ -10,7 +10,7 @@ import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { useAlertActions, useApiErrorHandler } from '@/hooks/useAlerts';
 import { useConfirm } from '@/hooks/useConfirm';
 import { usePermissions } from '@/hooks/usePermissions';
-import { Shield, ArrowLeft } from 'lucide-react';
+import { Shield } from 'lucide-react';
 
 const CATEGORIES = [
   'Database',
@@ -23,7 +23,7 @@ const CATEGORIES = [
   'Other'
 ];
 
-type ViewMode = 'list' | 'form' | 'detail';
+type ViewMode = 'list' | 'detail';
 
 export const CredentialsPage: React.FC = () => {
   const [credentials, setCredentials] = useState<Credential[]>([]);
@@ -46,6 +46,7 @@ export const CredentialsPage: React.FC = () => {
 
   // Modal state
   const [isFormLoading, setIsFormLoading] = useState(false);
+  const [isCredentialFormOpen, setIsCredentialFormOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [credentialToShare, setCredentialToShare] = useState<Credential | null>(null);
 
@@ -119,7 +120,7 @@ export const CredentialsPage: React.FC = () => {
       
       if (response.success) {
         await loadCredentials(); // Reload the list
-        setViewMode('list');
+        setIsCredentialFormOpen(false);
         setSelectedCredential(null);
         showSuccess('Credential Created', 'The credential has been created successfully');
       } else {
@@ -155,7 +156,7 @@ export const CredentialsPage: React.FC = () => {
       
       if (response.success) {
         await loadCredentials(); // Reload the list
-        setViewMode('list');
+        setIsCredentialFormOpen(false);
         setSelectedCredential(null);
         showSuccess('Credential Updated', 'The credential has been updated successfully');
       } else {
@@ -205,7 +206,7 @@ export const CredentialsPage: React.FC = () => {
       
       if (response.success && response.data) {
         setSelectedCredential(response.data.credential);
-        setViewMode('form');
+        setIsCredentialFormOpen(true);
       } else {
         handleApiError(response, 'Failed to load credential for editing');
       }
@@ -278,39 +279,14 @@ export const CredentialsPage: React.FC = () => {
     setSelectedTeam('');
   };
 
-  if (viewMode === 'form') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => {
-              setViewMode('list');
-              setSelectedCredential(null);
-            }}
-            className="text-blue-600 hover:text-blue-800 flex items-center gap-2 font-medium transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Credentials
-          </button>
-        </div>
-
-        <CredentialForm
-          credential={selectedCredential || undefined}
-          onSubmit={selectedCredential ? handleUpdateCredential : handleCreateCredential}
-          onCancel={() => {
-            setViewMode('list');
-            setSelectedCredential(null);
-          }}
-          isLoading={isFormLoading}
-        />
-      </div>
-    );
+  if (viewMode === 'detail') {
+    // Handle detail view if needed
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Credentials</h1>
           <p className="text-gray-600 dark:text-gray-300">Manage your team's secure credentials</p>
@@ -319,9 +295,9 @@ export const CredentialsPage: React.FC = () => {
           <button
             onClick={() => {
               setSelectedCredential(null);
-              setViewMode('form');
+              setIsCredentialFormOpen(true);
             }}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px] w-full sm:w-auto font-medium"
           >
             Add Credential
           </button>
@@ -330,7 +306,7 @@ export const CredentialsPage: React.FC = () => {
 
       {/* Filters */}
       <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Search */}
           <div>
             <label htmlFor="search" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -443,7 +419,7 @@ export const CredentialsPage: React.FC = () => {
             <button
               onClick={() => {
                 setSelectedCredential(null);
-                setViewMode('form');
+                setIsCredentialFormOpen(true);
               }}
               className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
             >
@@ -453,7 +429,7 @@ export const CredentialsPage: React.FC = () => {
         </div>
       ) : (
         /* Credentials Grid */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {credentials.map(credential => (
             <CredentialCard
               key={credential.id}
@@ -492,6 +468,18 @@ export const CredentialsPage: React.FC = () => {
           onSuccess={handleShareSuccess}
         />
       )}
+
+      {/* Credential Form Modal */}
+      <CredentialForm
+        credential={selectedCredential || undefined}
+        isOpen={isCredentialFormOpen}
+        onSubmit={selectedCredential ? handleUpdateCredential : handleCreateCredential}
+        onCancel={() => {
+          setIsCredentialFormOpen(false);
+          setSelectedCredential(null);
+        }}
+        isLoading={isFormLoading}
+      />
 
       {/* Confirmation Dialog */}
       <ConfirmDialog

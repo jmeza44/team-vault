@@ -41,25 +41,25 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
           <p className="text-gray-600 dark:text-gray-300">Welcome back, {user?.name}! Overview of your team's credentials and activity</p>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md 
+            className="px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-md 
                      bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 
-                     hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
+                     hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center space-x-2 min-h-[44px]"
           >
             {showFilters ? <EyeOff size={16} /> : <Eye size={16} />}
             <span>{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
           </button>
           <button
             onClick={handleRefresh}
-            className="px-4 py-2 text-sm bg-primary-600 text-white rounded-md 
-                     hover:bg-primary-700 transition-colors flex items-center space-x-2"
+            className="px-4 py-3 text-sm bg-primary-600 text-white rounded-md 
+                     hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 min-h-[44px]"
           >
             <RefreshCw size={16} />
             <span>Refresh</span>

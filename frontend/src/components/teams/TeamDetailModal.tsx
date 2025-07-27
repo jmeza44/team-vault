@@ -130,9 +130,9 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
     <>
       <Dialog isOpen={isOpen} onClose={onClose}>
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+        <div className="px-4 md:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-gray-100 truncate">
               {team.name}
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -142,11 +142,11 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                 : "members"}
             </p>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2 ml-4">
             {isAdmin && (
               <button
                 onClick={() => onEdit(team)}
-                className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors dark:text-gray-400 dark:hover:text-blue-300 dark:hover:bg-blue-800"
+                className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors dark:text-gray-400 dark:hover:text-blue-300 dark:hover:bg-blue-800 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 title="Edit Team"
               >
                 <Edit className="w-5 h-5" />
@@ -154,14 +154,15 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
             )}
             <button
               onClick={onClose}
-              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700"
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700 min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label="Close dialog"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        <div className="px-6 py-4">
+        <div className="px-4 md:px-6 py-4">
           {/* Team Description */}
           {team.description && (
             <div className="mb-6">
@@ -175,7 +176,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
           )}
 
           {/* Team Info */}
-          <div className="mb-6 grid grid-cols-2 gap-4 text-sm">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div>
               <span className="font-medium text-gray-900 dark:text-gray-100">
                 Created:
