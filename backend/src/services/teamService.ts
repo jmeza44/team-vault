@@ -236,17 +236,26 @@ export class TeamService {
   /**
    * Update team information
    */
-  static async updateTeam(teamId: string, userId: string, updateData: UpdateTeamData): Promise<void> {
+  static async updateTeam(teamId: string, userId: string, updateData: UpdateTeamData): Promise<any> {
     try {
       // Check if user is an admin of this team
       await this.requireTeamAdmin(teamId, userId);
 
-      await prisma.team.update({
+      const updatedTeam = await prisma.team.update({
         where: { id: teamId },
         data: updateData,
       });
 
       logger.info('Team updated successfully', { teamId, userId });
+      
+      return {
+        id: updatedTeam.id,
+        name: updatedTeam.name,
+        description: updatedTeam.description,
+        createdById: updatedTeam.createdById,
+        createdAt: updatedTeam.createdAt,
+        updatedAt: updatedTeam.updatedAt,
+      };
     } catch (error) {
       logger.error('Error updating team:', error);
       throw error;
@@ -280,20 +289,20 @@ export class TeamService {
       // Check if requester is an admin of this team
       await this.requireTeamAdmin(teamId, adminUserId);
 
-      // Check if user exists
-      const userExists = await prisma.user.findUnique({
-        where: { id: memberData.userId },
+      // Find user by email
+      const userToAdd = await prisma.user.findUnique({
+        where: { email: memberData.email },
       });
 
-      if (!userExists) {
-        throw new Error('User not found');
+      if (!userToAdd) {
+        throw new Error('User not found with this email address');
       }
 
       // Check if user is already a member
       const existingMembership = await prisma.teamMembership.findFirst({
         where: {
           teamId: teamId,
-          userId: memberData.userId,
+          userId: userToAdd.id,
         },
       });
 
@@ -304,12 +313,12 @@ export class TeamService {
       await prisma.teamMembership.create({
         data: {
           teamId: teamId,
-          userId: memberData.userId,
+          userId: userToAdd.id,
           role: memberData.role,
         },
       });
 
-      logger.info('Team member added successfully', { teamId, adminUserId, newMemberId: memberData.userId });
+      logger.info('Team member added successfully', { teamId, adminUserId, newMemberId: userToAdd.id, newMemberEmail: memberData.email });
     } catch (error) {
       logger.error('Error adding team member:', error);
       throw error;

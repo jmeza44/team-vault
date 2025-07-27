@@ -57,7 +57,7 @@ router.post(
   '/:id/members',
   [
     param('id').isUUID(),
-    body('userId').isUUID(),
+    body('email').isEmail().withMessage('Valid email is required'),
     body('role').isIn(['MEMBER', 'ADMIN']),
   ],
   validateRequest,

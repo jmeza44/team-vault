@@ -12,7 +12,7 @@ export interface UpdateTeamData {
 }
 
 export interface AddTeamMemberData {
-  userId: string;
+  email: string;
   role: TeamRole;
 }
 

@@ -66,9 +66,10 @@ export class TeamController {
       const { id: teamId } = req.params;
       const updateData: UpdateTeamData = req.body;
 
-      await TeamService.updateTeam(teamId, userId, updateData);
+      const updatedTeam = await TeamService.updateTeam(teamId, userId, updateData);
 
       ResponseUtil.success(res, {
+        team: updatedTeam,
         message: 'Team updated successfully',
       });
     } catch (error) {
