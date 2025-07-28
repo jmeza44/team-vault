@@ -2,11 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import favicon from 'serve-favicon';
+import path from 'path';
 import rateLimit from 'express-rate-limit';
 import { notFound, errorHandler } from '@/middleware';
 import { authRoutes, userRoutes, credentialRoutes, teamRoutes, auditRoutes, analyticsRoutes } from '@/routes';
 import { logger } from '@/utils';
-
 
 // Load environment variables
 dotenv.config();
@@ -64,6 +65,7 @@ app.get('/api', (_req, res) => {
     version: '1.0.0',
     description: 'Secure credential management platform API',
     endpoints: {
+      health: '/health',
       auth: '/api/auth',
       users: '/api/users',
       credentials: '/api/credentials',
@@ -74,9 +76,17 @@ app.get('/api', (_req, res) => {
   });
 });
 
+// Redirect root to health check
+app.get('/', (_req, res) => {
+  res.redirect('/api');
+});
+
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
+
+// Serve favicon
+app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 
 // Start server
 app.listen(PORT, () => {
