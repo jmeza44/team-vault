@@ -19,8 +19,13 @@ const PORT = process.env['PORT'] || 3000;
 app.use(helmet());
 
 // CORS configuration
+const CORS_ORIGIN = process.env['CORS_ORIGIN'];
+
+if (!CORS_ORIGIN) {
+  throw new Error('CORS_ORIGIN is not defined');
+}
 app.use(cors({
-  origin: process.env['CORS_ORIGIN']?.split(',') || '',
+  origin: CORS_ORIGIN.split(','),
   credentials: true,
 }));
 
