@@ -238,23 +238,52 @@ export class CredentialService {
     }
   }
 
-  static async updateCredential(credentialId: string, userId: string, data: UpdateCredentialData) {
+  static async updateCredential(credentialId: string, userId: string, userRole: string, data: UpdateCredentialData) {
     try {
-      // First check if user has access to this credential
-      const existingCredential = await prisma.credential.findFirst({
-        where: {
-          id: credentialId,
-          ownerId: userId, // Only owner can update
-        },
+      // Check if credential exists
+      const credentialRecord = await prisma.credential.findUnique({
+        where: { id: credentialId },
+        include: {
+          sharedWith: {
+            include: {
+              sharedWithTeam: {
+                include: {
+                  memberships: true
+                }
+              }
+            }
+          }
+        }
       });
 
-      if (!existingCredential) {
-        return null;
+      if (!credentialRecord) {
+        return { status: 'not_found' };
+      }
+
+      // Check if user is global admin, owner, or has EDITOR/ADMIN team role
+      let hasAccess = false;
+      if (userRole === 'GLOBAL_ADMIN') {
+        hasAccess = true;
+      } else if (credentialRecord.ownerId === userId) {
+        hasAccess = true;
+      } else if (credentialRecord.sharedWith) {
+        for (const share of credentialRecord.sharedWith) {
+          if (share.sharedWithTeam && share.sharedWithTeam.memberships) {
+            for (const member of share.sharedWithTeam.memberships) {
+              if (member.userId === userId && member.role === 'ADMIN') {
+                hasAccess = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+      if (!hasAccess) {
+        return { status: 'access_denied' };
       }
 
       // Prepare update data
       const updateData: any = {};
-
       Object.keys(data).forEach(key => {
         const value = (data as any)[key];
         if (value !== undefined) {
@@ -265,7 +294,6 @@ export class CredentialService {
           }
         }
       });
-
       updateData.updatedAt = new Date();
 
       const credential = await prisma.credential.update({
@@ -299,7 +327,7 @@ export class CredentialService {
         },
       });
 
-      return credential;
+      return { status: 'success', credential };
     } catch (error) {
       logger.error('Error updating credential:', error);
       throw error;

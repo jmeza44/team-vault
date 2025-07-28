@@ -78,7 +78,7 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
         {/* Risk Level Badge */}
         <div className="flex flex-wrap items-center gap-2">
           <span
-            className={`rounded-full px-2 py-1 text-xs font-medium ${getRiskLevelColor(credential.riskLevel)}`}
+            className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${getRiskLevelColor(credential.riskLevel)}`}
           >
             {credential.riskLevel}
           </span>

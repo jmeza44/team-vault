@@ -65,17 +65,20 @@ export class CredentialController {
   async updateCredential(req: AuthenticatedRequest, res: Response) {
     try {
       const userId = req.user!.id;
+      const userRole = req.user!.role;
       const { id } = req.params;
       const data: UpdateCredentialData = req.body;
 
-      const credential = await CredentialService.updateCredential(id, userId, data);
+      const result = await CredentialService.updateCredential(id, userId, userRole, data);
 
-      if (!credential) {
-        return ResponseUtil.notFound(res, 'Credential not found or access denied');
+      if (result.status === 'not_found') {
+        return ResponseUtil.notFound(res, 'Credential not found');
       }
-
+      if (result.status === 'access_denied') {
+        return ResponseUtil.forbidden(res, 'Access denied: you do not have permission to update this credential');
+      }
       ResponseUtil.success(res, {
-        credential,
+        credential: result.credential,
         message: 'Credential updated successfully',
       });
     } catch (error) {
