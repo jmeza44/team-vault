@@ -33,7 +33,9 @@
       "@/middleware/*": ["src/middleware/*"],
       "@/controllers/*": ["src/controllers/*"],
       "@/services/*": ["src/services/*"],
-      "@/models/*": ["src/models/*"]
+      "@/models/*": ["src/models/*"],
+      "@/validations/*": ["src/validations/*"],
+      "@/routes/*": ["src/routes/*"],
     }
   },
   "include": [
